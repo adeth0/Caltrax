@@ -1,0 +1,203 @@
+// Caltrax database schema (PostgreSQL)
+// Phase 1 covers: auth, profile, goal engine inputs, food database cache,
+// meal logging, weight/water logs. Phase 2+ adds recipes, planner,
+// reminders, achievements, and wearable-sync tables (stubbed at bottom).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Pooled connection string (e.g. Neon/Vercel Postgres pooler) — used at runtime.
+  url       = env("DATABASE_URL")
+  // Direct (unpooled) connection — used only for migrations.
+  directUrl = env("DIRECT_URL")
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+enum PrimaryGoal {
+  LOSE_FAT
+  BUILD_MUSCLE
+  MAINTAIN_WEIGHT
+  IMPROVE_HEALTH
+  INCREASE_PROTEIN
+  ATHLETIC_PERFORMANCE
+  BODY_RECOMPOSITION
+}
+
+enum DietaryPreference {
+  NONE
+  VEGETARIAN
+  VEGAN
+  KETO
+  LOW_CARB
+  MEDITERRANEAN
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum FoodSource {
+  OPEN_FOOD_FACTS
+  USDA
+  CUSTOM
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile      Profile?
+  mealEntries  MealEntry[]
+  weightLogs   WeightLog[]
+  waterLogs    WaterLog[]
+  customFoods  Food[]         @relation("CustomFoodOwner")
+  reminders    Reminder[]
+
+  @@map("users")
+}
+
+model Profile {
+  id                   String            @id @default(cuid())
+  userId               String            @unique
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name                 String?
+  sex                  Sex
+  age                  Int
+  heightCm             Float
+  weightKg             Float
+  targetWeightKg        Float?
+  activityLevel        ActivityLevel
+  primaryGoal          PrimaryGoal
+  targetRateKgPerWeek  Float?
+  dietaryPreference    DietaryPreference @default(NONE)
+  allergies            String[]          @default([])
+
+  weightUnit           String            @default("kg")
+  heightUnit           String            @default("cm")
+  volumeUnit           String            @default("ml")
+
+  dailyWaterGoalMl     Int?
+  notificationsEnabled Boolean           @default(true)
+
+  updatedAt            DateTime          @updatedAt
+
+  @@map("profiles")
+}
+
+/// Cached/normalised food records, whether pulled from Open Food Facts,
+/// USDA FoodData Central, or entered manually by a user.
+model Food {
+  id               String     @id @default(cuid())
+  source           FoodSource
+  sourceId         String
+  name             String
+  brand            String?
+  barcode          String?
+  servingSizeG     Float?
+  servingSizeLabel String?
+
+  caloriesPer100g  Float
+  proteinPer100g   Float
+  carbsPer100g     Float
+  fatPer100g       Float
+  fibrePer100g     Float?
+  sugarPer100g     Float?
+  saturatedFatPer100g Float?
+  sodiumMgPer100g  Float?
+  potassiumMgPer100g Float?
+
+  imageUrl         String?
+
+  ownerId          String?
+  owner            User?      @relation("CustomFoodOwner", fields: [ownerId], references: [id])
+
+  createdAt        DateTime   @default(now())
+
+  mealEntries      MealEntry[]
+
+  @@unique([source, sourceId])
+  @@index([barcode])
+  @@map("foods")
+}
+
+model MealEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId          String
+  food            Food     @relation(fields: [foodId], references: [id])
+
+  mealType        MealType
+  servingQuantity Float
+  servingUnitG    Float
+
+  loggedAt        DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("meal_entries")
+}
+
+model WeightLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg  Float
+  bodyFatPct Float?
+  loggedAt  DateTime @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("weight_logs")
+}
+
+model WaterLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amountMl Int
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("water_logs")
+}
+
+model Reminder {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type     String   // "meal" | "water" | "exercise" | "weight_check" | "supplement" | "custom"
+  label    String
+  time     String   // "HH:mm" local time
+  active   Boolean  @default(true)
+
+  @@map("reminders")
+}
+
+// ---------------------------------------------------------------------
+// Phase 2+ tables (recipes, meal planner, achievements, wearable sync)
+// are intentionally left out of Phase 1 to keep the first migration
+// small and reviewable. Add them as their own migration when that
+// feature is scheduled.
+// ---------------------------------------------------------------------

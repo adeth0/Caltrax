@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "SF Pro Display", "Inter", system-ui, sans-serif;
+  --font-body: "SF Pro Text", "Inter", system-ui, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-base text-text-primary font-body antialiased;
+  /* Dark mode is the primary experience per spec; light mode is opt-in via .light on <html> */
+}
+
+html.light body {
+  @apply bg-base-light text-black;
+}
+
+/* Respect reduced-motion preferences across every animated widget */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* The single reusable glass surface every card, sheet and modal is built from */
+  .glass-panel {
+    @apply bg-glass border border-glass-border backdrop-blur-glass rounded-card shadow-glass;
+  }
+
+  html.light .glass-panel {
+    @apply bg-glass-light border-glass-lightBorder;
+  }
+
+  .control {
+    @apply rounded-control transition-colors duration-200 ease-apple;
+  }
+
+  /* Large, thumb-friendly touch target per spec ("Large touch targets") */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Visible keyboard focus ring — accessibility first per code standards */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-info focus-visible:ring-offset-2 focus-visible:ring-offset-base;
+  }
+}
