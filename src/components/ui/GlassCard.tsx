@@ -13,10 +13,7 @@ interface GlassCardProps extends HTMLAttributes<HTMLDivElement> {
  */
 export function GlassCard({ className, padded = true, children, ...rest }: GlassCardProps) {
   return (
-    <div
-      className={clsx("glass-panel", padded && "p-5 sm:p-6", className)}
-      {...rest}
-    >
+    <div className={clsx("glass-panel", padded && "p-5 sm:p-6", className)} {...rest}>
       {children}
     </div>
   );

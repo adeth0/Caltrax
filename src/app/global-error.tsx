@@ -7,7 +7,15 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
   return (
     <html lang="en">
       <body style={{ background: "#090909", color: "#fff", fontFamily: "system-ui" }}>
-        <div style={{ display: "flex", minHeight: "100vh", alignItems: "center", justifyContent: "center", padding: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            minHeight: "100vh",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+        >
           <div style={{ textAlign: "center" }}>
             <h2 style={{ fontSize: 18, fontWeight: 600 }}>Caltrax hit a critical error</h2>
             <p style={{ marginTop: 8, color: "rgba(255,255,255,0.6)", fontSize: 14 }}>

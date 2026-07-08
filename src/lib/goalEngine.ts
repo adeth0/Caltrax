@@ -1,9 +1,4 @@
-import type {
-  GoalEngineResult,
-  MacroTargets,
-  PrimaryGoal,
-  UserProfileInput,
-} from "@/types";
+import type { GoalEngineResult, MacroTargets, PrimaryGoal, UserProfileInput } from "@/types";
 
 /**
  * Goal Engine

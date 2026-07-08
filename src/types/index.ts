@@ -20,13 +20,7 @@ export type PrimaryGoal =
   | "athletic_performance"
   | "body_recomposition";
 
-export type DietaryPreference =
-  | "none"
-  | "vegetarian"
-  | "vegan"
-  | "keto"
-  | "low_carb"
-  | "mediterranean";
+export type DietaryPreference = "none" | "vegetarian" | "vegan" | "keto" | "low_carb" | "mediterranean";
 
 export type WeightUnit = "kg" | "lb";
 export type HeightUnit = "cm" | "in";

@@ -34,7 +34,11 @@ export function MacroRing({
   const dashOffset = circumference * (1 - Math.min(1, pct));
 
   return (
-    <div className="flex flex-col items-center gap-2" role="img" aria-label={`${label}: ${value} of ${target}${unit}`}>
+    <div
+      className="flex flex-col items-center gap-2"
+      role="img"
+      aria-label={`${label}: ${value} of ${target}${unit}`}
+    >
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
           <circle
@@ -60,7 +64,10 @@ export function MacroRing({
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-lg font-semibold text-text-primary">{Math.round(value)}</span>
-          <span className="text-[10px] text-text-tertiary">/ {Math.round(target)}{unit}</span>
+          <span className="text-[10px] text-text-tertiary">
+            / {Math.round(target)}
+            {unit}
+          </span>
         </div>
       </div>
       <span className="text-xs font-medium text-text-secondary">{label}</span>

@@ -1,10 +1,19 @@
 # Caltrax
 
-Premium nutrition & health tracking PWA. Next.js 15 (App Router) + React 19 + TypeScript
+Premium nutrition & health tracking PWA. Next.js 16 (App Router) + React 19 + TypeScript
 (strict) + Tailwind + shadcn/ui-style primitives + Supabase (Auth + Postgres) + Prisma.
 
 Repo: https://github.com/adeth0/Caltrax
 Production: https://caltrax.kavauralabs.com
+
+> **Note on stack versions**: the original brief specified Next.js 15. We're on Next.js
+> 16 instead — Next 15.0.x pins React to an unstable RC, which is what broke the first
+> Vercel build; the fix that actually resolves cleanly is Next 16 + stable React 19,
+> which also carries December 2025's critical Next.js security patches and doesn't sunset
+> until well past Next 15's Oct 2026 end-of-support date. One consequence: PWA support
+> uses **Serwist** instead of `next-pwa`, since `next-pwa` only hooks into Webpack and
+> Next 16 defaults to Turbopack. Also, `middleware.ts` is renamed `proxy.ts` per Next 16
+> convention (logic is unchanged).
 
 ## Getting started
 
@@ -15,7 +24,7 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
-Visiting `/` redirects to `/dashboard`, which `middleware.ts` gates behind Supabase auth —
+Visiting `/` redirects to `/dashboard`, which `proxy.ts` gates behind Supabase auth —
 you'll land on `/login` until you sign up. Email/password and Google OAuth both work
 once Supabase is configured (see below).
 
@@ -38,13 +47,20 @@ once Supabase is configured (see below).
 ```bash
 npm run test          # Vitest — unit tests (goal engine math is covered)
 npm run test:e2e      # Playwright — e2e smoke tests (starts the dev server itself)
-npm run lint          # ESLint
+npm run lint          # ESLint (flat config, eslint-config-next 16)
 npm run format:check  # Prettier
 ```
+
+`npm run dev` / `npm run build` explicitly pass `--webpack` — Serwist (the PWA layer)
+still generates its service worker via Webpack even though Next 16 defaults to
+Turbopack. This has been verified locally: clean install, lint, format, tests, and a
+full production build all pass with the exact dependency versions pinned in
+`package-lock.json`.
 
 ## What's built
 
 **Foundation (this pass)**
+
 - Next.js 15 / React 19 project, strict TypeScript, Tailwind design system matching
   the exact spec palette (`#090909` background, `#141414` surface, Apple system
   accent colors), glass-panel primitive, reduced-motion support, visible focus rings.
@@ -56,7 +72,8 @@ npm run format:check  # Prettier
 - React Hook Form + Zod on both auth forms — the pattern to reuse for the onboarding
   and food-logging forms next.
 - PWA: manifest + generated icon set (192/512/512-maskable/apple-touch-icon),
-  `next-pwa` wired into `next.config.js`, installable on iOS/Android/desktop.
+  **Serwist** wired into `next.config.js` (Turbopack-compatible, unlike `next-pwa`),
+  installable on iOS/Android/desktop.
 - SEO: metadata, Open Graph, `robots.ts`, `sitemap.ts`.
 - Loading skeletons and error boundaries (route-level + global).
 - Prisma schema refactored so `Profile` (not a separate `User` table) is keyed
@@ -71,6 +88,7 @@ npm run format:check  # Prettier
 ## Roadmap (next, in priority order)
 
 **Phase 1 — finish the core loop**
+
 1. Onboarding flow: RHF+Zod form collecting `UserProfileInput`, writes the `Profile`
    row via a Server Action on first sign-in.
 2. Food search + barcode lookup (Open Food Facts primary, USDA secondary) → `Food` model.
@@ -78,22 +96,14 @@ npm run format:check  # Prettier
    aggregates instead of the sample data.
 4. Weight/water logging UI writing to `WeightLog`/`WaterLog`; `/progress` reads real history.
 
-**Phase 2 — camera & AI**
-5. Browser camera (`getUserMedia`) + `zxing-wasm` for barcode/QR scanning; nutrition
-   label OCR.
-6. AI meal photo recognition + daily/weekly/monthly insights via the Anthropic API
-   (server-side only, structured JSON output).
+**Phase 2 — camera & AI** 5. Browser camera (`getUserMedia`) + `zxing-wasm` for barcode/QR scanning; nutrition
+label OCR. 6. AI meal photo recognition + daily/weekly/monthly insights via the Anthropic API
+(server-side only, structured JSON output).
 
-**Phase 3 — depth**
-7. Recipes, meal templates, weekly meal planner, favourites/recent foods.
-8. Full micronutrient tracking (vitamins, minerals, omega-3/6) end to end.
-9. Reminders (meal/water/exercise/weight-check/supplement) with push notifications.
-10. Achievements/badges, weekly/monthly/yearly reports.
+**Phase 3 — depth** 7. Recipes, meal templates, weekly meal planner, favourites/recent foods. 8. Full micronutrient tracking (vitamins, minerals, omega-3/6) end to end. 9. Reminders (meal/water/exercise/weight-check/supplement) with push notifications. 10. Achievements/badges, weekly/monthly/yearly reports.
 
-**Phase 4 — platform**
-11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
-    Fitbit, Whoop, Oura, smart scales, CGMs).
-12. Premium subscription, social features, family accounts, multi-language.
+**Phase 4 — platform** 11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
+Fitbit, Whoop, Oura, smart scales, CGMs). 12. Premium subscription, social features, family accounts, multi-language.
 
 ## Deploying
 

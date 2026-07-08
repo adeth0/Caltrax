@@ -32,8 +32,20 @@ export function WeightTrendCard({ points, goalWeightKg }: WeightTrendCardProps) 
       <div className="mt-3 h-40 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
-            <XAxis dataKey="date" stroke="rgba(255,255,255,0.35)" tickLine={false} axisLine={false} fontSize={11} />
-            <YAxis stroke="rgba(255,255,255,0.35)" tickLine={false} axisLine={false} fontSize={11} domain={["auto", "auto"]} />
+            <XAxis
+              dataKey="date"
+              stroke="rgba(255,255,255,0.35)"
+              tickLine={false}
+              axisLine={false}
+              fontSize={11}
+            />
+            <YAxis
+              stroke="rgba(255,255,255,0.35)"
+              tickLine={false}
+              axisLine={false}
+              fontSize={11}
+              domain={["auto", "auto"]}
+            />
             <Tooltip
               contentStyle={{
                 background: "rgba(15,17,20,0.9)",

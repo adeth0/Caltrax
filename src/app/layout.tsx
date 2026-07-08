@@ -8,8 +8,7 @@ export const metadata: Metadata = {
     default: "Caltrax — Nutrition & Health, Refined",
     template: "%s · Caltrax",
   },
-  description:
-    "Premium nutrition, calorie, macro and health tracking with a clean, Apple-inspired design.",
+  description: "Premium nutrition, calorie, macro and health tracking with a clean, Apple-inspired design.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -37,11 +36,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>

@@ -6,7 +6,8 @@ export default function LogPage() {
       <h1 className="font-display text-2xl font-semibold text-text-primary">Log a meal</h1>
       <GlassCard className="mt-4">
         <p className="text-sm text-text-secondary">
-          Food search, barcode scanning and meal logging land in the next build phase — see the README roadmap.
+          Food search, barcode scanning and meal logging land in the next build phase — see the README
+          roadmap.
         </p>
       </GlassCard>
     </main>

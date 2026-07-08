@@ -32,7 +32,9 @@ export function CaloriesRemainingCard({ target, consumed, burned }: CaloriesRema
     <GlassCard className="flex items-center justify-between gap-6">
       <div>
         <p className="text-sm text-text-secondary">Calories remaining</p>
-        <p className="mt-1 text-4xl font-semibold tracking-tight text-text-primary">{left.toLocaleString()}</p>
+        <p className="mt-1 text-4xl font-semibold tracking-tight text-text-primary">
+          {left.toLocaleString()}
+        </p>
         <dl className="mt-4 flex gap-5 text-xs text-text-tertiary">
           <div>
             <dt className="inline">Goal </dt>

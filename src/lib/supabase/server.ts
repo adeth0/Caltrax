@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 /**
@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
  *
  * Note: calling `.set()` from a Server Component (not a Route Handler or
  * Server Action) will throw — that's expected Next.js behaviour and is
- * why `middleware.ts` exists, to refresh the session on every request.
+ * why `proxy.ts` exists, to refresh the session on every request.
  */
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
@@ -20,14 +20,14 @@ export async function createSupabaseServerClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, options);
             });
           } catch {
             // Called from a Server Component — safe to ignore because
-            // middleware.ts refreshes the session on every request.
+            // proxy.ts refreshes the session on every request.
           }
         },
       },

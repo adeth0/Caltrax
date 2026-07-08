@@ -10,6 +10,10 @@ export function ThemeToggle() {
   // Avoid a hydration mismatch: next-themes only knows the real theme
   // after mount, since it reads localStorage on the client.
   const [mounted, setMounted] = useState(false);
+  // Standard next-themes hydration-safe mount check: we need one client-only
+  // render to know the real theme (it lives in localStorage), so a post-mount
+  // setState is the documented pattern here, not an accidental cascading render.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return <div className="h-11 w-11" aria-hidden />;

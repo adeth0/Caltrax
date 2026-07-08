@@ -13,7 +13,7 @@ body {
 }
 
 body {
-  @apply bg-base text-text-primary font-body antialiased;
+  @apply bg-base font-body text-text-primary antialiased;
   /* Dark mode is the primary experience per spec; light mode is opt-in via .light on <html> */
 }
 
@@ -36,11 +36,11 @@ html.light body {
 @layer components {
   /* The single reusable glass surface every card, sheet and modal is built from */
   .glass-panel {
-    @apply bg-glass border border-glass-border backdrop-blur-glass rounded-card shadow-glass;
+    @apply rounded-card border border-glass-border bg-glass shadow-glass backdrop-blur-glass;
   }
 
   html.light .glass-panel {
-    @apply bg-glass-light border-glass-lightBorder;
+    @apply border-glass-lightBorder bg-glass-light;
   }
 
   .control {
