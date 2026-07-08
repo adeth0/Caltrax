@@ -12,22 +12,22 @@ const config: Config = {
       colors: {
         // Base surfaces
         base: {
-          DEFAULT: "#08090B", // near-black primary background
-          raised: "#0F1114", // slightly raised panel background (light mode off)
+          DEFAULT: "#090909", // near-black primary background
+          raised: "#141414", // surface / raised panel background
           light: "#F5F6F8", // light mode background
         },
         glass: {
-          DEFAULT: "rgba(255,255,255,0.06)", // card fill, dark mode
+          DEFAULT: "rgba(255,255,255,0.08)", // card fill, dark mode
           border: "rgba(255,255,255,0.10)",
           light: "rgba(255,255,255,0.55)", // card fill, light mode
           lightBorder: "rgba(20,20,25,0.08)",
         },
         // Semantic accents — meaning is fixed, never reassign
         accent: {
-          info: "#3B82F6", // blue — information
-          success: "#34D399", // green — success / on target
-          warning: "#F59E0B", // orange — warning / approaching limit
-          danger: "#F43F5E", // red — exceeded target
+          info: "#0A84FF", // blue — information
+          success: "#30D158", // green — success / on target
+          warning: "#FF9F0A", // orange — warning / approaching limit
+          danger: "#FF453A", // red — exceeded target
         },
         // Macro-specific hues (distinct from semantic accents so a chart
         // showing "carbs" never gets confused with a "warning" state)
@@ -68,7 +68,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;

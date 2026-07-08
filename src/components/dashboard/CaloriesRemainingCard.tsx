@@ -5,10 +5,10 @@ import { MacroRing } from "@/components/ui/MacroRing";
 import { progressStatus, remaining } from "@/lib/goalEngine";
 
 const STATUS_COLOR: Record<ReturnType<typeof progressStatus>, string> = {
-  info: "#3B82F6",
-  success: "#34D399",
-  warning: "#F59E0B",
-  danger: "#F43F5E",
+  info: "#0A84FF",
+  success: "#30D158",
+  warning: "#FF9F0A",
+  danger: "#FF453A",
 };
 
 interface CaloriesRemainingCardProps {

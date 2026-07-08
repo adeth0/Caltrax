@@ -42,7 +42,7 @@ export function WeightTrendCard({ points, goalWeightKg }: WeightTrendCardProps) 
                 fontSize: 12,
               }}
             />
-            <Line type="monotone" dataKey="weightKg" stroke="#3B82F6" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="weightKg" stroke="#0A84FF" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

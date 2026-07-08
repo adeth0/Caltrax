@@ -1,3 +1,10 @@
+const withPWA = require("next-pwa")({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -7,8 +14,6 @@ const nextConfig = {
       { protocol: "https", hostname: "world.openfoodfacts.org" },
     ],
   },
-  // PWA support (service worker + manifest) is wired up in Phase 2 via
-  // next-pwa once camera + offline caching requirements are finalised.
 };
 
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);

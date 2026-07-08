@@ -1,76 +1,103 @@
 # Caltrax
 
-Premium nutrition & health tracking. Next.js 14 (App Router) + TypeScript (strict) + Tailwind + Prisma/PostgreSQL.
+Premium nutrition & health tracking PWA. Next.js 15 (App Router) + React 19 + TypeScript
+(strict) + Tailwind + shadcn/ui-style primitives + Supabase (Auth + Postgres) + Prisma.
+
+Repo: https://github.com/adeth0/Caltrax
+Production: https://caltrax.kavauralabs.com
 
 ## Getting started
 
 ```bash
 npm install
-cp .env.example .env        # fill in DATABASE_URL
+cp .env.example .env.local     # fill in Supabase + database values
 npx prisma migrate dev --name init
 npm run dev
 ```
 
-Open http://localhost:3000 — it redirects to `/dashboard`, which renders live against
-the goal engine (see below) using a sample profile until auth + real data wiring lands.
+Visiting `/` redirects to `/dashboard`, which `middleware.ts` gates behind Supabase auth —
+you'll land on `/login` until you sign up. Email/password and Google OAuth both work
+once Supabase is configured (see below).
 
-## What's built (Phase 1 foundation)
+## Supabase setup (one-time)
 
-- **Project scaffold**: Next.js + TypeScript (strict mode, no implicit any, no unchecked
-  indexed access) + Tailwind, ready to `npm install` and run.
-- **Design system** (`tailwind.config.ts`, `globals.css`): near-black dark-mode-first
-  palette, glass card primitive (24px blur, 22px radius per spec), semantic accent
-  colors (blue/green/orange/red mapped to info/success/warning/danger), macro-specific
-  hues, reduced-motion support, visible focus rings.
-- **Goal engine** (`src/lib/goalEngine.ts`): real, tested-by-hand math — Mifflin-St
-  Jeor BMR, activity-multiplier TDEE, goal-specific protein/fat/carb splits, a hard
-  safety floor on minimum calories, and rate-of-change capped at 1% bodyweight/week
-  regardless of user input. Pure functions, no UI coupling.
-- **Database schema** (`prisma/schema.prisma`): Users, Profiles, Foods (multi-source:
-  Open Food Facts / USDA / custom), MealEntries, WeightLogs, WaterLogs, Reminders.
-- **Dashboard** (`src/app/dashboard/page.tsx` + `src/components/dashboard/*`):
-  Calories-remaining hero ring, macro rings (protein/carbs/fat/fibre), hydration
-  widget with quick-add, weight trend chart (Recharts) — all live components, not
-  static mockups, wired to `calculateGoals()`.
-- **Supplement education data** (`src/lib/supplements.ts`): the 12 supplements listed
-  in the spec, each with a general evidence-based range, timing, interactions and a
-  source link — paired with a mandatory disclaimer constant that must render
-  alongside every card. This is reference information, not personalized dosing.
+1. Create a project at supabase.com.
+2. Project Settings → API: copy the URL and anon key into `.env.local`.
+3. Project Settings → Database: copy the pooled (port 6543) and direct (port 5432)
+   connection strings into `DATABASE_URL` / `DIRECT_URL`.
+4. Authentication → Providers: enable Google if you want the "Continue with Google"
+   button to work (Apple is spec'd as future-ready, not wired up yet).
+5. Authentication → URL Configuration: add `https://caltrax.kavauralabs.com/auth/callback`
+   and `http://localhost:3000/auth/callback` as redirect URLs.
+6. Run `npx prisma migrate dev` to create the app tables (`profiles`, `foods`,
+   `meal_entries`, `weight_logs`, `water_logs`, `reminders`) in the same Postgres
+   instance Supabase Auth uses.
 
-## Roadmap (not yet built — in priority order)
+## Testing
+
+```bash
+npm run test          # Vitest — unit tests (goal engine math is covered)
+npm run test:e2e      # Playwright — e2e smoke tests (starts the dev server itself)
+npm run lint          # ESLint
+npm run format:check  # Prettier
+```
+
+## What's built
+
+**Foundation (this pass)**
+- Next.js 15 / React 19 project, strict TypeScript, Tailwind design system matching
+  the exact spec palette (`#090909` background, `#141414` surface, Apple system
+  accent colors), glass-panel primitive, reduced-motion support, visible focus rings.
+- Supabase Auth wired end-to-end: `/login`, `/signup`, OAuth callback route, session
+  refresh in `middleware.ts`, route protection for the whole `(app)` route group.
+- App shell: desktop sidebar + mobile bottom tab bar (shared nav config), dark/light
+  theme switching via `next-themes` (dark by default), Zustand store for shell UI state.
+- shadcn-style `Button`/`Input` primitives (Radix + `class-variance-authority` + `cn()`).
+- React Hook Form + Zod on both auth forms — the pattern to reuse for the onboarding
+  and food-logging forms next.
+- PWA: manifest + generated icon set (192/512/512-maskable/apple-touch-icon),
+  `next-pwa` wired into `next.config.js`, installable on iOS/Android/desktop.
+- SEO: metadata, Open Graph, `robots.ts`, `sitemap.ts`.
+- Loading skeletons and error boundaries (route-level + global).
+- Prisma schema refactored so `Profile` (not a separate `User` table) is keyed
+  directly off the Supabase `auth.users` id.
+- Goal engine (`src/lib/goalEngine.ts`) — Mifflin-St Jeor BMR, TDEE, goal-specific
+  macro splits, hard safety floor on minimum calories — now with a real Vitest suite.
+- Dashboard — calorie ring, macro rings, hydration, weight trend chart — reading
+  from the goal engine (still sample data pending the logging endpoints below).
+- Supplement education reference data with mandatory disclaimer.
+- ESLint + Prettier (with `prettier-plugin-tailwindcss`) configured and passing.
+
+## Roadmap (next, in priority order)
 
 **Phase 1 — finish the core loop**
-1. Auth (email/password + session, OAuth-ready) and onboarding flow that collects
-   the `UserProfileInput` fields and calls `calculateGoals()` to create the Profile row.
-2. Food search + barcode lookup against Open Food Facts (primary) and USDA FoodData
-   Central (secondary), normalized into the `Food` model.
-3. Meal logging UI (breakfast/lunch/dinner/snack) writing `MealEntry` rows, with the
-   dashboard reading real aggregates instead of the sample data.
-4. Weight/water logging UI writing to `WeightLog`/`WaterLog`.
+1. Onboarding flow: RHF+Zod form collecting `UserProfileInput`, writes the `Profile`
+   row via a Server Action on first sign-in.
+2. Food search + barcode lookup (Open Food Facts primary, USDA secondary) → `Food` model.
+3. Meal logging UI (`/log`) writing `MealEntry` rows; dashboard reads real daily
+   aggregates instead of the sample data.
+4. Weight/water logging UI writing to `WeightLog`/`WaterLog`; `/progress` reads real history.
 
 **Phase 2 — camera & AI**
-5. Browser camera access (`getUserMedia`) for barcode/QR scanning (a `zxing-wasm`
-   dependency is already in `package.json` for this) and nutrition-label OCR.
-6. AI meal photo recognition + AI daily/weekly/monthly insights, calling the
-   Anthropic API server-side with structured JSON output.
+5. Browser camera (`getUserMedia`) + `zxing-wasm` for barcode/QR scanning; nutrition
+   label OCR.
+6. AI meal photo recognition + daily/weekly/monthly insights via the Anthropic API
+   (server-side only, structured JSON output).
 
 **Phase 3 — depth**
 7. Recipes, meal templates, weekly meal planner, favourites/recent foods.
-8. Full micronutrient tracking (vitamins A/B/C/D/E/K, minerals, omega-3/6) end to end
-   through logging, storage and dashboard charts.
+8. Full micronutrient tracking (vitamins, minerals, omega-3/6) end to end.
 9. Reminders (meal/water/exercise/weight-check/supplement) with push notifications.
 10. Achievements/badges, weekly/monthly/yearly reports.
 
 **Phase 4 — platform**
-11. PWA packaging (manifest + service worker + offline cache).
-12. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
+11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
     Fitbit, Whoop, Oura, smart scales, CGMs).
-13. Premium subscription, social features, family accounts, multi-language.
+12. Premium subscription, social features, family accounts, multi-language.
 
-## Notes on scope
+## Deploying
 
-This spec describes a product on the scale of MyFitnessPal/MacroFactor — a realistic
-build is months of engineering, not one pass. This foundation is real, working code
-(not mockups) for the pieces most projects get wrong if rushed: the math, the schema,
-and the visual system. Everything above builds directly on top of it without needing
-rework.
+Push to `main` on GitHub, connect the repo in Vercel, add the env vars from
+`.env.example` (Vercel dashboard → Settings → Environment Variables), and add
+`caltrax.kavauralabs.com` under Settings → Domains with a CNAME record pointing
+`caltrax` → `cname.vercel-dns.com`. Every push to `main` auto-deploys.

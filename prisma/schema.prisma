@@ -1,7 +1,14 @@
-// Caltrax database schema (PostgreSQL)
-// Phase 1 covers: auth, profile, goal engine inputs, food database cache,
-// meal logging, weight/water logs. Phase 2+ adds recipes, planner,
-// reminders, achievements, and wearable-sync tables (stubbed at bottom).
+// Caltrax database schema (PostgreSQL via Supabase)
+//
+// Identity/auth lives in Supabase's own `auth.users` table (managed by
+// Supabase Auth, not Prisma). Every app table below keys off that user's
+// UUID as a plain string column — there is no app-level `User` model to
+// keep in sync with it.
+//
+// Phase 1 covers: profile, goal engine inputs, food database cache, meal
+// logging, weight/water logs, reminders. Phase 2+ adds recipes, planner,
+// reminders detail, achievements, and wearable-sync tables (stubbed at
+// bottom).
 
 generator client {
   provider = "prisma-client-js"
@@ -9,9 +16,9 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // Pooled connection string (e.g. Neon/Vercel Postgres pooler) — used at runtime.
+  // Pooled connection string (Supabase's "Transaction" pooler on port 6543) — used at runtime.
   url       = env("DATABASE_URL")
-  // Direct (unpooled) connection — used only for migrations.
+  // Direct (unpooled) connection (port 5432) — used only for migrations.
   directUrl = env("DIRECT_URL")
 }
 
@@ -60,48 +67,38 @@ enum FoodSource {
   CUSTOM
 }
 
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  profile      Profile?
-  mealEntries  MealEntry[]
-  weightLogs   WeightLog[]
-  waterLogs    WaterLog[]
-  customFoods  Food[]         @relation("CustomFoodOwner")
-  reminders    Reminder[]
-
-  @@map("users")
-}
-
+/// One row per Supabase-authenticated user. `id` is that user's
+/// `auth.users.id` (a UUID string) — set explicitly at creation time,
+/// never auto-generated, so it always matches the Supabase session.
 model Profile {
-  id                   String            @id @default(cuid())
-  userId               String            @unique
-  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String            @id
+  name                String?
+  sex                 Sex
+  age                 Int
+  heightCm            Float
+  weightKg            Float
+  targetWeightKg      Float?
+  activityLevel       ActivityLevel
+  primaryGoal         PrimaryGoal
+  targetRateKgPerWeek Float?
+  dietaryPreference   DietaryPreference @default(NONE)
+  allergies           String[]          @default([])
 
-  name                 String?
-  sex                  Sex
-  age                  Int
-  heightCm             Float
-  weightKg             Float
-  targetWeightKg        Float?
-  activityLevel        ActivityLevel
-  primaryGoal          PrimaryGoal
-  targetRateKgPerWeek  Float?
-  dietaryPreference    DietaryPreference @default(NONE)
-  allergies            String[]          @default([])
-
-  weightUnit           String            @default("kg")
-  heightUnit           String            @default("cm")
-  volumeUnit           String            @default("ml")
+  weightUnit          String            @default("kg")
+  heightUnit          String            @default("cm")
+  volumeUnit          String            @default("ml")
 
   dailyWaterGoalMl     Int?
-  notificationsEnabled Boolean           @default(true)
+  notificationsEnabled Boolean          @default(true)
 
-  updatedAt            DateTime          @updatedAt
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  mealEntries         MealEntry[]
+  weightLogs          WeightLog[]
+  waterLogs           WaterLog[]
+  customFoods         Food[]
+  reminders           Reminder[]
 
   @@map("profiles")
 }
@@ -109,33 +106,43 @@ model Profile {
 /// Cached/normalised food records, whether pulled from Open Food Facts,
 /// USDA FoodData Central, or entered manually by a user.
 model Food {
-  id               String     @id @default(cuid())
-  source           FoodSource
-  sourceId         String
-  name             String
-  brand            String?
-  barcode          String?
-  servingSizeG     Float?
-  servingSizeLabel String?
+  id                  String     @id @default(cuid())
+  source              FoodSource
+  sourceId            String
+  name                String
+  brand               String?
+  category            String?
+  barcode             String?
+  servingSizeG        Float?
+  servingSizeLabel    String?
 
-  caloriesPer100g  Float
-  proteinPer100g   Float
-  carbsPer100g     Float
-  fatPer100g       Float
-  fibrePer100g     Float?
-  sugarPer100g     Float?
+  caloriesPer100g     Float
+  proteinPer100g      Float
+  carbsPer100g        Float
+  fatPer100g          Float
+  fibrePer100g        Float?
+  sugarPer100g        Float?
   saturatedFatPer100g Float?
-  sodiumMgPer100g  Float?
-  potassiumMgPer100g Float?
+  sodiumMgPer100g     Float?
+  potassiumMgPer100g  Float?
+  vitaminAPer100g     Float?
+  vitaminCPer100g     Float?
+  vitaminDPer100g     Float?
+  vitaminEPer100g     Float?
+  vitaminKPer100g     Float?
+  calciumMgPer100g    Float?
+  ironMgPer100g       Float?
+  magnesiumMgPer100g  Float?
+  zincMgPer100g       Float?
 
-  imageUrl         String?
+  imageUrl            String?
 
-  ownerId          String?
-  owner            User?      @relation("CustomFoodOwner", fields: [ownerId], references: [id])
+  ownerId             String?
+  owner               Profile?   @relation(fields: [ownerId], references: [id])
 
-  createdAt        DateTime   @default(now())
+  createdAt           DateTime   @default(now())
 
-  mealEntries      MealEntry[]
+  mealEntries         MealEntry[]
 
   @@unique([source, sourceId])
   @@index([barcode])
@@ -145,7 +152,7 @@ model Food {
 model MealEntry {
   id              String   @id @default(cuid())
   userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
   foodId          String
   food            Food     @relation(fields: [foodId], references: [id])
 
@@ -161,12 +168,12 @@ model MealEntry {
 }
 
 model WeightLog {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  weightKg  Float
+  id         String   @id @default(cuid())
+  userId     String
+  user       Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg   Float
   bodyFatPct Float?
-  loggedAt  DateTime @default(now())
+  loggedAt   DateTime @default(now())
 
   @@index([userId, loggedAt])
   @@map("weight_logs")
@@ -175,7 +182,7 @@ model WeightLog {
 model WaterLog {
   id       String   @id @default(cuid())
   userId   String
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
   amountMl Int
   loggedAt DateTime @default(now())
 
@@ -184,13 +191,13 @@ model WaterLog {
 }
 
 model Reminder {
-  id       String   @id @default(cuid())
-  userId   String
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type     String   // "meal" | "water" | "exercise" | "weight_check" | "supplement" | "custom"
-  label    String
-  time     String   // "HH:mm" local time
-  active   Boolean  @default(true)
+  id     String  @id @default(cuid())
+  userId String
+  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type   String  // "meal" | "water" | "exercise" | "weight_check" | "supplement" | "custom"
+  label  String
+  time   String  // "HH:mm" local time
+  active Boolean @default(true)
 
   @@map("reminders")
 }
