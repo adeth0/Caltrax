@@ -87,18 +87,24 @@ full production build all pass with the exact dependency versions pinned in
 
 ## Roadmap (next, in priority order)
 
-**Phase 1 — finish the core loop**
+**Phase 1 — finish the core loop ✅ done**
 
-1. Onboarding flow: RHF+Zod form collecting `UserProfileInput`, writes the `Profile`
+1. ✅ Onboarding flow: RHF+Zod form collecting `UserProfileInput`, writes the `Profile`
    row via a Server Action on first sign-in.
-2. Food search + barcode lookup (Open Food Facts primary, USDA secondary) → `Food` model.
-3. Meal logging UI (`/log`) writing `MealEntry` rows; dashboard reads real daily
+2. ✅ Food search (Open Food Facts) → `Food` model, cached on first log.
+3. ✅ Meal logging UI (`/log`) writing `MealEntry` rows; dashboard reads real daily
    aggregates instead of the sample data.
-4. Weight/water logging UI writing to `WeightLog`/`WaterLog`; `/progress` reads real history.
+4. ✅ Weight/water logging UI writing to `WeightLog`/`WaterLog`; `/progress` reads real history.
 
-**Phase 2 — camera & AI** 5. Browser camera (`getUserMedia`) + `zxing-wasm` for barcode/QR scanning; nutrition
-label OCR. 6. AI meal photo recognition + daily/weekly/monthly insights via the Anthropic API
-(server-side only, structured JSON output).
+**Phase 2 — camera & AI ✅ done**
+
+5. ✅ Browser camera (`getUserMedia`) + `zxing-wasm` for barcode scanning (`/log`), with a
+   manual-entry and custom-food fallback for anything not in Open Food Facts.
+6. ✅ AI meal photo recognition (`/log`, photo → Claude vision → structured item estimates,
+   reviewable/editable before logging) + on-demand 7-/30-day insights (`/progress`) via the
+   Anthropic API (server-side only, structured JSON output, requires `ANTHROPIC_API_KEY`).
+   Not yet done: nutrition-label OCR specifically (barcode scan covers most packaged food
+   instead) — revisit if users hit unlabelled/unbarcoded packaging often.
 
 **Phase 3 — depth** 7. Recipes, meal templates, weekly meal planner, favourites/recent foods. 8. Full micronutrient tracking (vitamins, minerals, omega-3/6) end to end. 9. Reminders (meal/water/exercise/weight-check/supplement) with push notifications. 10. Achievements/badges, weekly/monthly/yearly reports.
 

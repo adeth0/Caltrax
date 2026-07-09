@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { FOOD_SOURCE_TO_PRISMA, MEAL_TO_PRISMA } from "@/lib/enumMap";
-import { searchOpenFoodFacts } from "@/lib/foodSearch";
+import { lookupBarcode, searchOpenFoodFacts } from "@/lib/foodSearch";
+import { recognizeMealPhoto, type MealRecognitionResult } from "@/lib/ai/mealRecognition";
+import { AIConfigError } from "@/lib/ai/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { FoodItem, MealType } from "@/types";
 
@@ -19,6 +21,11 @@ async function requireUserId(): Promise<string> {
 export async function searchFoodsAction(query: string): Promise<FoodItem[]> {
   await requireUserId();
   return searchOpenFoodFacts(query);
+}
+
+export async function lookupBarcodeAction(barcode: string): Promise<FoodItem | null> {
+  await requireUserId();
+  return lookupBarcode(barcode);
 }
 
 interface LogMealParams {
@@ -83,6 +90,72 @@ export async function logMealAction({ food, mealType, servingGrams }: LogMealPar
 export async function deleteMealEntryAction(entryId: string) {
   const userId = await requireUserId();
   await db.mealEntry.deleteMany({ where: { id: entryId, userId } });
+  revalidatePath("/log");
+  revalidatePath("/dashboard");
+}
+
+/** Sends a downscaled photo to Claude and returns its structured meal-item guesses. */
+export async function recognizeMealPhotoAction(
+  imageBase64: string,
+  mediaType: string
+): Promise<MealRecognitionResult> {
+  await requireUserId();
+  try {
+    return await recognizeMealPhoto(imageBase64, mediaType);
+  } catch (err) {
+    if (err instanceof AIConfigError) throw err;
+    throw new Error("Couldn't analyze that photo — try again, or add the meal manually.");
+  }
+}
+
+interface CustomFoodInput {
+  name: string;
+  caloriesPer100g: number;
+  proteinPer100g: number;
+  carbsPer100g: number;
+  fatPer100g: number;
+  servingGrams: number;
+  mealType: MealType;
+}
+
+/**
+ * Logs a one-off food that isn't in Open Food Facts — used for the AI photo
+ * flow and manual "not found" entries. Each gets its own Food row (source:
+ * CUSTOM, a fresh sourceId) rather than being deduped, since these are
+ * per-user estimates rather than a shared catalog item.
+ */
+export async function logCustomFoodAction(input: CustomFoodInput) {
+  const userId = await requireUserId();
+
+  if (!Number.isFinite(input.servingGrams) || input.servingGrams <= 0) {
+    throw new Error("Enter a valid serving amount");
+  }
+  if (!input.name.trim()) {
+    throw new Error("Enter a food name");
+  }
+
+  const dbFood = await db.food.create({
+    data: {
+      source: FOOD_SOURCE_TO_PRISMA.custom,
+      sourceId: crypto.randomUUID(),
+      name: input.name.trim(),
+      caloriesPer100g: input.caloriesPer100g,
+      proteinPer100g: input.proteinPer100g,
+      carbsPer100g: input.carbsPer100g,
+      fatPer100g: input.fatPer100g,
+    },
+  });
+
+  await db.mealEntry.create({
+    data: {
+      userId,
+      foodId: dbFood.id,
+      mealType: MEAL_TO_PRISMA[input.mealType],
+      servingQuantity: 1,
+      servingUnitG: input.servingGrams,
+    },
+  });
+
   revalidatePath("/log");
   revalidatePath("/dashboard");
 }

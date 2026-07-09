@@ -7,7 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
-import { deleteMealEntryAction, logMealAction, searchFoodsAction } from "@/app/(app)/log/actions";
+import { BarcodeScannerModal } from "@/components/scan/BarcodeScannerModal";
+import { MealPhotoCapture } from "@/components/log/MealPhotoCapture";
+import {
+  deleteMealEntryAction,
+  logCustomFoodAction,
+  logMealAction,
+  lookupBarcodeAction,
+  searchFoodsAction,
+} from "@/app/(app)/log/actions";
 import type { FoodItem, MealType } from "@/types";
 
 const MEAL_TABS: { value: MealType; label: string }[] = [
@@ -48,10 +56,79 @@ export function LogClient({ todayEntries }: LogClientProps) {
   const [isDeleting, startDeleting] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [isLookingUp, startLookingUp] = useTransition();
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customFood, setCustomFood] = useState({
+    name: "",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fat: "",
+    grams: "100",
+  });
+  const [isSavingCustom, startSavingCustom] = useTransition();
+
   function handleSelect(food: FoodItem) {
     setSelectedFood(food);
+    setShowCustomForm(false);
     setGrams(String(Math.round(food.servingSizeG ?? 100)));
     setError(null);
+  }
+
+  function handleBarcodeDetected(code: string) {
+    setError(null);
+    startLookingUp(async () => {
+      const food = await lookupBarcodeAction(code);
+      if (food) {
+        handleSelect(food);
+      } else {
+        setCustomFood((c) => ({ ...c, name: "" }));
+        setShowCustomForm(true);
+        setError(`No product found for barcode ${code} — add it manually below.`);
+      }
+    });
+  }
+
+  function handleSaveCustomFood() {
+    const calories = Number(customFood.calories);
+    const protein = Number(customFood.protein) || 0;
+    const carbs = Number(customFood.carbs) || 0;
+    const fat = Number(customFood.fat) || 0;
+    const servingGrams = Number(customFood.grams);
+
+    if (!customFood.name.trim()) {
+      setError("Enter a food name");
+      return;
+    }
+    if (!Number.isFinite(calories) || calories < 0) {
+      setError("Enter valid calories per 100g");
+      return;
+    }
+    if (!Number.isFinite(servingGrams) || servingGrams <= 0) {
+      setError("Enter a valid serving amount");
+      return;
+    }
+
+    setError(null);
+    startSavingCustom(async () => {
+      try {
+        await logCustomFoodAction({
+          name: customFood.name.trim(),
+          caloriesPer100g: calories,
+          proteinPer100g: protein,
+          carbsPer100g: carbs,
+          fatPer100g: fat,
+          servingGrams,
+          mealType,
+        });
+        setShowCustomForm(false);
+        setCustomFood({ name: "", calories: "", protein: "", carbs: "", fat: "", grams: "100" });
+        router.refresh();
+      } catch {
+        setError("Couldn't save that entry — try again.");
+      }
+    });
   }
 
   function handleAdd() {
@@ -110,6 +187,99 @@ export function LogClient({ todayEntries }: LogClientProps) {
         <div className="mt-4">
           <FoodSearchBox onSelect={handleSelect} searchAction={searchFoodsAction} />
         </div>
+
+        <div className="mt-3 flex gap-2">
+          <Button
+            type="button"
+            variant="glass"
+            size="sm"
+            onClick={() => setScannerOpen(true)}
+            disabled={isLookingUp}
+          >
+            {isLookingUp ? "Looking up…" : "📷 Scan barcode"}
+          </Button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedFood(null);
+              setShowCustomForm((v) => !v);
+              setError(null);
+            }}
+            className="touch-target focus-ring control px-3 text-xs text-text-tertiary hover:text-text-secondary"
+          >
+            Can&apos;t find it? Add manually
+          </button>
+        </div>
+
+        <div className="mt-3">
+          <MealPhotoCapture mealType={mealType} onDone={() => router.refresh()} />
+        </div>
+
+        {showCustomForm && (
+          <div className="mt-4 flex flex-col gap-3 rounded-control border border-white/10 bg-white/5 p-4">
+            <p className="text-sm font-medium text-text-primary">Add a custom food</p>
+            <Input
+              placeholder="Food name"
+              value={customFood.name}
+              onChange={(e) => setCustomFood((c) => ({ ...c, name: e.target.value }))}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Calories / 100g"
+                value={customFood.calories}
+                onChange={(e) => setCustomFood((c) => ({ ...c, calories: e.target.value }))}
+              />
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Protein g / 100g"
+                value={customFood.protein}
+                onChange={(e) => setCustomFood((c) => ({ ...c, protein: e.target.value }))}
+              />
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Carbs g / 100g"
+                value={customFood.carbs}
+                onChange={(e) => setCustomFood((c) => ({ ...c, carbs: e.target.value }))}
+              />
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Fat g / 100g"
+                value={customFood.fat}
+                onChange={(e) => setCustomFood((c) => ({ ...c, fat: e.target.value }))}
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-text-secondary" htmlFor="custom-grams">
+                Amount eaten
+              </label>
+              <Input
+                id="custom-grams"
+                type="number"
+                inputMode="decimal"
+                value={customFood.grams}
+                onChange={(e) => setCustomFood((c) => ({ ...c, grams: e.target.value }))}
+                className="w-24"
+              />
+              <span className="text-sm text-text-tertiary">grams</span>
+            </div>
+            <Button type="button" onClick={handleSaveCustomFood} disabled={isSavingCustom} className="w-full">
+              {isSavingCustom ? "Adding…" : `Add to ${mealType}`}
+            </Button>
+          </div>
+        )}
+
+        {error && !selectedFood && <p className="mt-2 text-xs text-accent-danger">{error}</p>}
+
+        <BarcodeScannerModal
+          open={scannerOpen}
+          onOpenChange={setScannerOpen}
+          onDetected={handleBarcodeDetected}
+        />
 
         {selectedFood && (
           <div className="mt-4 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-4">

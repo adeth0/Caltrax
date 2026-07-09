@@ -2,6 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { AIConfigError } from "@/lib/ai/client";
+import { generateInsights, type InsightsResult } from "@/lib/ai/insights";
+import { getLastNDaysRange } from "@/lib/dates";
+import { profileToGoalInput } from "@/lib/enumMap";
+import { calculateGoals } from "@/lib/goalEngine";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function requireUserId(): Promise<string> {
@@ -45,4 +50,70 @@ export async function deleteWeightLogAction(id: string) {
   await db.weightLog.deleteMany({ where: { id, userId } });
   revalidatePath("/progress");
   revalidatePath("/dashboard");
+}
+
+export async function generateInsightsAction(period: "week" | "month"): Promise<InsightsResult> {
+  const userId = await requireUserId();
+  const days = period === "week" ? 7 : 30;
+
+  const profile = await db.profile.findUnique({ where: { id: userId } });
+  if (!profile) throw new Error("Profile not found");
+
+  const { start, end } = getLastNDaysRange(days);
+  const { targets } = calculateGoals(profileToGoalInput(profile));
+
+  const [mealEntries, waterLogs, weightLogs] = await Promise.all([
+    db.mealEntry.findMany({
+      where: { userId, loggedAt: { gte: start, lte: end } },
+      include: { food: true },
+    }),
+    db.waterLog.findMany({ where: { userId, loggedAt: { gte: start, lte: end } } }),
+    db.weightLog.findMany({
+      where: { userId, loggedAt: { gte: start, lte: end } },
+      orderBy: { loggedAt: "asc" },
+    }),
+  ]);
+
+  const loggedDays = new Set(mealEntries.map((e: (typeof mealEntries)[number]) => e.loggedAt.toDateString()));
+
+  const totals = mealEntries.reduce(
+    (acc, e: (typeof mealEntries)[number]) => {
+      const scale = e.servingUnitG / 100;
+      acc.calories += e.food.caloriesPer100g * scale;
+      acc.proteinG += e.food.proteinPer100g * scale;
+      acc.carbsG += e.food.carbsPer100g * scale;
+      acc.fatG += e.food.fatPer100g * scale;
+      return acc;
+    },
+    { calories: 0, proteinG: 0, carbsG: 0, fatG: 0 }
+  );
+
+  const daysWithLogs = Math.max(loggedDays.size, 1);
+  const waterTotal = waterLogs.reduce((sum, w: (typeof waterLogs)[number]) => sum + w.amountMl, 0);
+
+  const weightChangeKg =
+    weightLogs.length >= 2
+      ? Number((weightLogs[weightLogs.length - 1].weightKg - weightLogs[0].weightKg).toFixed(1))
+      : null;
+
+  try {
+    return await generateInsights({
+      periodLabel: period === "week" ? "the last 7 days" : "the last 30 days",
+      daysWithLogs: loggedDays.size,
+      totalDaysInPeriod: days,
+      avgCalories: Math.round(totals.calories / daysWithLogs),
+      targetCalories: Math.round(targets.calories),
+      avgProteinG: Math.round(totals.proteinG / daysWithLogs),
+      targetProteinG: Math.round(targets.proteinG),
+      avgCarbsG: Math.round(totals.carbsG / daysWithLogs),
+      avgFatG: Math.round(totals.fatG / daysWithLogs),
+      avgWaterMl: Math.round(waterTotal / daysWithLogs),
+      targetWaterMl: profile.dailyWaterGoalMl ?? targets.waterMl,
+      weightChangeKg,
+      primaryGoal: profile.primaryGoal,
+    });
+  } catch (err) {
+    if (err instanceof AIConfigError) throw err;
+    throw new Error("Couldn't generate insights right now — try again shortly.");
+  }
 }

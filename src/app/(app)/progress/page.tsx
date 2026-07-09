@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { InsightsCard } from "@/components/progress/InsightsCard";
 import { ProgressClient, type WeightPointRow } from "@/components/progress/ProgressClient";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
@@ -43,6 +44,9 @@ export default async function ProgressPage() {
         <h1 className="font-display text-2xl font-semibold text-text-primary">Progress</h1>
         <p className="text-sm text-text-tertiary">Weight trend and hydration history.</p>
       </header>
+      <div className="mb-4">
+        <InsightsCard />
+      </div>
       <ProgressClient
         weightPoints={weightPoints}
         goalWeightKg={profile.targetWeightKg ?? undefined}
