@@ -91,9 +91,11 @@ export async function generateInsightsAction(period: "week" | "month"): Promise<
   const daysWithLogs = Math.max(loggedDays.size, 1);
   const waterTotal = waterLogs.reduce((sum, w: (typeof waterLogs)[number]) => sum + w.amountMl, 0);
 
+  const firstWeight = weightLogs[0];
+  const lastWeight = weightLogs[weightLogs.length - 1];
   const weightChangeKg =
-    weightLogs.length >= 2
-      ? Number((weightLogs[weightLogs.length - 1].weightKg - weightLogs[0].weightKg).toFixed(1))
+    weightLogs.length >= 2 && firstWeight && lastWeight
+      ? Number((lastWeight.weightKg - firstWeight.weightKg).toFixed(1))
       : null;
 
   try {
