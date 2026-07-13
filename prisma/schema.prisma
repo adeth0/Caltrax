@@ -101,6 +101,7 @@ model Profile {
   reminders           Reminder[]
   recipes             Recipe[]
   favourites          Favourite[]
+  plannedMeals        PlannedMeal[]
 
   @@map("profiles")
 }
@@ -147,6 +148,7 @@ model Food {
   mealEntries         MealEntry[]
   recipeItems         RecipeItem[]
   favouritedBy        Favourite[]
+  plannedMeals        PlannedMeal[]
 
   @@unique([source, sourceId])
   @@index([barcode])
@@ -224,6 +226,7 @@ model Recipe {
   servings  Float        @default(1)
   createdAt DateTime     @default(now())
   items     RecipeItem[]
+  plannedMeals PlannedMeal[]
 
   @@index([userId])
   @@map("recipes")
@@ -255,8 +258,38 @@ model Favourite {
 }
 
 // ---------------------------------------------------------------------
-// Phase 3+ tables still pending (meal planner, full micronutrient
-// tracking, reminders detail, achievements, wearable sync) are
-// intentionally left out here to keep each migration small and
-// reviewable — add them as their own migration when scheduled.
+// Weekly meal planner. A PlannedMeal is intent, not a log entry — it only
+// becomes real data (a MealEntry) when the user marks it eaten, via the
+// same logMealAction/logRecipeAction paths used elsewhere. Exactly one of
+// foodId/recipeId is set (enforced by a CHECK constraint in the migration,
+// since Prisma's schema language has no native XOR-column construct).
+// ---------------------------------------------------------------------
+model PlannedMeal {
+  id       String    @id @default(cuid())
+  userId   String
+  user     Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Date-only (stored at UTC midnight) — the calendar day this meal is planned for.
+  date     DateTime  @db.Date
+  mealType MealType
+
+  foodId        String?
+  food          Food?   @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  servingGrams  Float?
+
+  recipeId      String?
+  recipe        Recipe? @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  servingsCount Float?
+
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+  @@map("planned_meals")
+}
+
+// ---------------------------------------------------------------------
+// Phase 3+ tables still pending (full micronutrient tracking, reminders
+// detail, achievements, wearable sync) are intentionally left out here to
+// keep each migration small and reviewable — add them as their own
+// migration when scheduled.
 // ---------------------------------------------------------------------

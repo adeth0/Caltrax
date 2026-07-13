@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BarChart3, Home, PlusCircle, Settings, Utensils } from "lucide-react";
+import { BarChart3, CalendarDays, Home, PlusCircle, Settings, Utensils } from "lucide-react";
 
 export interface NavItem {
   href: string;
@@ -11,6 +11,7 @@ export interface NavItem {
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: Home },
   { href: "/log", label: "Log", icon: PlusCircle },
+  { href: "/planner", label: "Plan", icon: CalendarDays },
   { href: "/foods", label: "Foods", icon: Utensils },
   { href: "/progress", label: "Progress", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
