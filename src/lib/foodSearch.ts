@@ -1,4 +1,43 @@
+import { db } from "@/lib/db";
+import { FOOD_SOURCE_TO_PRISMA } from "@/lib/enumMap";
 import type { FoodItem } from "@/types";
+
+/**
+ * Caches a search-result FoodItem into the `Food` table (or refreshes the
+ * cached macros if it's already there). Shared by meal logging, favouriting,
+ * and recipe-building — anywhere a FoodItem needs a real `Food.id` to
+ * attach a foreign key to.
+ */
+export async function upsertFoodItem(food: FoodItem) {
+  const source = FOOD_SOURCE_TO_PRISMA[food.source];
+  return db.food.upsert({
+    where: { source_sourceId: { source, sourceId: food.sourceId } },
+    create: {
+      source,
+      sourceId: food.sourceId,
+      name: food.name,
+      brand: food.brand,
+      barcode: food.barcode,
+      servingSizeG: food.servingSizeG,
+      servingSizeLabel: food.servingSizeLabel,
+      caloriesPer100g: food.caloriesPer100g,
+      proteinPer100g: food.proteinPer100g,
+      carbsPer100g: food.carbsPer100g,
+      fatPer100g: food.fatPer100g,
+      fibrePer100g: food.fibrePer100g,
+      sugarPer100g: food.sugarPer100g,
+      sodiumMgPer100g: food.sodiumMgPer100g,
+      imageUrl: food.imageUrl,
+    },
+    update: {
+      name: food.name,
+      caloriesPer100g: food.caloriesPer100g,
+      proteinPer100g: food.proteinPer100g,
+      carbsPer100g: food.carbsPer100g,
+      fatPer100g: food.fatPer100g,
+    },
+  });
+}
 
 // Open Food Facts is free and keyless. Docs: https://world.openfoodfacts.org/data
 // We ask for exactly the fields we use to keep responses small and fast on mobile.

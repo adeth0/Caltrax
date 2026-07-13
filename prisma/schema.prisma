@@ -99,6 +99,8 @@ model Profile {
   waterLogs           WaterLog[]
   customFoods         Food[]
   reminders           Reminder[]
+  recipes             Recipe[]
+  favourites          Favourite[]
 
   @@map("profiles")
 }
@@ -143,6 +145,8 @@ model Food {
   createdAt           DateTime   @default(now())
 
   mealEntries         MealEntry[]
+  recipeItems         RecipeItem[]
+  favouritedBy        Favourite[]
 
   @@unique([source, sourceId])
   @@index([barcode])
@@ -203,8 +207,56 @@ model Reminder {
 }
 
 // ---------------------------------------------------------------------
-// Phase 2+ tables (recipes, meal planner, achievements, wearable sync)
-// are intentionally left out of Phase 1 to keep the first migration
-// small and reviewable. Add them as their own migration when that
-// feature is scheduled.
+// Phase 3 (slice 1): recipes and favourites/quick-add.
+// "Recent foods" needs no table of its own — it's derived from MealEntry
+// history (distinct foods ordered by loggedAt) at query time.
+// ---------------------------------------------------------------------
+
+/// A user-defined bundle of foods that can be logged as a group. Logging a
+/// recipe writes one MealEntry per RecipeItem (scaled by servings eaten) —
+/// there's no separate "recipe entry" concept, so existing daily-total
+/// aggregation (which just sums MealEntry+Food) needs no changes.
+model Recipe {
+  id        String       @id @default(cuid())
+  userId    String
+  user      Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  servings  Float        @default(1)
+  createdAt DateTime     @default(now())
+  items     RecipeItem[]
+
+  @@index([userId])
+  @@map("recipes")
+}
+
+model RecipeItem {
+  id       String @id @default(cuid())
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  foodId   String
+  food     Food   @relation(fields: [foodId], references: [id])
+  /// Grams of this food in the WHOLE recipe (i.e. across all `Recipe.servings`), not per serving.
+  grams    Float
+
+  @@index([recipeId])
+  @@map("recipe_items")
+}
+
+model Favourite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId    String
+  food      Food     @relation(fields: [foodId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, foodId])
+  @@map("favourites")
+}
+
+// ---------------------------------------------------------------------
+// Phase 3+ tables still pending (meal planner, full micronutrient
+// tracking, reminders detail, achievements, wearable sync) are
+// intentionally left out here to keep each migration small and
+// reviewable — add them as their own migration when scheduled.
 // ---------------------------------------------------------------------
