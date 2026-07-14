@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AmbientGlow } from "@/components/nav/AmbientGlow";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://caltrax.kavauralabs.com"),
@@ -40,7 +42,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <MotionConfig reducedMotion="user">
+            <AmbientGlow />
+            {children}
+          </MotionConfig>
+        </ThemeProvider>
       </body>
     </html>
   );

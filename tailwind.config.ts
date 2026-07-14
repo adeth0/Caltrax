@@ -57,15 +57,31 @@ const config: Config = {
         body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        glass: "0 8px 32px rgba(0,0,0,0.35)",
-        "glass-sm": "0 4px 16px rgba(0,0,0,0.25)",
+        glass: "0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.09)",
+        "glass-sm": "0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.07)",
+        "glow-info": "0 0 0 1px rgba(10,132,255,0.4), 0 0 24px rgba(10,132,255,0.35)",
+        "glow-sm": "0 0 16px rgba(255,255,255,0.12)",
+      },
+      backdropSaturate: {
+        glass: "180%",
       },
       transitionTimingFunction: {
         apple: "cubic-bezier(0.22, 1, 0.36, 1)",
+        "apple-spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
       spacing: {
         18: "4.5rem",
         22: "5.5rem",
+      },
+      keyframes: {
+        "ambient-drift": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(3%, -4%) scale(1.05)" },
+          "66%": { transform: "translate(-2%, 3%) scale(0.98)" },
+        },
+      },
+      animation: {
+        "ambient-drift": "ambient-drift 24s ease-in-out infinite",
       },
     },
   },

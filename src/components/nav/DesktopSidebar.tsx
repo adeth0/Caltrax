@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PRIMARY_NAV } from "./nav-items";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -24,12 +25,19 @@ export function DesktopSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "control focus-ring flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors",
-                  isActive ? "bg-white/10 text-text-primary" : "text-text-secondary hover:bg-white/5"
+                  "control focus-ring relative flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive ? "text-text-primary" : "text-text-secondary hover:bg-white/5"
                 )}
               >
-                <Icon className="h-5 w-5" />
-                {item.label}
+                {isActive && (
+                  <motion.div
+                    layoutId="desktop-nav-active"
+                    className="control absolute inset-0 bg-white/10 shadow-glow-sm"
+                    transition={{ type: "spring", stiffness: 420, damping: 38 }}
+                  />
+                )}
+                <Icon className="relative z-10 h-5 w-5" />
+                <span className="relative z-10">{item.label}</span>
               </Link>
             );
           })}

@@ -1,11 +1,14 @@
 import { DesktopSidebar } from "./DesktopSidebar";
 import { MobileTabBar } from "./MobileTabBar";
+import { PageTransition } from "./PageTransition";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto flex max-w-6xl gap-4 p-4">
       <DesktopSidebar />
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1">
+        <PageTransition>{children}</PageTransition>
+      </div>
       <MobileTabBar />
     </div>
   );

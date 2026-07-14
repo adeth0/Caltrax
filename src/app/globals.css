@@ -34,9 +34,12 @@ html.light body {
 }
 
 @layer components {
-  /* The single reusable glass surface every card, sheet and modal is built from */
+  /* The single reusable glass surface every card, sheet and modal is built from.
+     backdrop-saturate pushes color underneath the blur so it reads as frosted
+     glass over a scene, not just a dimmed panel — this is the actual visual
+     trick Apple's material system relies on. */
   .glass-panel {
-    @apply rounded-card border border-glass-border bg-glass shadow-glass backdrop-blur-glass;
+    @apply rounded-card border border-glass-border bg-glass shadow-glass backdrop-blur-glass backdrop-saturate-glass;
   }
 
   html.light .glass-panel {
@@ -55,5 +58,15 @@ html.light body {
   /* Visible keyboard focus ring — accessibility first per code standards */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-info focus-visible:ring-offset-2 focus-visible:ring-offset-base;
+  }
+
+  /* Soft, slow-drifting colour fields behind the glass panels — this is what
+     the panels are actually catching light from. Pure decoration, so it's
+     the first thing prefers-reduced-motion below turns off. */
+  .ambient-glow {
+    @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
+  }
+  .ambient-glow span {
+    @apply absolute h-[42vw] w-[42vw] rounded-full opacity-[0.14] blur-[110px];
   }
 }
