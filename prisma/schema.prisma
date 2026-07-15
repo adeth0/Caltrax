@@ -90,6 +90,10 @@ model Profile {
 
   dailyWaterGoalMl     Int?
   notificationsEnabled Boolean          @default(true)
+  /// IANA timezone (e.g. "Europe/London") — needed so reminder times ("HH:mm")
+  /// fire at the right moment for this user, not server time. Defaults to UTC
+  /// until the client detects and saves the real one (see settings).
+  timezone             String           @default("UTC")
 
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
@@ -102,6 +106,7 @@ model Profile {
   recipes             Recipe[]
   favourites          Favourite[]
   plannedMeals        PlannedMeal[]
+  pushSubscriptions   PushSubscription[]
 
   @@map("profiles")
 }
@@ -197,15 +202,37 @@ model WaterLog {
 }
 
 model Reminder {
-  id     String  @id @default(cuid())
-  userId String
-  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type   String  // "meal" | "water" | "exercise" | "weight_check" | "supplement" | "custom"
-  label  String
-  time   String  // "HH:mm" local time
-  active Boolean @default(true)
+  id          String    @id @default(cuid())
+  userId      String
+  user        Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String  // "meal" | "water" | "exercise" | "weight_check" | "supplement" | "custom"
+  label       String
+  time        String  // "HH:mm" local time
+  active      Boolean   @default(true)
+  /// Set by the reminders cron after a successful send, compared against
+  /// "today" in the user's timezone so a reminder never fires twice in one day
+  /// even if the cron window overlaps its target time on two consecutive runs.
+  lastFiredAt DateTime?
 
+  @@index([active, time])
   @@map("reminders")
+}
+
+/// A browser's Web Push subscription (one per device/browser a user has
+/// enabled notifications on). endpoint is unique because re-subscribing
+/// the same browser reissues the same endpoint — upsert on it rather than
+/// accumulating duplicates.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 // ---------------------------------------------------------------------
