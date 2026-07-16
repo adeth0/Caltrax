@@ -26,7 +26,18 @@ export async function upsertFoodItem(food: FoodItem) {
       fatPer100g: food.fatPer100g,
       fibrePer100g: food.fibrePer100g,
       sugarPer100g: food.sugarPer100g,
+      saturatedFatPer100g: food.saturatedFatPer100g,
       sodiumMgPer100g: food.sodiumMgPer100g,
+      potassiumMgPer100g: food.potassiumMgPer100g,
+      vitaminAPer100g: food.vitaminAPer100g,
+      vitaminCPer100g: food.vitaminCPer100g,
+      vitaminDPer100g: food.vitaminDPer100g,
+      vitaminEPer100g: food.vitaminEPer100g,
+      vitaminKPer100g: food.vitaminKPer100g,
+      calciumMgPer100g: food.calciumMgPer100g,
+      ironMgPer100g: food.ironMgPer100g,
+      magnesiumMgPer100g: food.magnesiumMgPer100g,
+      zincMgPer100g: food.zincMgPer100g,
       imageUrl: food.imageUrl,
     },
     update: {
@@ -35,6 +46,20 @@ export async function upsertFoodItem(food: FoodItem) {
       proteinPer100g: food.proteinPer100g,
       carbsPer100g: food.carbsPer100g,
       fatPer100g: food.fatPer100g,
+      fibrePer100g: food.fibrePer100g,
+      sugarPer100g: food.sugarPer100g,
+      saturatedFatPer100g: food.saturatedFatPer100g,
+      sodiumMgPer100g: food.sodiumMgPer100g,
+      potassiumMgPer100g: food.potassiumMgPer100g,
+      vitaminAPer100g: food.vitaminAPer100g,
+      vitaminCPer100g: food.vitaminCPer100g,
+      vitaminDPer100g: food.vitaminDPer100g,
+      vitaminEPer100g: food.vitaminEPer100g,
+      vitaminKPer100g: food.vitaminKPer100g,
+      calciumMgPer100g: food.calciumMgPer100g,
+      ironMgPer100g: food.ironMgPer100g,
+      magnesiumMgPer100g: food.magnesiumMgPer100g,
+      zincMgPer100g: food.zincMgPer100g,
     },
   });
 }
@@ -60,7 +85,23 @@ interface OFFNutriments {
   fiber_100g?: number;
   sugars_100g?: number;
   ["saturated-fat_100g"]?: number;
-  sodium_100g?: number; // grams, needs *1000 for mg
+  // Everything below: Open Food Facts' default processed nutriment fields
+  // are stored in GRAMS regardless of the nutrient (per OFF's own docs —
+  // "the value converted in the default unit ... otherwise gram"). That's
+  // an easy silent-corruption bug (a vitamin A value of "0.0000009" reads
+  // as basically zero if you forget the conversion), so every one of these
+  // gets scaled to its conventional display unit in normalizeProduct below.
+  sodium_100g?: number; // g -> mg (*1000)
+  potassium_100g?: number; // g -> mg (*1000)
+  calcium_100g?: number; // g -> mg (*1000)
+  iron_100g?: number; // g -> mg (*1000)
+  magnesium_100g?: number; // g -> mg (*1000)
+  zinc_100g?: number; // g -> mg (*1000)
+  ["vitamin-a_100g"]?: number; // g -> mcg (*1,000,000)
+  ["vitamin-c_100g"]?: number; // g -> mg (*1000)
+  ["vitamin-d_100g"]?: number; // g -> mcg (*1,000,000)
+  ["vitamin-e_100g"]?: number; // g -> mg (*1000)
+  ["vitamin-k_100g"]?: number; // g -> mcg (*1,000,000)
 }
 
 interface OFFProduct {
@@ -72,6 +113,16 @@ interface OFFProduct {
   serving_size?: string;
   serving_quantity?: number;
   nutriments?: OFFNutriments;
+}
+
+/** g -> mg. Returns undefined if the source value is missing, never NaN/0-by-default. */
+function gToMg(value: number | undefined): number | undefined {
+  return value !== undefined ? value * 1000 : undefined;
+}
+
+/** g -> mcg (micrograms) — for vitamin A/D/K, which are conventionally dosed in mcg not mg. */
+function gToMcg(value: number | undefined): number | undefined {
+  return value !== undefined ? value * 1_000_000 : undefined;
 }
 
 function normalizeProduct(product: OFFProduct): FoodItem | null {
@@ -95,7 +146,18 @@ function normalizeProduct(product: OFFProduct): FoodItem | null {
     fatPer100g: n.fat_100g ?? 0,
     fibrePer100g: n.fiber_100g,
     sugarPer100g: n.sugars_100g,
-    sodiumMgPer100g: n.sodium_100g !== undefined ? n.sodium_100g * 1000 : undefined,
+    saturatedFatPer100g: n["saturated-fat_100g"],
+    sodiumMgPer100g: gToMg(n.sodium_100g),
+    potassiumMgPer100g: gToMg(n.potassium_100g),
+    vitaminAPer100g: gToMcg(n["vitamin-a_100g"]),
+    vitaminCPer100g: gToMg(n["vitamin-c_100g"]),
+    vitaminDPer100g: gToMcg(n["vitamin-d_100g"]),
+    vitaminEPer100g: gToMg(n["vitamin-e_100g"]),
+    vitaminKPer100g: gToMcg(n["vitamin-k_100g"]),
+    calciumMgPer100g: gToMg(n.calcium_100g),
+    ironMgPer100g: gToMg(n.iron_100g),
+    magnesiumMgPer100g: gToMg(n.magnesium_100g),
+    zincMgPer100g: gToMg(n.zinc_100g),
     imageUrl: product.image_front_small_url,
   };
 }

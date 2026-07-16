@@ -93,7 +93,18 @@ export interface FoodItem {
   fatPer100g: number;
   fibrePer100g?: number;
   sugarPer100g?: number;
+  saturatedFatPer100g?: number;
   sodiumMgPer100g?: number;
+  potassiumMgPer100g?: number;
+  vitaminAPer100g?: number; // mcg RAE
+  vitaminCPer100g?: number; // mg
+  vitaminDPer100g?: number; // mcg
+  vitaminEPer100g?: number; // mg
+  vitaminKPer100g?: number; // mcg
+  calciumMgPer100g?: number;
+  ironMgPer100g?: number;
+  magnesiumMgPer100g?: number;
+  zincMgPer100g?: number;
   imageUrl?: string;
 }
 

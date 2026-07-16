@@ -107,11 +107,13 @@ full production build all pass with the exact dependency versions pinned in
    instead) — revisit if users hit unlabelled/unbarcoded packaging often.
 
 **Phase 3 — depth** 7. ✅ Recipes, favourites/recent foods, weekly meal planner. (Meal templates beyond recipes not
-done separately — recipes cover that need.) 8. Full micronutrient tracking (vitamins, minerals, omega-3/6) end to
-end — not started. 9. ✅ Reminders (meal/water/exercise/weight-check/supplement) with Web Push notifications.
+done separately — recipes cover that need.) 8. ✅ Micronutrient tracking — vitamin A/C/D/E/K, calcium, iron,
+magnesium, potassium, zinc, sodium tracked against standard adult RDA targets on `/progress`. Sourced from Open Food
+Facts where present (coverage varies by product; OFF's raw fields are grams for everything except energy —
+converted to mg/mcg on ingest, see `src/lib/foodSearch.ts`). Omega-3/6 not included — OFF's coverage there is too
+sparse to be useful. 9. ✅ Reminders (meal/water/exercise/weight-check/supplement) with Web Push notifications.
 Vercel Hobby's cron is capped at once/day, so `/api/cron/reminders` is designed to be called by a free external
-scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — see CRON_SECRET in `.env.example`.
-10. Achievements/badges, weekly/monthly/yearly reports — not started.
+scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — see CRON_SECRET in `.env.example`. 10. Achievements/badges, weekly/monthly/yearly reports — not started.
 
 **Phase 4 — platform** 11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
 Fitbit, Whoop, Oura, smart scales, CGMs). 12. Premium subscription, social features, family accounts, multi-language.
