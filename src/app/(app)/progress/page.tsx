@@ -1,14 +1,14 @@
 import { format } from "date-fns";
-import { InsightsCard } from "@/components/progress/InsightsCard";
-import { MicronutrientsCard } from "@/components/progress/MicronutrientsCard";
-import { ProgressClient, type WeightPointRow } from "@/components/progress/ProgressClient";
+import { redirect } from "next/navigation";
+import { ProgressTabs } from "@/components/progress/ProgressTabs";
+import type { WeightPointRow } from "@/components/progress/ProgressClient";
+import type { UnlockedInfo } from "@/components/progress/AchievementsGrid";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { profileToGoalInput, SEX_FROM_PRISMA } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
 import { addFoodMicronutrients, emptyIntake } from "@/lib/micronutrients";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 export default async function ProgressPage() {
   const supabase = await createSupabaseServerClient();
@@ -22,7 +22,7 @@ export default async function ProgressPage() {
 
   const { start, end } = getTodayRange();
 
-  const [weightLogs, waterLogs, todayMealEntries] = await Promise.all([
+  const [weightLogs, waterLogs, todayMealEntries, unlockedAchievements] = await Promise.all([
     db.weightLog.findMany({
       where: { userId: user.id },
       orderBy: { loggedAt: "asc" },
@@ -33,6 +33,7 @@ export default async function ProgressPage() {
       where: { userId: user.id, loggedAt: { gte: start, lte: end } },
       include: { food: true },
     }),
+    db.unlockedAchievement.findMany({ where: { userId: user.id }, orderBy: { unlockedAt: "asc" } }),
   ]);
 
   const weightPoints: WeightPointRow[] = weightLogs.map((w: (typeof weightLogs)[number]) => ({
@@ -50,28 +51,29 @@ export default async function ProgressPage() {
     emptyIntake()
   );
 
+  const unlockedInfo: UnlockedInfo[] = unlockedAchievements.map(
+    (u: (typeof unlockedAchievements)[number]) => ({
+      key: u.key,
+      unlockedAt: format(u.unlockedAt, "d MMM yyyy"),
+    })
+  );
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
       <header className="mb-4">
         <h1 className="font-display text-2xl font-semibold text-text-primary">Progress</h1>
-        <p className="text-sm text-text-tertiary">Weight trend and hydration history.</p>
+        <p className="text-sm text-text-tertiary">Trends, reports, and achievements.</p>
       </header>
-      <div className="mb-4">
-        <InsightsCard />
-      </div>
-      <ProgressClient
+      <ProgressTabs
         weightPoints={weightPoints}
         goalWeightKg={profile.targetWeightKg ?? undefined}
         waterConsumedMl={waterConsumedMl}
         waterTargetMl={profile.dailyWaterGoalMl ?? targets.waterMl}
+        micronutrientIntake={micronutrientIntake}
+        sex={SEX_FROM_PRISMA[profile.sex]}
+        hasLoggedToday={todayMealEntries.length > 0}
+        unlockedAchievements={unlockedInfo}
       />
-      <div className="mt-4">
-        <MicronutrientsCard
-          intake={micronutrientIntake}
-          sex={SEX_FROM_PRISMA[profile.sex]}
-          hasLoggedToday={todayMealEntries.length > 0}
-        />
-      </div>
     </main>
   );
 }

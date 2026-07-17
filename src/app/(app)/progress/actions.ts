@@ -7,6 +7,7 @@ import { generateInsights, type InsightsResult } from "@/lib/ai/insights";
 import { getLastNDaysRange } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
+import { computeReport, type Report, type ReportPeriod } from "@/lib/reports";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function requireUserId(): Promise<string> {
@@ -118,4 +119,9 @@ export async function generateInsightsAction(period: "week" | "month"): Promise<
     if (err instanceof AIConfigError) throw err;
     throw new Error("Couldn't generate insights right now — try again shortly.");
   }
+}
+
+export async function getReportAction(period: ReportPeriod): Promise<Report | null> {
+  const userId = await requireUserId();
+  return computeReport(userId, period);
 }

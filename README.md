@@ -113,7 +113,9 @@ Facts where present (coverage varies by product; OFF's raw fields are grams for 
 converted to mg/mcg on ingest, see `src/lib/foodSearch.ts`). Omega-3/6 not included — OFF's coverage there is too
 sparse to be useful. 9. ✅ Reminders (meal/water/exercise/weight-check/supplement) with Web Push notifications.
 Vercel Hobby's cron is capped at once/day, so `/api/cron/reminders` is designed to be called by a free external
-scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — see CRON_SECRET in `.env.example`. 10. Achievements/badges, weekly/monthly/yearly reports — not started.
+scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — see CRON_SECRET in `.env.example`. 10. ✅ Achievements/badges (streaks, milestones — see src/lib/achievements.ts, checked on
+every dashboard load) and weekly/monthly/yearly reports (`/progress` → Reports tab: avg calories/macros/water
+vs target, weight change, and a daily calorie chart vs target line). This closes out Phase 3.
 
 **Phase 4 — platform** 11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
 Fitbit, Whoop, Oura, smart scales, CGMs). 12. Premium subscription, social features, family accounts, multi-language.

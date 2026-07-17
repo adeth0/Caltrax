@@ -107,6 +107,7 @@ model Profile {
   favourites          Favourite[]
   plannedMeals        PlannedMeal[]
   pushSubscriptions   PushSubscription[]
+  unlockedAchievements UnlockedAchievement[]
 
   @@map("profiles")
 }
@@ -315,8 +316,26 @@ model PlannedMeal {
 }
 
 // ---------------------------------------------------------------------
-// Phase 3+ tables still pending (full micronutrient tracking, reminders
-// detail, achievements, wearable sync) are intentionally left out here to
-// keep each migration small and reviewable — add them as their own
-// migration when scheduled.
+// Achievements/badges. Definitions (label, description, icon, unlock
+// criteria) live in code (src/lib/achievements.ts), not the database —
+// this table only records the fact and moment a given user met one.
+// Persisted (rather than recomputed live) so streak-based badges stay
+// unlocked even if the streak later breaks.
+// ---------------------------------------------------------------------
+model UnlockedAchievement {
+  id         String   @id @default(cuid())
+  userId     String
+  user       Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Matches an id in the ACHIEVEMENTS array in src/lib/achievements.ts.
+  key        String
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, key])
+  @@map("unlocked_achievements")
+}
+
+// ---------------------------------------------------------------------
+// Still pending: weekly/monthly/yearly report persistence (currently
+// computed on demand, not stored) and wearable-sync tables. Add as their
+// own migration when scheduled.
 // ---------------------------------------------------------------------

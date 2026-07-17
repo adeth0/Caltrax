@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { MICRONUTRIENTS, type MicronutrientIntake } from "@/lib/micronutrients";
 import { GlassCard } from "@/components/ui/GlassCard";

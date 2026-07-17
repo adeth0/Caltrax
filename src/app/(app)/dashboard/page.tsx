@@ -3,8 +3,10 @@ import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
+import { NewAchievementBanner } from "@/components/dashboard/NewAchievementBanner";
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { logWaterAction } from "@/app/(app)/progress/actions";
+import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { db } from "@/lib/db";
 import { getLastNDaysRange, getTodayRange } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
@@ -25,7 +27,7 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs] = await Promise.all([
+  const [mealEntries, waterLogs, weightLogs, newlyUnlocked] = await Promise.all([
     db.mealEntry.findMany({
       where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
       include: { food: true },
@@ -35,6 +37,7 @@ export default async function DashboardPage() {
       where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
       orderBy: { loggedAt: "asc" },
     }),
+    checkAndUnlockAchievements(user.id),
   ]);
 
   const todayIntake = mealEntries.reduce(
@@ -66,6 +69,8 @@ export default async function DashboardPage() {
         <h1 className="font-display text-2xl font-semibold text-text-primary">Today</h1>
         <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>
       </header>
+
+      <NewAchievementBanner achievements={newlyUnlocked} />
 
       <CaloriesRemainingCard
         target={Math.round(targets.calories)}
