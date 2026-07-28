@@ -39,8 +39,33 @@ once Supabase is configured (see below).
 5. Authentication → URL Configuration: add `https://caltrax.kavauralabs.com/auth/callback`
    and `http://localhost:3000/auth/callback` as redirect URLs.
 6. Run `npx prisma migrate dev` to create the app tables (`profiles`, `foods`,
-   `meal_entries`, `weight_logs`, `water_logs`, `reminders`) in the same Postgres
-   instance Supabase Auth uses.
+   `meal_entries`, `weight_logs`, `water_logs`, `reminders`, `wearable_connections`,
+   `activity_logs`) in the same Postgres instance Supabase Auth uses.
+
+## Wearable sync setup (optional — Phase 4)
+
+Fitbit and Withings sync via cloud OAuth APIs, no native app needed. Apple Health
+and Android Health Connect are deliberately **not** here — both are on-device-only
+frameworks with no cloud REST API, so they need the native app wrapper (a later
+phase) instead.
+
+1. **Fitbit**: register a "Personal" app at [dev.fitbit.com/apps/new](https://dev.fitbit.com/apps/new)
+   (instant approval, no review wait). OAuth 2.0 Application Type: **Server**.
+   Redirect URI: `https://caltrax.kavauralabs.com/api/wearables/FITBIT/callback`
+   (add `http://localhost:3000/api/wearables/FITBIT/callback` too for local dev —
+   Fitbit allows multiple redirect URIs on one app). Copy the Client ID/Secret into
+   `FITBIT_CLIENT_ID`/`FITBIT_CLIENT_SECRET`.
+2. **Withings**: register an app at [developer.withings.com](https://developer.withings.com)
+   (also self-serve, instant). Callback URL:
+   `https://caltrax.kavauralabs.com/api/wearables/WITHINGS/callback` (+ localhost
+   equivalent). Copy the Client ID/Secret into `WITHINGS_CLIENT_ID`/`WITHINGS_CLIENT_SECRET`.
+3. Add `/api/cron/wearables-sync` to the same external scheduler used for reminders
+   (e.g. cron-job.org), with the same `CRON_SECRET` bearer header. Activity/weight
+   data doesn't need the 5-15 min granularity reminders do — once every 30-60 min
+   is plenty, since Fitbit/Withings themselves only update every few minutes at best.
+
+Users connect their own devices from Settings → Connected devices — nothing else
+to configure per-user.
 
 ## Testing
 
@@ -117,8 +142,20 @@ scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — se
 every dashboard load) and weekly/monthly/yearly reports (`/progress` → Reports tab: avg calories/macros/water
 vs target, weight change, and a daily calorie chart vs target line). This closes out Phase 3.
 
-**Phase 4 — platform** 11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
-Fitbit, Whoop, Oura, smart scales, CGMs). 12. Premium subscription, social features, family accounts, multi-language.
+**Phase 4 — platform** 11. ✅ Wearable sync — Fitbit (steps + active calories, feeding a real
+"earned calories from exercise" adjustment on the dashboard — previously a hardcoded `burned={0}`)
+and Withings (smart-scale weigh-ins auto-logged instead of manual entry). Both via cloud OAuth,
+no native app required. Garmin/Oura/Whoop/CGMs not yet done — same `WearableProviderAdapter`
+shape, each is incremental work once wanted. Apple Health / Android Health Connect are
+structurally blocked until the native app wrapper exists (both are on-device-only frameworks,
+no cloud API). 12. Premium subscription, social features, family accounts, multi-language.
+
+**Fixed along the way:** `proxy.ts`'s session gate was redirecting _every_ unauthenticated
+request to `/login` — including `/api/cron/*` calls from an external scheduler, which
+authenticate via `CRON_SECRET` instead of a session and never carry one. This made
+`/api/cron/reminders` unreachable in production (redirected before its own auth check ever
+ran) — reminders were very likely never firing. Fixed by exempting `/api/cron/*` from the
+session gate; those routes already do their own bearer-token check.
 
 ## Deploying
 
