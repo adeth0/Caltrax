@@ -83,7 +83,7 @@ export const withingsAdapter: WearableProviderAdapter = {
     return `${AUTH_URL}?${params.toString()}`;
   },
 
-  async exchangeCode(code, redirectUri) {
+  async exchangeCode(code, redirectUri, _codeVerifier) {
     const { clientId, clientSecret } = requireCredentials();
     const res = await fetch(`${API_BASE}/v2/oauth2`, {
       method: "POST",

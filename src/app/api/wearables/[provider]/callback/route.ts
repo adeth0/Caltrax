@@ -55,7 +55,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ prov
   try {
     const adapter = getProviderAdapter(provider);
     const redirectUri = `${origin}/api/wearables/${provider}/callback`;
-    const tokens = await adapter.exchangeCode(code, redirectUri);
+    const tokens = await adapter.exchangeCode(code, redirectUri, expectedState);
 
     const connection = await db.wearableConnection.upsert({
       where: { userId_provider: { userId: user.id, provider } },

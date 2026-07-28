@@ -59,10 +59,28 @@ phase) instead.
    (also self-serve, instant). Callback URL:
    `https://caltrax.kavauralabs.com/api/wearables/WITHINGS/callback` (+ localhost
    equivalent). Copy the Client ID/Secret into `WITHINGS_CLIENT_ID`/`WITHINGS_CLIENT_SECRET`.
-3. Add `/api/cron/wearables-sync` to the same external scheduler used for reminders
+3. **Oura**: register an OAuth app at [cloud.ouraring.com/oauth/applications](https://cloud.ouraring.com/oauth/applications)
+   (self-serve, instant). Redirect URI: `https://caltrax.kavauralabs.com/api/wearables/OURA/callback`
+   (+ localhost equivalent). Copy into `OURA_CLIENT_ID`/`OURA_CLIENT_SECRET`.
+4. **Whoop**: register an app at [developer.whoop.com](https://developer.whoop.com). The OAuth
+   app itself is self-serve, but Whoop has historically gated wider production/
+   user-facing access behind its own separate review — expect this one to take
+   longer than the other three to fully go live. Redirect URI:
+   `https://caltrax.kavauralabs.com/api/wearables/WHOOP/callback` (+ localhost
+   equivalent). Copy into `WHOOP_CLIENT_ID`/`WHOOP_CLIENT_SECRET`.
+5. Add `/api/cron/wearables-sync` to the same external scheduler used for reminders
    (e.g. cron-job.org), with the same `CRON_SECRET` bearer header. Activity/weight
    data doesn't need the 5-15 min granularity reminders do — once every 30-60 min
-   is plenty, since Fitbit/Withings themselves only update every few minutes at best.
+   is plenty, since none of these providers update that frequently anyway.
+
+**Garmin is deliberately not implemented yet.** Its Health API is push/webhook-based
+(Garmin POSTs data to a URL you register, plus a separate backfill API for history) —
+a meaningfully different architecture from the poll-for-recent-data model the other
+four use — and requires a formal partner application with real review time, unlike
+the instant self-serve signup for Fitbit/Withings/Oura. Apply at
+[developer.garmin.com/health-api](https://developer.garmin.com/gc-developer-program/health-api/)
+if you want this eventually; the actual webhook integration is best built once you
+can see the real approved contract rather than guessed at beforehand.
 
 Users connect their own devices from Settings → Connected devices — nothing else
 to configure per-user.
@@ -142,13 +160,14 @@ scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — se
 every dashboard load) and weekly/monthly/yearly reports (`/progress` → Reports tab: avg calories/macros/water
 vs target, weight change, and a daily calorie chart vs target line). This closes out Phase 3.
 
-**Phase 4 — platform** 11. ✅ Wearable sync — Fitbit (steps + active calories, feeding a real
-"earned calories from exercise" adjustment on the dashboard — previously a hardcoded `burned={0}`)
-and Withings (smart-scale weigh-ins auto-logged instead of manual entry). Both via cloud OAuth,
-no native app required. Garmin/Oura/Whoop/CGMs not yet done — same `WearableProviderAdapter`
-shape, each is incremental work once wanted. Apple Health / Android Health Connect are
-structurally blocked until the native app wrapper exists (both are on-device-only frameworks,
-no cloud API). 12. Premium subscription, social features, family accounts, multi-language.
+**Phase 4 — platform** 11. ✅ Wearable sync — Fitbit and Withings (slice 1), then Oura and Whoop
+(slice 2). Steps/active-calorie data feeds a real "earned calories from exercise" adjustment on
+the dashboard (previously a hardcoded `burned={0}`); Withings weigh-ins auto-log into weight
+history. All four via cloud OAuth, no native app required. Garmin and CGMs (Dexcom/Libre) not
+yet done — Garmin's Health API is push/webhook-based (not poll-for-recent like the other four)
+and needs a formal partner application with real review time, so it's deferred until that's
+actually approved. Apple Health / Android Health Connect are structurally blocked until the
+native app wrapper exists (both are on-device-only frameworks, no cloud API). 12. Premium subscription, social features, family accounts, multi-language.
 
 **Fixed along the way:** `proxy.ts`'s session gate was redirecting _every_ unauthenticated
 request to `/login` — including `/api/cron/*` calls from an external scheduler, which

@@ -43,7 +43,14 @@ export interface WearableProviderAdapter {
   /** What this provider syncs, shown in the Settings UI. */
   description: string;
   getAuthorizationUrl(state: string, redirectUri: string): string;
-  exchangeCode(code: string, redirectUri: string): Promise<OAuthTokenSet>;
+  /**
+   * codeVerifier is only meaningful for providers requiring PKCE (currently
+   * Whoop) — every other adapter ignores the third argument. The callback
+   * route always passes the validated CSRF state value through as the
+   * verifier, since Whoop's adapter derives its PKCE challenge from that
+   * same state string rather than tracking a separate value.
+   */
+  exchangeCode(code: string, redirectUri: string, codeVerifier: string): Promise<OAuthTokenSet>;
   refresh(refreshToken: string): Promise<OAuthTokenSet>;
   /** Pull the last few days (today plus a short backfill window in case of sync gaps). */
   fetchRecent(accessToken: string): Promise<SyncResult>;
