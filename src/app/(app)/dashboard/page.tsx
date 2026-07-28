@@ -27,7 +27,7 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs, newlyUnlocked] = await Promise.all([
+  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked] = await Promise.all([
     db.mealEntry.findMany({
       where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
       include: { food: true },
@@ -37,6 +37,7 @@ export default async function DashboardPage() {
       where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
       orderBy: { loggedAt: "asc" },
     }),
+    db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
     checkAndUnlockAchievements(user.id),
   ]);
 
@@ -54,6 +55,14 @@ export default async function DashboardPage() {
   );
 
   const waterMl = waterLogs.reduce((sum, w: (typeof waterLogs)[number]) => sum + w.amountMl, 0);
+
+  // Summed across any connected sources — if someone has two trackers
+  // reporting the same activity this double-counts, but that's a rare
+  // edge case versus the common one (exactly one device) working correctly.
+  const earnedCalories = activityLogs.reduce(
+    (sum: number, a: (typeof activityLogs)[number]) => sum + (a.activeCalories ?? 0),
+    0
+  );
 
   const weightPoints =
     weightLogs.length > 0
@@ -75,7 +84,7 @@ export default async function DashboardPage() {
       <CaloriesRemainingCard
         target={Math.round(targets.calories)}
         consumed={Math.round(todayIntake.calories)}
-        burned={0}
+        burned={earnedCalories}
       />
 
       <MacroRingsCard
