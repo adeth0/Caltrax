@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import { deleteRecipeAction, logRecipeAction } from "@/app/(app)/foods/actions";
 import { RecipeForm } from "@/components/recipes/RecipeForm";
@@ -41,6 +42,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLogging, startLogging] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  const [pendingDelete, setPendingDelete] = useState<RecipeSummary | null>(null);
 
   function openLogPanel(recipeId: string) {
     setLoggingId(recipeId);
@@ -70,6 +72,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
   function handleDelete(recipeId: string) {
     startDeleting(async () => {
       await deleteRecipeAction(recipeId);
+      setPendingDelete(null);
       router.refresh();
     });
   }
@@ -114,7 +117,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
             <button
               type="button"
               disabled={isDeleting}
-              onClick={() => handleDelete(recipe.id)}
+              onClick={() => setPendingDelete(recipe)}
               className="touch-target focus-ring shrink-0 text-xs text-text-tertiary hover:text-accent-danger"
             >
               Delete
@@ -195,6 +198,30 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
           )}
         </GlassCard>
       ))}
+
+      <Modal
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+        title="Delete this recipe?"
+        description={pendingDelete ? `${pendingDelete.name} — this can't be undone.` : undefined}
+      >
+        <div className="flex gap-3">
+          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="flex-1"
+            disabled={isDeleting}
+            onClick={() => pendingDelete && handleDelete(pendingDelete.id)}
+          >
+            {isDeleting ? "Deleting…" : "Delete"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

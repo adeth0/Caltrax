@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Star } from "lucide-react";
+import { Camera, Star } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
 import { BarcodeScannerModal } from "@/components/scan/BarcodeScannerModal";
@@ -82,6 +83,8 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
   const [quickGrams, setQuickGrams] = useState("100");
   const [isSavingQuick, startSavingQuick] = useTransition();
   const [isTogglingChip, startTogglingChip] = useTransition();
+
+  const [pendingDelete, setPendingDelete] = useState<TodayEntryRow | null>(null);
 
   const [scannerOpen, setScannerOpen] = useState(false);
   const [isLookingUp, startLookingUp] = useTransition();
@@ -229,9 +232,16 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
     });
   }
 
-  function handleDelete(id: string) {
+  function handleRequestDelete(entry: TodayEntryRow) {
+    setPendingDelete(entry);
+  }
+
+  function handleConfirmDelete() {
+    if (!pendingDelete) return;
+    const id = pendingDelete.id;
     startDeleting(async () => {
       await deleteMealEntryAction(id);
+      setPendingDelete(null);
       router.refresh();
     });
   }
@@ -299,7 +309,8 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
             onClick={() => setScannerOpen(true)}
             disabled={isLookingUp}
           >
-            {isLookingUp ? "Looking up…" : "📷 Scan barcode"}
+            <Camera className="h-4 w-4" />
+            {isLookingUp ? "Looking up…" : "Scan barcode"}
           </Button>
           <button
             type="button"
@@ -506,7 +517,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
                         <button
                           type="button"
                           disabled={isDeleting}
-                          onClick={() => handleDelete(entry.id)}
+                          onClick={() => handleRequestDelete(entry)}
                           className="touch-target focus-ring shrink-0 rounded-control px-2 text-xs text-text-tertiary hover:text-accent-danger"
                         >
                           Remove
@@ -519,6 +530,32 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
           </div>
         )}
       </GlassCard>
+
+      <Modal
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+        title="Remove this entry?"
+        description={
+          pendingDelete ? `${pendingDelete.foodName} · ${Math.round(pendingDelete.calories)} kcal` : undefined
+        }
+      >
+        <div className="flex gap-3">
+          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="flex-1"
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Removing…" : "Remove"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

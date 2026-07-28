@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { sendPushToUser } from "@/lib/push";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -93,4 +94,11 @@ export async function sendTestPushAction() {
     body: "Notifications are working! You'll get reminders like this.",
     url: "/dashboard",
   });
+}
+
+/** No sign-out path existed anywhere in the app — this closes that gap. */
+export async function signOutAction() {
+  const supabase = await createSupabaseServerClient();
+  await supabase.auth.signOut();
+  redirect("/login");
 }

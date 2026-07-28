@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Input } from "@/components/ui/input";
@@ -113,7 +114,8 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
 
       {!previewUrl && (
         <Button type="button" variant="glass" onClick={() => fileInputRef.current?.click()}>
-          📷 Snap a meal photo
+          <Camera className="h-4 w-4" />
+          Snap a meal photo
         </Button>
       )}
 
@@ -135,6 +137,18 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
               Cancel
             </button>
           </div>
+
+          {items && items.length === 0 && !isAnalyzing && (
+            <div className="mt-4 flex flex-col gap-3 rounded-control border border-white/10 bg-white/5 p-3">
+              <p className="text-sm text-text-secondary">
+                Couldn&apos;t identify any food in that photo. Try a clearer, well-lit shot of the plate, or
+                add the items manually instead.
+              </p>
+              <Button type="button" variant="glass" size="sm" onClick={reset}>
+                Try another photo
+              </Button>
+            </div>
+          )}
 
           {items && items.length > 0 && (
             <div className="mt-4 flex flex-col gap-3">
