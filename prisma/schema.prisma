@@ -342,14 +342,15 @@ model UnlockedAchievement {
 }
 
 // ---------------------------------------------------------------------
-// Phase 4 (slice 1): wearable/device sync via cloud OAuth APIs — Fitbit
-// (steps + active-calorie burn) and Withings (smart-scale weight). Apple
-// Health and Android Health Connect deliberately aren't here: both are
-// on-device-only frameworks with no cloud REST API, so they need the
-// native app wrapper (Capacitor/Expo) from a later phase, not this one.
-// Garmin/Oura/Whoop slot into the same WearableConnection shape later —
-// each just needs its own entry in the WearableProvider enum and its own
-// lib/wearables/<provider>.ts implementing the same connect/sync contract.
+// Phase 4 (slice 1-2): wearable/device sync via cloud OAuth APIs — Fitbit
+// and Withings (slice 1), then Oura and Whoop (slice 2). Apple Health and
+// Android Health Connect deliberately aren't here: both are on-device-only
+// frameworks with no cloud REST API, so they need the native app wrapper
+// (Capacitor/Expo) from a later phase, not this one. Garmin is also not
+// here yet — its Health API is push/webhook-based (not poll-for-recent
+// like the other four) and needs a formal partner application with real
+// review time, so it's deferred until that's actually approved rather than
+// guessing at a webhook contract nobody's seen yet.
 //
 // Tokens are stored as plain columns rather than field-level-encrypted —
 // acceptable for now since they're never read outside trusted server
@@ -365,6 +366,8 @@ model UnlockedAchievement {
 enum WearableProvider {
   FITBIT
   WITHINGS
+  OURA
+  WHOOP
 }
 
 /// One OAuth connection per (user, provider). Access tokens are short-lived

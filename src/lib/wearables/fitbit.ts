@@ -61,7 +61,7 @@ export const fitbitAdapter: WearableProviderAdapter = {
     return `${AUTH_URL}?${params.toString()}`;
   },
 
-  async exchangeCode(code, redirectUri) {
+  async exchangeCode(code, redirectUri, _codeVerifier) {
     const clientId = process.env.FITBIT_CLIENT_ID;
     if (!clientId) throw new Error("FITBIT_CLIENT_ID not configured");
     const res = await fetch(TOKEN_URL, {
