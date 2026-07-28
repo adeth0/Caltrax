@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/Modal";
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { deleteWeightLogAction, logWaterAction, logWeightAction } from "@/app/(app)/progress/actions";
@@ -34,6 +35,7 @@ export function ProgressClient({
   const [isSavingWeight, startSavingWeight] = useTransition();
   const [isSavingWater, startSavingWater] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  const [pendingDelete, setPendingDelete] = useState<WeightPointRow | null>(null);
 
   function handleLogWeight() {
     const value = Number(weightInput);
@@ -63,6 +65,7 @@ export function ProgressClient({
   function handleDeleteWeight(id: string) {
     startDeleting(async () => {
       await deleteWeightLogAction(id);
+      setPendingDelete(null);
       router.refresh();
     });
   }
@@ -123,7 +126,7 @@ export function ProgressClient({
                     <button
                       type="button"
                       disabled={isDeleting}
-                      onClick={() => handleDeleteWeight(p.id)}
+                      onClick={() => setPendingDelete(p)}
                       className="touch-target focus-ring rounded-control px-2 text-xs text-text-tertiary hover:text-accent-danger"
                     >
                       Remove
@@ -134,6 +137,32 @@ export function ProgressClient({
           </ul>
         </GlassCard>
       )}
+
+      <Modal
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+        title="Remove this weigh-in?"
+        description={
+          pendingDelete ? `${pendingDelete.date} · ${pendingDelete.weightKg.toFixed(1)} kg` : undefined
+        }
+      >
+        <div className="flex gap-3">
+          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="flex-1"
+            disabled={isDeleting}
+            onClick={() => pendingDelete && handleDeleteWeight(pendingDelete.id)}
+          >
+            {isDeleting ? "Removing…" : "Remove"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

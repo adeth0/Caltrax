@@ -1,9 +1,12 @@
+import { LogOut } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
 import { db } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { signOutAction } from "./actions";
 
 export default async function SettingsPage() {
   const supabase = await createSupabaseServerClient();
@@ -47,6 +50,17 @@ export default async function SettingsPage() {
         <p className="text-sm text-text-secondary">
           Profile editing, units, and full micronutrient targets land in a future update.
         </p>
+      </GlassCard>
+
+      <GlassCard className="mt-4">
+        <p className="mb-3 text-sm font-medium text-text-primary">Account</p>
+        {user?.email && <p className="mb-3 text-xs text-text-tertiary">Signed in as {user.email}</p>}
+        <form action={signOutAction}>
+          <Button type="submit" variant="glass" className="w-full text-accent-danger">
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </Button>
+        </form>
       </GlassCard>
     </main>
   );

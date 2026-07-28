@@ -1,0 +1,17 @@
+# Normalize line endings for everyone regardless of OS/editor settings.
+# Without this, a Windows checkout (core.autocrlf=true) shows every text
+# file as "modified" against a repo cloned/edited on Linux or macOS, even
+# with byte-identical content — as happened when comparing a local Windows
+# checkout against the GitHub clone.
+* text=auto eol=lf
+
+# Binary assets — never touch line endings, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

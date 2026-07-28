@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
 import { searchFoodsAction } from "@/app/(app)/log/actions";
@@ -58,6 +59,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
   const [isSaving, startSaving] = useTransition();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [isBusy, startBusy] = useTransition();
+  const [pendingRemove, setPendingRemove] = useState<PlannedMealRow | null>(null);
 
   function openAdd(mealType: MealType) {
     setAddingMealType(mealType);
@@ -133,6 +135,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
     startBusy(async () => {
       try {
         await deletePlannedMealAction(id);
+        setPendingRemove(null);
         router.refresh();
       } finally {
         setBusyId(null);
@@ -233,7 +236,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                       <button
                         type="button"
                         disabled={isBusy && busyId === item.id}
-                        onClick={() => handleRemove(item.id)}
+                        onClick={() => setPendingRemove(item)}
                         className="touch-target focus-ring control px-2 text-xs text-text-tertiary hover:text-accent-danger"
                       >
                         Remove
@@ -337,6 +340,30 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
           </GlassCard>
         );
       })}
+
+      <Modal
+        open={pendingRemove !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingRemove(null);
+        }}
+        title="Remove from plan?"
+        description={pendingRemove?.label}
+      >
+        <div className="flex gap-3">
+          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingRemove(null)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="flex-1"
+            disabled={isBusy && busyId === pendingRemove?.id}
+            onClick={() => pendingRemove && handleRemove(pendingRemove.id)}
+          >
+            {isBusy && busyId === pendingRemove?.id ? "Removing…" : "Remove"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
