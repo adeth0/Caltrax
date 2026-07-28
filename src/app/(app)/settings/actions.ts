@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { WearableProvider } from "@prisma/client";
 import { db } from "@/lib/db";
 import { sendPushToUser } from "@/lib/push";
+import { syncWearableConnection } from "@/lib/wearables/sync";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function requireUserId(): Promise<string> {
@@ -101,4 +103,20 @@ export async function signOutAction() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function disconnectWearableAction(provider: WearableProvider) {
+  const userId = await requireUserId();
+  await db.wearableConnection.deleteMany({ where: { userId, provider } });
+  revalidatePath("/settings");
+}
+
+export async function manualSyncWearableAction(provider: WearableProvider) {
+  const userId = await requireUserId();
+  const connection = await db.wearableConnection.findUnique({
+    where: { userId_provider: { userId, provider } },
+  });
+  if (!connection) throw new Error("Not connected");
+  await syncWearableConnection(connection);
+  revalidatePath("/settings");
 }
