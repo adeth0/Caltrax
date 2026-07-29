@@ -46,6 +46,23 @@ once Supabase is configured (see below).
    `meal_entries`, `weight_logs`, `water_logs`, `reminders`, `wearable_connections`,
    `activity_logs`) in the same Postgres instance Supabase Auth uses.
 
+## Image storage setup (required for meal-photo and profile-photo images)
+
+1. Supabase Dashboard → Storage → **New bucket**. Name it exactly `user-uploads`,
+   mark it **Public** (images just need to be viewable via URL, nothing sensitive).
+2. Add a policy allowing authenticated users to upload only under their own path
+   (Storage → user-uploads → Policies → New policy, or via SQL):
+   ```sql
+   create policy "Users can upload their own images"
+   on storage.objects for insert to authenticated
+   with check (bucket_id = 'user-uploads' and (storage.foldername(name))[1] = auth.uid()::text);
+
+   create policy "Anyone can view uploaded images"
+   on storage.objects for select to public
+   using (bucket_id = 'user-uploads');
+   ```
+   Without this, uploads will fail with a permission error even though the bucket exists.
+
 ## Wearable sync setup (optional — Phase 4)
 
 Fitbit and Withings sync via cloud OAuth APIs, no native app needed. Apple Health

@@ -45,6 +45,7 @@ export default async function LogPage() {
       proteinG: e.food.proteinPer100g * scale,
       carbsG: e.food.carbsPer100g * scale,
       fatG: e.food.fatPer100g * scale,
+      imageUrl: e.food.imageUrl ?? undefined,
     };
   });
 

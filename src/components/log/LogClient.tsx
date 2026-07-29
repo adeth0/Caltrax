@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Camera, Star } from "lucide-react";
@@ -47,6 +48,7 @@ export interface TodayEntryRow {
   proteinG: number;
   carbsG: number;
   fatG: number;
+  imageUrl?: string;
 }
 
 /** A previously-cached Food row, shown as a one-tap chip (favourites/recent). */
@@ -508,11 +510,25 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
                         key={entry.id}
                         className="flex items-center justify-between gap-3 rounded-control bg-surface-raised px-3 py-2"
                       >
-                        <div className="min-w-0">
-                          <p className="truncate text-sm text-text-primary">{entry.foodName}</p>
-                          <p className="text-xs text-text-tertiary">
-                            {Math.round(entry.servingGrams)}g · {Math.round(entry.calories)} kcal
-                          </p>
+                        <div className="flex min-w-0 items-center gap-3">
+                          {entry.imageUrl ? (
+                            <Image
+                              src={entry.imageUrl}
+                              alt=""
+                              width={36}
+                              height={36}
+                              className="h-9 w-9 shrink-0 rounded-lg object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="h-9 w-9 shrink-0 rounded-lg bg-border" aria-hidden />
+                          )}
+                          <div className="min-w-0">
+                            <p className="truncate text-sm text-text-primary">{entry.foodName}</p>
+                            <p className="text-xs text-text-tertiary">
+                              {Math.round(entry.servingGrams)}g · {Math.round(entry.calories)} kcal
+                            </p>
+                          </div>
                         </div>
                         <button
                           type="button"
