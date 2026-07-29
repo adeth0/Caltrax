@@ -11,7 +11,7 @@ const recognizedItemSchema = z.object({
 });
 
 const recognitionResponseSchema = z.object({
-  items: z.array(recognizedItemSchema).min(1).max(8),
+  items: z.array(recognizedItemSchema).max(8),
   confidence: z.enum(["low", "medium", "high"]),
   notes: z.string().max(300).optional(),
 });
@@ -51,7 +51,11 @@ export async function recognizeMealPhoto(
     system: SYSTEM_PROMPT,
     text: "Analyze this meal photo and return the JSON described in the system prompt.",
     image: { base64: imageBase64, mediaType },
-    maxTokens: 1200,
+    // A busy plate can legitimately need all 8 allowed items, each with a
+    // name plus five numeric fields -- 1200 tokens risked truncating valid
+    // JSON mid-response for exactly the multi-item photos this feature
+    // most needs to handle well.
+    maxTokens: 2048,
   });
 
   const parsed = parseJSONResponse<unknown>(raw);

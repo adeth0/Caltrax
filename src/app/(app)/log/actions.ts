@@ -20,12 +20,28 @@ async function requireUserId(): Promise<string> {
 
 export async function searchFoodsAction(query: string): Promise<FoodItem[]> {
   await requireUserId();
-  return searchOpenFoodFacts(query);
+  try {
+    return await searchOpenFoodFacts(query);
+  } catch (err) {
+    // FoodSearchBox has no error handling of its own around this call --
+    // an uncaught rejection here left the search box stuck silently
+    // (looking exactly like "search returns nothing") with no way to
+    // diagnose why from the client. Logging server-side and degrading to
+    // an empty result at least surfaces the existing "No results" message
+    // instead of a silent hang.
+    console.error("searchFoodsAction failed:", err);
+    return [];
+  }
 }
 
 export async function lookupBarcodeAction(barcode: string): Promise<FoodItem | null> {
   await requireUserId();
-  return lookupBarcode(barcode);
+  try {
+    return await lookupBarcode(barcode);
+  } catch (err) {
+    console.error("lookupBarcodeAction failed:", err);
+    return null;
+  }
 }
 
 interface LogMealParams {
@@ -89,16 +105,28 @@ export async function deleteMealEntryAction(entryId: string) {
 }
 
 /** Sends a downscaled photo to Claude and returns its structured meal-item guesses. */
+export type RecognizeMealPhotoResult =
+  { success: true; data: MealRecognitionResult } | { success: false; error: string };
+
 export async function recognizeMealPhotoAction(
   imageBase64: string,
   mediaType: string
-): Promise<MealRecognitionResult> {
-  await requireUserId();
+): Promise<RecognizeMealPhotoResult> {
   try {
-    return await recognizeMealPhoto(imageBase64, mediaType);
+    await requireUserId();
+    const data = await recognizeMealPhoto(imageBase64, mediaType);
+    return { success: true, data };
   } catch (err) {
-    if (err instanceof AIConfigError) throw err;
-    throw new Error("Couldn't analyze that photo — try again, or add the meal manually.");
+    // Logged server-side (visible in Vercel's Function logs against this
+    // request) since production redacts thrown Server Action error
+    // messages down to a generic message with only a digest -- without
+    // this log line, a failure here would be effectively undiagnosable
+    // from the client's perspective alone.
+    console.error("recognizeMealPhotoAction failed:", err);
+    if (err instanceof AIConfigError) {
+      return { success: false, error: err.message };
+    }
+    return { success: false, error: "Couldn't analyze that photo — try again, or add the meal manually." };
   }
 }
 

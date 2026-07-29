@@ -79,6 +79,7 @@ const SEARCH_FIELDS = [
 
 interface OFFNutriments {
   ["energy-kcal_100g"]?: number;
+  energy_100g?: number; // kJ -- fallback when energy-kcal_100g isn't populated
   proteins_100g?: number;
   carbohydrates_100g?: number;
   fat_100g?: number;
@@ -125,11 +126,15 @@ function gToMcg(value: number | undefined): number | undefined {
   return value !== undefined ? value * 1_000_000 : undefined;
 }
 
+const KJ_PER_KCAL = 4.184;
+
 function normalizeProduct(product: OFFProduct): FoodItem | null {
   const name = product.product_name?.trim();
   const n = product.nutriments;
-  // Skip products missing a name or core calorie data — not useful search results.
-  if (!name || !n || n["energy-kcal_100g"] === undefined) return null;
+  const caloriesPer100g =
+    n?.["energy-kcal_100g"] ?? (n?.energy_100g !== undefined ? n.energy_100g / KJ_PER_KCAL : undefined);
+  // Skip products missing a name or any usable calorie data — not useful search results.
+  if (!name || !n || caloriesPer100g === undefined) return null;
 
   return {
     id: `off-${product.code}`,
@@ -140,7 +145,7 @@ function normalizeProduct(product: OFFProduct): FoodItem | null {
     barcode: product.code,
     servingSizeG: product.serving_quantity,
     servingSizeLabel: product.serving_size,
-    caloriesPer100g: n["energy-kcal_100g"] ?? 0,
+    caloriesPer100g,
     proteinPer100g: n.proteins_100g ?? 0,
     carbsPer100g: n.carbohydrates_100g ?? 0,
     fatPer100g: n.fat_100g ?? 0,
