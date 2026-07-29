@@ -2,21 +2,51 @@ import { LogOut } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ProfileEditCard, type ProfileFormValues } from "@/components/settings/ProfileEditCard";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
+import {
+  WearableConnectionsCard,
+  type WearableConnectionRow,
+} from "@/components/settings/WearableConnectionsCard";
 import { db } from "@/lib/db";
+import { ACTIVITY_FROM_PRISMA, DIET_FROM_PRISMA, GOAL_FROM_PRISMA, SEX_FROM_PRISMA } from "@/lib/enumMap";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PROVIDERS } from "@/lib/wearables";
 import { signOutAction } from "./actions";
 
-export default async function SettingsPage() {
+interface SettingsPageProps {
+  searchParams: Promise<{ wearable_connected?: string; wearable_error?: string; provider?: string }>;
+}
+
+export default async function SettingsPage({ searchParams }: SettingsPageProps) {
+  const params = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const reminders = user
-    ? await db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
-    : [];
+  const [reminders, wearableConnections, profile] = await Promise.all([
+    user
+      ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
+      : Promise.resolve([]),
+    user ? db.wearableConnection.findMany({ where: { userId: user.id } }) : Promise.resolve([]),
+    user ? db.profile.findUnique({ where: { id: user.id } }) : Promise.resolve(null),
+  ]);
+
+  const profileFormValues: ProfileFormValues | null = profile
+    ? {
+        name: profile.name ?? "",
+        sex: SEX_FROM_PRISMA[profile.sex],
+        age: profile.age,
+        heightCm: profile.heightCm,
+        weightKg: profile.weightKg,
+        targetWeightKg: profile.targetWeightKg,
+        activityLevel: ACTIVITY_FROM_PRISMA[profile.activityLevel],
+        primaryGoal: GOAL_FROM_PRISMA[profile.primaryGoal],
+        dietaryPreference: DIET_FROM_PRISMA[profile.dietaryPreference],
+      }
+    : null;
 
   const reminderRows: ReminderRow[] = reminders.map((r: (typeof reminders)[number]) => ({
     id: r.id,
@@ -26,8 +56,28 @@ export default async function SettingsPage() {
     active: r.active,
   }));
 
+  const wearableRows: WearableConnectionRow[] = Object.values(PROVIDERS).map((adapter) => {
+    const existing = wearableConnections.find(
+      (c: (typeof wearableConnections)[number]) => c.provider === adapter.id
+    );
+    return {
+      provider: adapter.id,
+      label: adapter.label,
+      description: adapter.description,
+      connected: Boolean(existing),
+      lastSyncedAt: existing?.lastSyncedAt ? existing.lastSyncedAt.toLocaleString() : null,
+      lastSyncError: existing?.lastSyncError ?? null,
+    };
+  });
+
+  const wearableNotice = params.wearable_connected
+    ? { type: "connected" as const, provider: params.wearable_connected }
+    : params.wearable_error
+      ? { type: "error" as const, provider: params.provider, error: params.wearable_error }
+      : undefined;
+
   return (
-    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
+    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-text-primary">Settings</h1>
 
       <Card className="mt-4 flex items-center justify-between">
@@ -46,11 +96,15 @@ export default async function SettingsPage() {
         <RemindersCard reminders={reminderRows} />
       </div>
 
-      <Card className="mt-4">
-        <p className="text-sm text-text-secondary">
-          Profile editing, units, and full micronutrient targets land in a future update.
-        </p>
-      </Card>
+      <div className="mt-4">
+        <WearableConnectionsCard connections={wearableRows} notice={wearableNotice} />
+      </div>
+
+      {profileFormValues && (
+        <div className="mt-4">
+          <ProfileEditCard initial={profileFormValues} />
+        </div>
+      )}
 
       <Card className="mt-4">
         <p className="mb-3 text-sm font-medium text-text-primary">Account</p>

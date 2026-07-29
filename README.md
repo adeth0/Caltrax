@@ -39,8 +39,51 @@ once Supabase is configured (see below).
 5. Authentication → URL Configuration: add `https://caltrax.kavauralabs.com/auth/callback`
    and `http://localhost:3000/auth/callback` as redirect URLs.
 6. Run `npx prisma migrate dev` to create the app tables (`profiles`, `foods`,
-   `meal_entries`, `weight_logs`, `water_logs`, `reminders`) in the same Postgres
-   instance Supabase Auth uses.
+   `meal_entries`, `weight_logs`, `water_logs`, `reminders`, `wearable_connections`,
+   `activity_logs`) in the same Postgres instance Supabase Auth uses.
+
+## Wearable sync setup (optional — Phase 4)
+
+Fitbit and Withings sync via cloud OAuth APIs, no native app needed. Apple Health
+and Android Health Connect are deliberately **not** here — both are on-device-only
+frameworks with no cloud REST API, so they need the native app wrapper (a later
+phase) instead.
+
+1. **Fitbit**: register a "Personal" app at [dev.fitbit.com/apps/new](https://dev.fitbit.com/apps/new)
+   (instant approval, no review wait). OAuth 2.0 Application Type: **Server**.
+   Redirect URI: `https://caltrax.kavauralabs.com/api/wearables/FITBIT/callback`
+   (add `http://localhost:3000/api/wearables/FITBIT/callback` too for local dev —
+   Fitbit allows multiple redirect URIs on one app). Copy the Client ID/Secret into
+   `FITBIT_CLIENT_ID`/`FITBIT_CLIENT_SECRET`.
+2. **Withings**: register an app at [developer.withings.com](https://developer.withings.com)
+   (also self-serve, instant). Callback URL:
+   `https://caltrax.kavauralabs.com/api/wearables/WITHINGS/callback` (+ localhost
+   equivalent). Copy the Client ID/Secret into `WITHINGS_CLIENT_ID`/`WITHINGS_CLIENT_SECRET`.
+3. **Oura**: register an OAuth app at [cloud.ouraring.com/oauth/applications](https://cloud.ouraring.com/oauth/applications)
+   (self-serve, instant). Redirect URI: `https://caltrax.kavauralabs.com/api/wearables/OURA/callback`
+   (+ localhost equivalent). Copy into `OURA_CLIENT_ID`/`OURA_CLIENT_SECRET`.
+4. **Whoop**: register an app at [developer.whoop.com](https://developer.whoop.com). The OAuth
+   app itself is self-serve, but Whoop has historically gated wider production/
+   user-facing access behind its own separate review — expect this one to take
+   longer than the other three to fully go live. Redirect URI:
+   `https://caltrax.kavauralabs.com/api/wearables/WHOOP/callback` (+ localhost
+   equivalent). Copy into `WHOOP_CLIENT_ID`/`WHOOP_CLIENT_SECRET`.
+5. Add `/api/cron/wearables-sync` to the same external scheduler used for reminders
+   (e.g. cron-job.org), with the same `CRON_SECRET` bearer header. Activity/weight
+   data doesn't need the 5-15 min granularity reminders do — once every 30-60 min
+   is plenty, since none of these providers update that frequently anyway.
+
+**Garmin is deliberately not implemented yet.** Its Health API is push/webhook-based
+(Garmin POSTs data to a URL you register, plus a separate backfill API for history) —
+a meaningfully different architecture from the poll-for-recent-data model the other
+four use — and requires a formal partner application with real review time, unlike
+the instant self-serve signup for Fitbit/Withings/Oura. Apply at
+[developer.garmin.com/health-api](https://developer.garmin.com/gc-developer-program/health-api/)
+if you want this eventually; the actual webhook integration is best built once you
+can see the real approved contract rather than guessed at beforehand.
+
+Users connect their own devices from Settings → Connected devices — nothing else
+to configure per-user.
 
 ## Testing
 
@@ -117,8 +160,21 @@ scheduler (e.g. cron-job.org) every 5-15 min instead of Vercel's own cron — se
 every dashboard load) and weekly/monthly/yearly reports (`/progress` → Reports tab: avg calories/macros/water
 vs target, weight change, and a daily calorie chart vs target line). This closes out Phase 3.
 
-**Phase 4 — platform** 11. Wearable/health-platform integrations (Apple Health, Health Connect, Garmin,
-Fitbit, Whoop, Oura, smart scales, CGMs). 12. Premium subscription, social features, family accounts, multi-language.
+**Phase 4 — platform** 11. ✅ Wearable sync — Fitbit and Withings (slice 1), then Oura and Whoop
+(slice 2). Steps/active-calorie data feeds a real "earned calories from exercise" adjustment on
+the dashboard (previously a hardcoded `burned={0}`); Withings weigh-ins auto-log into weight
+history. All four via cloud OAuth, no native app required. Garmin and CGMs (Dexcom/Libre) not
+yet done — Garmin's Health API is push/webhook-based (not poll-for-recent like the other four)
+and needs a formal partner application with real review time, so it's deferred until that's
+actually approved. Apple Health / Android Health Connect are structurally blocked until the
+native app wrapper exists (both are on-device-only frameworks, no cloud API). 12. Premium subscription, social features, family accounts, multi-language.
+
+**Fixed along the way:** `proxy.ts`'s session gate was redirecting _every_ unauthenticated
+request to `/login` — including `/api/cron/*` calls from an external scheduler, which
+authenticate via `CRON_SECRET` instead of a session and never carry one. This made
+`/api/cron/reminders` unreachable in production (redirected before its own auth check ever
+ran) — reminders were very likely never firing. Fixed by exempting `/api/cron/*` from the
+session gate; those routes already do their own bearer-token check.
 
 ## Deploying
 

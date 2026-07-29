@@ -7,6 +7,12 @@ export const loginSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 
+export const magicLinkSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
+});
+
+export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
+
 export const signupSchema = z
   .object({
     email: z.string().min(1, "Email is required").email("Enter a valid email address"),
