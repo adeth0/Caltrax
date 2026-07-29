@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { FOOD_SOURCE_TO_PRISMA, MEAL_TO_PRISMA } from "@/lib/enumMap";
-import { lookupBarcode, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
+import { lookupBarcode, searchLocalFoods, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
 import { recognizeMealPhoto, type MealRecognitionResult } from "@/lib/ai/mealRecognition";
 import { AIConfigError } from "@/lib/ai/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -20,12 +20,38 @@ async function requireUserId(): Promise<string> {
 
 export async function searchFoodsAction(query: string): Promise<FoodItem[]> {
   await requireUserId();
-  return searchOpenFoodFacts(query);
+  try {
+    // Local first: seeded common foods (fruits, vegetables, protein
+    // variants — the exact things OFF, a crowdsourced barcode database,
+    // covers poorly for unbranded items) plus anything already cached
+    // from a previous OFF lookup. Falls straight through to live OFF
+    // results for anything not already known locally, so nothing is
+    // lost versus the old OFF-only behavior.
+    const [local, remote] = await Promise.all([
+      searchLocalFoods(query),
+      searchOpenFoodFacts(query).catch((err) => {
+        console.error("searchFoodsAction (OFF) failed:", err);
+        return [];
+      }),
+    ]);
+
+    const seenNames = new Set(local.map((f) => f.name.toLowerCase()));
+    const deduped = remote.filter((f) => !seenNames.has(f.name.toLowerCase()));
+    return [...local, ...deduped];
+  } catch (err) {
+    console.error("searchFoodsAction failed:", err);
+    return [];
+  }
 }
 
 export async function lookupBarcodeAction(barcode: string): Promise<FoodItem | null> {
   await requireUserId();
-  return lookupBarcode(barcode);
+  try {
+    return await lookupBarcode(barcode);
+  } catch (err) {
+    console.error("lookupBarcodeAction failed:", err);
+    return null;
+  }
 }
 
 interface LogMealParams {
@@ -89,16 +115,28 @@ export async function deleteMealEntryAction(entryId: string) {
 }
 
 /** Sends a downscaled photo to Claude and returns its structured meal-item guesses. */
+export type RecognizeMealPhotoResult =
+  { success: true; data: MealRecognitionResult } | { success: false; error: string };
+
 export async function recognizeMealPhotoAction(
   imageBase64: string,
   mediaType: string
-): Promise<MealRecognitionResult> {
-  await requireUserId();
+): Promise<RecognizeMealPhotoResult> {
   try {
-    return await recognizeMealPhoto(imageBase64, mediaType);
+    await requireUserId();
+    const data = await recognizeMealPhoto(imageBase64, mediaType);
+    return { success: true, data };
   } catch (err) {
-    if (err instanceof AIConfigError) throw err;
-    throw new Error("Couldn't analyze that photo — try again, or add the meal manually.");
+    // Logged server-side (visible in Vercel's Function logs against this
+    // request) since production redacts thrown Server Action error
+    // messages down to a generic message with only a digest -- without
+    // this log line, a failure here would be effectively undiagnosable
+    // from the client's perspective alone.
+    console.error("recognizeMealPhotoAction failed:", err);
+    if (err instanceof AIConfigError) {
+      return { success: false, error: err.message };
+    }
+    return { success: false, error: "Couldn't analyze that photo — try again, or add the meal manually." };
   }
 }
 
