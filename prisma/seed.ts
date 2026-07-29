@@ -10,6 +10,16 @@
  * Run with: npm run db:seed
  * (safe to re-run — upserts by a stable slug, never duplicates)
  */
+/**
+ * Prisma's CLI only auto-loads a file literally named `.env` -- not
+ * `.env.local`, which is the Next.js convention this project actually
+ * uses everywhere else. Without this, DATABASE_URL (and everything else)
+ * is simply missing when running this script standalone, even though
+ * the exact same variables work fine for `next dev`/`next build`.
+ */
+import { config } from "dotenv";
+config({ path: ".env.local" });
+
 import { PrismaClient, FoodSource } from "@prisma/client";
 
 const db = new PrismaClient();
