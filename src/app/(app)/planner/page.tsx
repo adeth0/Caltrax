@@ -71,7 +71,7 @@ export default async function PlannerPage({ searchParams }: PlannerPageProps) {
   const days = Array.from({ length: 7 }, (_, i) => format(addDays(weekStart, i), "yyyy-MM-dd"));
 
   return (
-    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
+    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
         <h1 className="font-display text-2xl font-bold text-text-primary">Meal planner</h1>
         <p className="text-sm text-text-tertiary">Plan ahead, then mark meals eaten when you have them.</p>

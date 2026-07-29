@@ -60,7 +60,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       : undefined;
 
   return (
-    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
+    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-text-primary">Settings</h1>
 
       <Card className="mt-4 flex items-center justify-between">

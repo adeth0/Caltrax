@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import type { WearableProvider } from "@prisma/client";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { disconnectWearableAction, manualSyncWearableAction } from "@/app/(app)/settings/actions";
 
@@ -55,7 +55,7 @@ export function WearableConnectionsCard({ connections, notice }: WearableConnect
   }
 
   return (
-    <GlassCard>
+    <Card>
       <p className="mb-1 text-sm font-medium text-text-primary">Connected devices</p>
       <p className="mb-3 text-xs text-text-tertiary">
         Sync steps and active calories from a fitness tracker, or auto-log weigh-ins from a smart scale.
@@ -82,7 +82,7 @@ export function WearableConnectionsCard({ connections, notice }: WearableConnect
                   <p className="text-xs text-text-tertiary">{c.description}</p>
                 </div>
                 {!c.connected && (
-                  <Button asChild variant="glass" size="sm" className="shrink-0">
+                  <Button asChild variant="secondary" size="sm" className="shrink-0">
                     <a href={`/api/wearables/${c.provider}/connect`}>Connect</a>
                   </Button>
                 )}
@@ -130,6 +130,6 @@ export function WearableConnectionsCard({ connections, notice }: WearableConnect
           );
         })}
       </div>
-    </GlassCard>
+    </Card>
   );
 }
