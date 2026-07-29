@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
 
 export default function SignupPage() {
+  const searchParams = useSearchParams();
+  const accountDeleted = searchParams.get("accountDeleted") === "1";
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,7 +28,7 @@ export default function SignupPage() {
     setServerError(null);
     setIsSubmitting(true);
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback?redirectTo=/onboarding` },
@@ -36,6 +39,18 @@ export default function SignupPage() {
       setServerError(error.message);
       return;
     }
+
+    // Supabase deliberately returns a success-looking response even when
+    // the email is already registered (to avoid leaking which emails
+    // exist) -- the documented way to tell the difference is an empty
+    // identities array on the returned user. Without this check, someone
+    // with an existing account gets told to "check your email" for a
+    // confirmation link that's never coming, with no way back in.
+    if (data.user && data.user.identities?.length === 0) {
+      setServerError("An account already exists for this email. Try signing in instead.");
+      return;
+    }
+
     setSubmitted(true);
   }
 
@@ -55,6 +70,11 @@ export default function SignupPage() {
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
+        {accountDeleted && (
+          <p className="border-accent-success/30 bg-accent-success/10 mb-4 rounded-control border p-3 text-sm text-accent-success">
+            Your account and all its data have been permanently deleted.
+          </p>
+        )}
         <h1 className="font-display text-2xl font-bold text-text-primary">Create your account</h1>
         <p className="mt-1 text-sm text-text-secondary">Start tracking with Caltrax.</p>
 

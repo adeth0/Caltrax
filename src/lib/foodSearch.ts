@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { FOOD_SOURCE_TO_PRISMA } from "@/lib/enumMap";
+import { FOOD_SOURCE_FROM_PRISMA, FOOD_SOURCE_TO_PRISMA } from "@/lib/enumMap";
 import type { FoodItem } from "@/types";
 
 /**
@@ -79,6 +79,7 @@ const SEARCH_FIELDS = [
 
 interface OFFNutriments {
   ["energy-kcal_100g"]?: number;
+  energy_100g?: number; // kJ -- fallback when energy-kcal_100g isn't populated
   proteins_100g?: number;
   carbohydrates_100g?: number;
   fat_100g?: number;
@@ -125,11 +126,15 @@ function gToMcg(value: number | undefined): number | undefined {
   return value !== undefined ? value * 1_000_000 : undefined;
 }
 
+const KJ_PER_KCAL = 4.184;
+
 function normalizeProduct(product: OFFProduct): FoodItem | null {
   const name = product.product_name?.trim();
   const n = product.nutriments;
-  // Skip products missing a name or core calorie data — not useful search results.
-  if (!name || !n || n["energy-kcal_100g"] === undefined) return null;
+  const caloriesPer100g =
+    n?.["energy-kcal_100g"] ?? (n?.energy_100g !== undefined ? n.energy_100g / KJ_PER_KCAL : undefined);
+  // Skip products missing a name or any usable calorie data — not useful search results.
+  if (!name || !n || caloriesPer100g === undefined) return null;
 
   return {
     id: `off-${product.code}`,
@@ -140,7 +145,7 @@ function normalizeProduct(product: OFFProduct): FoodItem | null {
     barcode: product.code,
     servingSizeG: product.serving_quantity,
     servingSizeLabel: product.serving_size,
-    caloriesPer100g: n["energy-kcal_100g"] ?? 0,
+    caloriesPer100g,
     proteinPer100g: n.proteins_100g ?? 0,
     carbsPer100g: n.carbohydrates_100g ?? 0,
     fatPer100g: n.fat_100g ?? 0,
@@ -160,6 +165,53 @@ function normalizeProduct(product: OFFProduct): FoodItem | null {
     zincMgPer100g: gToMg(n.zinc_100g),
     imageUrl: product.image_front_small_url,
   };
+}
+
+/**
+ * Searches foods already cached locally — seeded reference foods (common
+ * fruits/vegetables/proteins Open Food Facts covers poorly as an
+ * unbranded item), plus anything previously cached from OFF or logged as
+ * a custom food. Merged with live OFF results in searchFoodsAction so
+ * seeded staples always show up reliably regardless of OFF's coverage,
+ * rather than depending entirely on an external, crowdsourced database
+ * for foods this app can just know about directly.
+ */
+export async function searchLocalFoods(query: string, take = 10): Promise<FoodItem[]> {
+  const rows = await db.food.findMany({
+    where: { name: { contains: query, mode: "insensitive" } },
+    take,
+    orderBy: { name: "asc" },
+  });
+
+  return rows.map((row): FoodItem => ({
+    id: row.id,
+    source: FOOD_SOURCE_FROM_PRISMA[row.source],
+    sourceId: row.sourceId,
+    name: row.name,
+    brand: row.brand ?? undefined,
+    barcode: row.barcode ?? undefined,
+    servingSizeG: row.servingSizeG ?? undefined,
+    servingSizeLabel: row.servingSizeLabel ?? undefined,
+    caloriesPer100g: row.caloriesPer100g,
+    proteinPer100g: row.proteinPer100g,
+    carbsPer100g: row.carbsPer100g,
+    fatPer100g: row.fatPer100g,
+    fibrePer100g: row.fibrePer100g ?? undefined,
+    sugarPer100g: row.sugarPer100g ?? undefined,
+    saturatedFatPer100g: row.saturatedFatPer100g ?? undefined,
+    sodiumMgPer100g: row.sodiumMgPer100g ?? undefined,
+    potassiumMgPer100g: row.potassiumMgPer100g ?? undefined,
+    vitaminAPer100g: row.vitaminAPer100g ?? undefined,
+    vitaminCPer100g: row.vitaminCPer100g ?? undefined,
+    vitaminDPer100g: row.vitaminDPer100g ?? undefined,
+    vitaminEPer100g: row.vitaminEPer100g ?? undefined,
+    vitaminKPer100g: row.vitaminKPer100g ?? undefined,
+    calciumMgPer100g: row.calciumMgPer100g ?? undefined,
+    ironMgPer100g: row.ironMgPer100g ?? undefined,
+    magnesiumMgPer100g: row.magnesiumMgPer100g ?? undefined,
+    zincMgPer100g: row.zincMgPer100g ?? undefined,
+    imageUrl: row.imageUrl ?? undefined,
+  }));
 }
 
 /** Free-text food search via Open Food Facts. Returns normalized, ready-to-log results. */

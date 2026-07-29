@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -13,7 +14,8 @@ export function DesktopSidebar() {
   return (
     <aside className="card-surface sticky top-4 hidden h-[calc(100vh-2rem)] w-64 flex-col justify-between p-4 md:flex">
       <div>
-        <div className="px-2 py-3">
+        <div className="flex items-center gap-2 px-2 py-3">
+          <Image src="/icons/icon-192.png" alt="" width={28} height={28} className="rounded-md" />
           <span className="font-display text-lg font-bold text-text-primary">Caltrax</span>
         </div>
         <nav className="mt-4 flex flex-col gap-1">
