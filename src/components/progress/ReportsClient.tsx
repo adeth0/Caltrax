@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { getReportAction } from "@/app/(app)/progress/actions";
 import type { Report, ReportPeriod } from "@/lib/reports";
@@ -34,8 +34,8 @@ export function ReportsClient() {
 
   return (
     <div className="flex flex-col gap-4">
-      <GlassCard>
-        <div className="flex gap-1 rounded-control bg-white/5 p-1">
+      <Card>
+        <div className="flex gap-1 rounded-control bg-surface-raised p-1">
           {PERIOD_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -100,27 +100,34 @@ export function ReportsClient() {
                 <LineChart data={report.dailySeries} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
                   <XAxis
                     dataKey="date"
-                    stroke="rgba(255,255,255,0.35)"
+                    stroke="var(--text-tertiary)"
                     tickLine={false}
                     axisLine={false}
                     fontSize={10}
                     interval="preserveStartEnd"
                   />
-                  <YAxis stroke="rgba(255,255,255,0.35)" tickLine={false} axisLine={false} fontSize={11} />
+                  <YAxis stroke="var(--text-tertiary)" tickLine={false} axisLine={false} fontSize={11} />
                   <Tooltip
                     contentStyle={{
-                      background: "rgba(15,17,20,0.9)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 12,
+                      background: "var(--surface-raised)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 10,
                       fontSize: 12,
+                      color: "var(--text-primary)",
                     }}
                   />
                   <ReferenceLine
                     y={report.targetCalories}
-                    stroke="rgba(255,255,255,0.25)"
+                    stroke="var(--border-strong)"
                     strokeDasharray="4 4"
                   />
-                  <Line type="monotone" dataKey="calories" stroke="#0A84FF" strokeWidth={2} dot={false} />
+                  <Line
+                    type="monotone"
+                    dataKey="calories"
+                    stroke="var(--brand)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -129,7 +136,7 @@ export function ReportsClient() {
             </p>
           </>
         )}
-      </GlassCard>
+      </Card>
     </div>
   );
 }

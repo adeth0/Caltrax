@@ -48,7 +48,7 @@ export default async function FoodsPage() {
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
       <header className="mb-4">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Foods</h1>
+        <h1 className="font-display text-2xl font-bold text-text-primary">Foods</h1>
         <p className="text-sm text-text-tertiary">Search Open Food Facts, or build your own recipes.</p>
       </header>
 

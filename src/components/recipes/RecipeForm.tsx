@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
@@ -75,7 +75,7 @@ export function RecipeForm({ onSaved, onCancel }: RecipeFormProps) {
   );
 
   return (
-    <GlassCard>
+    <Card>
       <p className="mb-3 text-sm font-medium text-text-primary">New recipe</p>
       <div className="flex flex-col gap-3">
         <Input placeholder="Recipe name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -99,7 +99,7 @@ export function RecipeForm({ onSaved, onCancel }: RecipeFormProps) {
             {items.map((item, index) => (
               <li
                 key={`${item.food.id}-${index}`}
-                className="flex items-center gap-2 rounded-control bg-white/5 px-3 py-2"
+                className="flex items-center gap-2 rounded-control bg-surface-raised px-3 py-2"
               >
                 <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{item.food.name}</span>
                 <Input
@@ -142,11 +142,11 @@ export function RecipeForm({ onSaved, onCancel }: RecipeFormProps) {
           <Button type="button" onClick={handleSave} disabled={isSaving} className="flex-1">
             {isSaving ? "Saving…" : "Save recipe"}
           </Button>
-          <Button type="button" variant="glass" onClick={onCancel}>
+          <Button type="button" variant="secondary" onClick={onCancel}>
             Cancel
           </Button>
         </div>
       </div>
-    </GlassCard>
+    </Card>
   );
 }

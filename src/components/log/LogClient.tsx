@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Camera, Star } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/Modal";
@@ -255,7 +255,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
 
   return (
     <div className="flex flex-col gap-4">
-      <GlassCard>
+      <Card>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {MEAL_TABS.map((tab) => (
             <button
@@ -266,7 +266,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
                 "control focus-ring touch-target shrink-0 whitespace-nowrap px-4 py-2 text-sm font-medium transition-colors",
                 mealType === tab.value
                   ? "bg-accent-info/20 text-accent-info"
-                  : "bg-white/5 text-text-secondary hover:bg-white/10"
+                  : "bg-surface-raised text-text-secondary hover:bg-border-strong"
               )}
             >
               {tab.label}
@@ -304,7 +304,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         <div className="mt-3 flex gap-2">
           <Button
             type="button"
-            variant="glass"
+            variant="secondary"
             size="sm"
             onClick={() => setScannerOpen(true)}
             disabled={isLookingUp}
@@ -331,7 +331,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         </div>
 
         {showCustomForm && (
-          <div className="mt-4 flex flex-col gap-3 rounded-control border border-white/10 bg-white/5 p-4">
+          <div className="mt-4 flex flex-col gap-3 rounded-control border border-border bg-surface-raised p-4">
             <p className="text-sm font-medium text-text-primary">Add a custom food</p>
             <Input
               placeholder="Food name"
@@ -397,7 +397,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         />
 
         {selectedFood && (
-          <div className="mt-4 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-4">
+          <div className="border-accent-info/30 bg-accent-info/10 mt-4 flex flex-col gap-3 rounded-control border p-4">
             <div className="flex items-center justify-between gap-2">
               <p className="min-w-0 truncate text-sm font-medium text-text-primary">{selectedFood.name}</p>
               <div className="flex shrink-0 items-center gap-2">
@@ -452,7 +452,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         )}
 
         {quickFood && (
-          <div className="mt-4 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-4">
+          <div className="border-accent-info/30 bg-accent-info/10 mt-4 flex flex-col gap-3 rounded-control border p-4">
             <div className="flex items-center justify-between gap-2">
               <p className="min-w-0 truncate text-sm font-medium text-text-primary">{quickFood.name}</p>
               <button
@@ -487,9 +487,9 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
             </Button>
           </div>
         )}
-      </GlassCard>
+      </Card>
 
-      <GlassCard>
+      <Card>
         <p className="mb-3 text-sm font-medium text-text-primary">Today&apos;s log</p>
         {todayEntries.length === 0 ? (
           <p className="text-sm text-text-tertiary">Nothing logged yet today — search above to add a meal.</p>
@@ -506,7 +506,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
                     {g.entries.map((entry) => (
                       <li
                         key={entry.id}
-                        className="flex items-center justify-between gap-3 rounded-control bg-white/5 px-3 py-2"
+                        className="flex items-center justify-between gap-3 rounded-control bg-surface-raised px-3 py-2"
                       >
                         <div className="min-w-0">
                           <p className="truncate text-sm text-text-primary">{entry.foodName}</p>
@@ -529,7 +529,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
               ))}
           </div>
         )}
-      </GlassCard>
+      </Card>
 
       <Modal
         open={pendingDelete !== null}
@@ -542,7 +542,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         }
       >
         <div className="flex gap-3">
-          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+          <Button type="button" variant="secondary" className="flex-1" onClick={() => setPendingDelete(null)}>
             Cancel
           </Button>
           <Button
@@ -576,7 +576,7 @@ function QuickAddRow({ label, foods, onSelect, onToggleFavourite, disabled }: Qu
         {foods.map((food) => (
           <div
             key={food.foodId}
-            className="control flex shrink-0 items-center gap-1.5 border border-white/10 bg-white/5 py-1.5 pl-3 pr-1.5"
+            className="control flex shrink-0 items-center gap-1.5 border border-border bg-surface-raised py-1.5 pl-3 pr-1.5"
           >
             <button
               type="button"

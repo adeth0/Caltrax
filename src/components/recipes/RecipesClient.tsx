@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/Modal";
@@ -96,16 +96,16 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
       )}
 
       {recipes.length === 0 && !showForm && (
-        <GlassCard>
+        <Card>
           <p className="text-sm text-text-tertiary">
             No recipes yet — bundle foods you eat together (like a breakfast bowl or a protein shake) so you
             can log the whole thing in one tap.
           </p>
-        </GlassCard>
+        </Card>
       )}
 
       {recipes.map((recipe) => (
-        <GlassCard key={recipe.id}>
+        <Card key={recipe.id}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="truncate font-medium text-text-primary">{recipe.name}</p>
@@ -150,14 +150,14 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
           {loggingId !== recipe.id ? (
             <Button
               type="button"
-              variant="glass"
+              variant="secondary"
               onClick={() => openLogPanel(recipe.id)}
               className="mt-3 w-full"
             >
               Log this recipe
             </Button>
           ) : (
-            <div className="mt-3 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-3">
+            <div className="border-accent-info/30 bg-accent-info/10 mt-3 flex flex-col gap-3 rounded-control border p-3">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {MEAL_OPTIONS.map((opt) => (
                   <button
@@ -168,7 +168,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
                       "control focus-ring touch-target shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-colors",
                       mealType === opt.value
                         ? "bg-accent-info/20 text-accent-info"
-                        : "bg-white/5 text-text-secondary hover:bg-white/10"
+                        : "bg-surface-raised text-text-secondary hover:bg-border-strong"
                     )}
                   >
                     {opt.label}
@@ -190,13 +190,13 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
                 <Button type="button" onClick={handleLog} disabled={isLogging} className="flex-1">
                   {isLogging ? "Adding…" : `Add to ${mealType}`}
                 </Button>
-                <Button type="button" variant="glass" onClick={() => setLoggingId(null)}>
+                <Button type="button" variant="secondary" onClick={() => setLoggingId(null)}>
                   Cancel
                 </Button>
               </div>
             </div>
           )}
-        </GlassCard>
+        </Card>
       ))}
 
       <Modal
@@ -208,7 +208,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
         description={pendingDelete ? `${pendingDelete.name} — this can't be undone.` : undefined}
       >
         <div className="flex gap-3">
-          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+          <Button type="button" variant="secondary" className="flex-1" onClick={() => setPendingDelete(null)}>
             Cancel
           </Button>
           <Button

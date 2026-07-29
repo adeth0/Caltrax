@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/Modal";
@@ -72,7 +72,7 @@ export function ProgressClient({
 
   return (
     <div className="flex flex-col gap-4">
-      <GlassCard>
+      <Card>
         <p className="mb-3 text-sm font-medium text-text-primary">Log today&apos;s weight</p>
         <div className="flex items-center gap-3">
           <Input
@@ -90,7 +90,7 @@ export function ProgressClient({
           </Button>
         </div>
         {error && <p className="mt-2 text-xs text-accent-danger">{error}</p>}
-      </GlassCard>
+      </Card>
 
       {weightPoints.length > 0 ? (
         <WeightTrendCard
@@ -98,18 +98,18 @@ export function ProgressClient({
           goalWeightKg={goalWeightKg}
         />
       ) : (
-        <GlassCard>
+        <Card>
           <p className="text-sm text-text-tertiary">
             No weigh-ins yet — log your first one above to start your trend.
           </p>
-        </GlassCard>
+        </Card>
       )}
 
       <HydrationCard consumedMl={waterConsumedMl} targetMl={waterTargetMl} onAdd={handleAddWater} />
       {isSavingWater && <p className="-mt-2 text-xs text-text-tertiary">Saving…</p>}
 
       {weightPoints.length > 0 && (
-        <GlassCard>
+        <Card>
           <p className="mb-3 text-sm font-medium text-text-primary">Weigh-in history</p>
           <ul className="flex flex-col gap-2">
             {[...weightPoints]
@@ -118,7 +118,7 @@ export function ProgressClient({
               .map((p) => (
                 <li
                   key={p.id}
-                  className="flex items-center justify-between rounded-control bg-white/5 px-3 py-2"
+                  className="flex items-center justify-between rounded-control bg-surface-raised px-3 py-2"
                 >
                   <span className="text-sm text-text-secondary">{p.date}</span>
                   <div className="flex items-center gap-3">
@@ -135,7 +135,7 @@ export function ProgressClient({
                 </li>
               ))}
           </ul>
-        </GlassCard>
+        </Card>
       )}
 
       <Modal
@@ -149,7 +149,7 @@ export function ProgressClient({
         }
       >
         <div className="flex gap-3">
-          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingDelete(null)}>
+          <Button type="button" variant="secondary" className="flex-1" onClick={() => setPendingDelete(null)}>
             Cancel
           </Button>
           <Button

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
@@ -47,8 +47,8 @@ export default function OnboardingForm() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center p-4 py-10 sm:p-6">
-      <GlassCard>
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Let&apos;s set you up</h1>
+      <Card>
+        <h1 className="font-display text-2xl font-bold text-text-primary">Let&apos;s set you up</h1>
         <p className="mt-1 text-sm text-text-secondary">
           A few details so Caltrax can calculate your calorie and macro targets. You can change any of this
           later in Settings.
@@ -159,7 +159,7 @@ export default function OnboardingForm() {
             {isPending ? "Saving…" : "Save and see my targets"}
           </Button>
         </form>
-      </GlassCard>
+      </Card>
     </main>
   );
 }

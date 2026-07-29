@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 
 interface HydrationCardProps {
   consumedMl: number;
@@ -15,14 +15,14 @@ export function HydrationCard({ consumedMl, targetMl, onAdd }: HydrationCardProp
   const pct = targetMl > 0 ? Math.min(1, consumedMl / targetMl) : 0;
 
   return (
-    <GlassCard>
+    <Card>
       <div className="flex items-center justify-between">
         <p className="text-sm text-text-secondary">Hydration</p>
         <p className="text-xs text-text-tertiary">
           {(consumedMl / 1000).toFixed(1)}L / {(targetMl / 1000).toFixed(1)}L
         </p>
       </div>
-      <div className="mt-3 h-2.5 w-full overflow-hidden rounded-pill bg-white/10">
+      <div className="mt-3 h-2.5 w-full overflow-hidden rounded-pill bg-surface-raised">
         <motion.div
           className="h-full rounded-pill bg-accent-info"
           initial={{ width: 0 }}
@@ -36,12 +36,12 @@ export function HydrationCard({ consumedMl, targetMl, onAdd }: HydrationCardProp
             key={ml}
             type="button"
             onClick={() => onAdd?.(ml)}
-            className="control focus-ring touch-target flex-1 bg-white/5 text-sm text-text-secondary hover:bg-white/10"
+            className="control focus-ring touch-target flex-1 bg-surface-raised text-sm text-text-secondary hover:bg-border-strong"
           >
             +{ml >= 1000 ? `${ml / 1000}L` : `${ml}ml`}
           </button>
         ))}
       </div>
-    </GlassCard>
+    </Card>
   );
 }

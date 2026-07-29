@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { generateInsightsAction } from "@/app/(app)/progress/actions";
@@ -26,10 +26,10 @@ export function InsightsCard() {
   }
 
   return (
-    <GlassCard>
+    <Card>
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium text-text-primary">AI insights</p>
-        <div className="flex gap-1 rounded-control bg-white/5 p-1">
+        <div className="flex gap-1 rounded-control bg-surface-raised p-1">
           {(["week", "month"] as const).map((p) => (
             <button
               key={p}
@@ -72,7 +72,7 @@ export function InsightsCard() {
               </li>
             ))}
           </ul>
-          <div className="rounded-control bg-accent-info/10 p-3">
+          <div className="bg-accent-info/10 rounded-control p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-accent-info">Suggestion</p>
             <p className="mt-1 text-sm text-text-secondary">{result.suggestion}</p>
           </div>
@@ -85,6 +85,6 @@ export function InsightsCard() {
           </button>
         </div>
       )}
-    </GlassCard>
+    </Card>
   );
 }

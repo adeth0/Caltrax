@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -49,8 +49,8 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <GlassCard className="w-full max-w-sm">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Welcome back</h1>
+      <Card className="w-full max-w-sm">
+        <h1 className="font-display text-2xl font-bold text-text-primary">Welcome back</h1>
         <p className="mt-1 text-sm text-text-secondary">Sign in to continue to Caltrax.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col gap-4" noValidate>
@@ -76,12 +76,12 @@ export default function LoginPage() {
         </form>
 
         <div className="my-5 flex items-center gap-3 text-xs text-text-tertiary">
-          <span className="h-px flex-1 bg-white/10" />
+          <span className="h-px flex-1 bg-surface-raised" />
           or
-          <span className="h-px flex-1 bg-white/10" />
+          <span className="h-px flex-1 bg-surface-raised" />
         </div>
 
-        <Button type="button" variant="glass" className="w-full" onClick={signInWithGoogle}>
+        <Button type="button" variant="secondary" className="w-full" onClick={signInWithGoogle}>
           Continue with Google
         </Button>
 
@@ -91,7 +91,7 @@ export default function LoginPage() {
             Create an account
           </Link>
         </p>
-      </GlassCard>
+      </Card>
     </main>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 
 export default function RootError({
   error,
@@ -18,15 +18,15 @@ export default function RootError({
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <GlassCard className="w-full max-w-sm text-center">
-        <h2 className="font-display text-lg font-semibold text-text-primary">Something went wrong</h2>
+      <Card className="w-full max-w-sm text-center">
+        <h2 className="font-display text-lg font-bold text-text-primary">Something went wrong</h2>
         <p className="mt-2 text-sm text-text-secondary">
           The page hit an unexpected error. You can try again, or head back to the dashboard.
         </p>
         <Button className="mt-5 w-full" onClick={reset}>
           Try again
         </Button>
-      </GlassCard>
+      </Card>
     </div>
   );
 }

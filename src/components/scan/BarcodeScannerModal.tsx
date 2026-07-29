@@ -126,7 +126,7 @@ export function BarcodeScannerModal({ open, onOpenChange, onDetected }: BarcodeS
           <video ref={videoRef} muted playsInline className="h-full w-full object-cover" />
           <canvas ref={canvasRef} className="hidden" />
           {isScanning && (
-            <div className="pointer-events-none absolute inset-8 rounded-lg border-2 border-accent-info/70" />
+            <div className="border-accent-info/70 pointer-events-none absolute inset-8 rounded-lg border-2" />
           )}
         </div>
 

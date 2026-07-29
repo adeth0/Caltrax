@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -42,20 +42,20 @@ export default function SignupPage() {
   if (submitted) {
     return (
       <main className="flex min-h-screen items-center justify-center p-4">
-        <GlassCard className="w-full max-w-sm text-center">
-          <h1 className="font-display text-xl font-semibold text-text-primary">Check your email</h1>
+        <Card className="w-full max-w-sm text-center">
+          <h1 className="font-display text-xl font-bold text-text-primary">Check your email</h1>
           <p className="mt-2 text-sm text-text-secondary">
             We&apos;ve sent a confirmation link — open it to finish creating your account.
           </p>
-        </GlassCard>
+        </Card>
       </main>
     );
   }
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <GlassCard className="w-full max-w-sm">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Create your account</h1>
+      <Card className="w-full max-w-sm">
+        <h1 className="font-display text-2xl font-bold text-text-primary">Create your account</h1>
         <p className="mt-1 text-sm text-text-secondary">Start tracking with Caltrax.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col gap-4" noValidate>
@@ -97,7 +97,7 @@ export default function SignupPage() {
             Sign in
           </Link>
         </p>
-      </GlassCard>
+      </Card>
     </main>
   );
 }

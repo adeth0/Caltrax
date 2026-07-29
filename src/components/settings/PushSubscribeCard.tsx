@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import {
   sendTestPushAction,
@@ -126,7 +126,7 @@ export function PushSubscribeCard() {
   }
 
   return (
-    <GlassCard>
+    <Card>
       <p className="text-sm font-medium text-text-primary">Push notifications</p>
 
       {state === "checking" && <p className="mt-2 text-xs text-text-tertiary">Checking support…</p>}
@@ -163,7 +163,7 @@ export function PushSubscribeCard() {
           <div className="mt-3 flex gap-2">
             <Button
               type="button"
-              variant="glass"
+              variant="secondary"
               onClick={handleTest}
               disabled={isWorking}
               className="flex-1"
@@ -172,7 +172,7 @@ export function PushSubscribeCard() {
             </Button>
             <Button
               type="button"
-              variant="glass"
+              variant="secondary"
               onClick={handleDisable}
               disabled={isWorking}
               className="flex-1"
@@ -184,6 +184,6 @@ export function PushSubscribeCard() {
       )}
 
       {error && <p className="mt-2 text-xs text-accent-danger">{error}</p>}
-    </GlassCard>
+    </Card>
   );
 }

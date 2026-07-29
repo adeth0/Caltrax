@@ -1,6 +1,6 @@
 "use client";
 
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { ACHIEVEMENTS } from "@/lib/achievements";
 
@@ -17,7 +17,7 @@ export function AchievementsGrid({ unlocked }: AchievementsGridProps) {
   const unlockedMap = new Map(unlocked.map((u) => [u.key, u.unlockedAt]));
 
   return (
-    <GlassCard>
+    <Card>
       <div className="flex items-baseline justify-between">
         <p className="text-sm font-medium text-text-primary">Achievements</p>
         <p className="text-xs text-text-tertiary">
@@ -36,7 +36,7 @@ export function AchievementsGrid({ unlocked }: AchievementsGridProps) {
                 "control flex flex-col items-center gap-1 border p-3 text-center transition-opacity",
                 isUnlocked
                   ? "border-accent-warning/30 bg-accent-warning/10"
-                  : "border-white/10 bg-white/5 opacity-50"
+                  : "border-border bg-surface-raised opacity-50"
               )}
             >
               <span className="text-2xl" aria-hidden>
@@ -49,6 +49,6 @@ export function AchievementsGrid({ unlocked }: AchievementsGridProps) {
           );
         })}
       </div>
-    </GlassCard>
+    </Card>
   );
 }

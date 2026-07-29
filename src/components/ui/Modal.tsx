@@ -20,7 +20,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /**
  * Full-screen-on-mobile, centered-on-desktop modal — used for the scanner
  * and camera-capture flows. Uses Radix's forceMount + framer-motion's
- * AnimatePresence so the glass panel gets a real exit animation (condensing
+ * AnimatePresence so the panel gets a real exit animation (condensing
  * out) instead of Radix's default instant unmount.
  *
  * DialogPrimitive.Content stays a plain (non-motion) element carrying the
@@ -37,7 +37,7 @@ export function Modal({ open, onOpenChange, title, description, children }: Moda
         {open && (
           <DialogPrimitive.Portal forceMount>
             <MotionOverlay
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -49,7 +49,7 @@ export function Modal({ open, onOpenChange, title, description, children }: Moda
               onOpenAutoFocus={(e) => e.preventDefault()}
             >
               <motion.div
-                className="glass-panel flex max-h-[92vh] flex-col p-4 sm:p-6"
+                className="card-surface flex max-h-[92vh] flex-col p-4 sm:p-6"
                 initial={{ opacity: 0, scale: 0.96, y: 24 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 12 }}
@@ -57,7 +57,7 @@ export function Modal({ open, onOpenChange, title, description, children }: Moda
               >
                 <div className="mb-3 flex items-start justify-between gap-4">
                   <div>
-                    <DialogPrimitive.Title className="font-display text-lg font-semibold text-text-primary">
+                    <DialogPrimitive.Title className="font-display text-lg font-bold text-text-primary">
                       {title}
                     </DialogPrimitive.Title>
                     {description && (

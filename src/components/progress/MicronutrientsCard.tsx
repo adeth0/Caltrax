@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { MICRONUTRIENTS, type MicronutrientIntake } from "@/lib/micronutrients";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import type { Sex } from "@/types";
 
 interface MicronutrientsCardProps {
@@ -18,7 +18,7 @@ function formatAmount(value: number, unit: "mg" | "mcg"): string {
 
 export function MicronutrientsCard({ intake, sex, hasLoggedToday }: MicronutrientsCardProps) {
   return (
-    <GlassCard>
+    <Card>
       <p className="text-sm font-medium text-text-primary">Micronutrients today</p>
       <p className="mt-0.5 text-xs text-text-tertiary">
         Against standard adult daily targets — not personalised medical advice.
@@ -43,7 +43,7 @@ export function MicronutrientsCard({ intake, sex, hasLoggedToday }: Micronutrien
                 ? "bg-accent-success"
                 : pct >= 50
                   ? "bg-accent-warning"
-                  : "bg-white/25";
+                  : "bg-text-tertiary";
 
             return (
               <div key={def.key}>
@@ -51,7 +51,7 @@ export function MicronutrientsCard({ intake, sex, hasLoggedToday }: Micronutrien
                   <span className="text-xs font-medium text-text-secondary">{def.label}</span>
                   <span className="text-[10px] text-text-tertiary">{Math.round(pct)}%</span>
                 </div>
-                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-surface-raised">
                   <div
                     className={cn("h-full rounded-full transition-[width] duration-500 ease-apple", barColor)}
                     style={{ width: `${Math.min(100, Math.max(2, pct))}%` }}
@@ -66,6 +66,6 @@ export function MicronutrientsCard({ intake, sex, hasLoggedToday }: Micronutrien
           })}
         </div>
       )}
-    </GlassCard>
+    </Card>
   );
 }

@@ -11,10 +11,10 @@ export function DesktopSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-64 flex-col justify-between rounded-card p-4 md:flex">
+    <aside className="card-surface sticky top-4 hidden h-[calc(100vh-2rem)] w-64 flex-col justify-between p-4 md:flex">
       <div>
         <div className="px-2 py-3">
-          <span className="font-display text-lg font-semibold text-text-primary">Caltrax</span>
+          <span className="font-display text-lg font-bold text-text-primary">Caltrax</span>
         </div>
         <nav className="mt-4 flex flex-col gap-1">
           {PRIMARY_NAV.map((item) => {
@@ -26,13 +26,13 @@ export function DesktopSidebar() {
                 href={item.href}
                 className={cn(
                   "control focus-ring relative flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors",
-                  isActive ? "text-text-primary" : "text-text-secondary hover:bg-white/5"
+                  isActive ? "text-brand" : "text-text-secondary hover:bg-surface-raised"
                 )}
               >
                 {isActive && (
                   <motion.div
                     layoutId="desktop-nav-active"
-                    className="control absolute inset-0 bg-white/10 shadow-glow-sm"
+                    className="control bg-brand/10 absolute inset-0"
                     transition={{ type: "spring", stiffness: 420, damping: 38 }}
                   />
                 )}

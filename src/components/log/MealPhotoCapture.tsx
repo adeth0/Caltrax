@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/input";
 import { logCustomFoodAction, recognizeMealPhotoAction } from "@/app/(app)/log/actions";
 import type { RecognizedFoodItem } from "@/lib/ai/mealRecognition";
@@ -113,14 +113,14 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
       />
 
       {!previewUrl && (
-        <Button type="button" variant="glass" onClick={() => fileInputRef.current?.click()}>
+        <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
           <Camera className="h-4 w-4" />
           Snap a meal photo
         </Button>
       )}
 
       {previewUrl && (
-        <GlassCard>
+        <Card>
           <div className="flex gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={previewUrl} alt="Meal preview" className="h-20 w-20 shrink-0 rounded-lg object-cover" />
@@ -139,12 +139,12 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
           </div>
 
           {items && items.length === 0 && !isAnalyzing && (
-            <div className="mt-4 flex flex-col gap-3 rounded-control border border-white/10 bg-white/5 p-3">
+            <div className="mt-4 flex flex-col gap-3 rounded-control border border-border bg-surface-raised p-3">
               <p className="text-sm text-text-secondary">
                 Couldn&apos;t identify any food in that photo. Try a clearer, well-lit shot of the plate, or
                 add the items manually instead.
               </p>
-              <Button type="button" variant="glass" size="sm" onClick={reset}>
+              <Button type="button" variant="secondary" size="sm" onClick={reset}>
                 Try another photo
               </Button>
             </div>
@@ -155,7 +155,7 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
               {items.map((item, index) => {
                 const kcal = Math.round((item.caloriesPer100g * item.estimatedGrams) / 100);
                 return (
-                  <div key={index} className="flex items-center gap-3 rounded-control bg-white/5 p-3">
+                  <div key={index} className="flex items-center gap-3 rounded-control bg-surface-raised p-3">
                     <input
                       type="checkbox"
                       checked={item.include}
@@ -183,7 +183,7 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
               </Button>
             </div>
           )}
-        </GlassCard>
+        </Card>
       )}
     </div>
   );

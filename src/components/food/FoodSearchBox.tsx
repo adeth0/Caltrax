@@ -74,7 +74,7 @@ export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearc
               <button
                 type="button"
                 onClick={() => onSelect(food)}
-                className="control focus-ring flex w-full items-center gap-3 border border-white/10 bg-white/5 p-3 text-left transition-colors hover:bg-white/10"
+                className="control focus-ring flex w-full items-center gap-3 border border-border bg-surface-raised p-3 text-left transition-colors hover:bg-border-strong"
               >
                 {food.imageUrl ? (
                   <Image
@@ -86,7 +86,7 @@ export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearc
                     unoptimized
                   />
                 ) : (
-                  <div className="h-10 w-10 shrink-0 rounded-lg bg-white/10" aria-hidden />
+                  <div className="h-10 w-10 shrink-0 rounded-lg bg-surface-raised" aria-hidden />
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-text-primary">{food.name}</p>

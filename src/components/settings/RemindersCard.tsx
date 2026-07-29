@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
@@ -91,7 +91,7 @@ export function RemindersCard({ reminders }: RemindersCardProps) {
   }
 
   return (
-    <GlassCard>
+    <Card>
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-text-primary">Reminders</p>
         {!showForm && (
@@ -116,7 +116,7 @@ export function RemindersCard({ reminders }: RemindersCardProps) {
           {reminders.map((r) => (
             <li
               key={r.id}
-              className="flex items-center justify-between gap-2 rounded-control bg-white/5 px-3 py-2"
+              className="flex items-center justify-between gap-2 rounded-control bg-surface-raised px-3 py-2"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm text-text-primary">{r.label}</p>
@@ -150,7 +150,7 @@ export function RemindersCard({ reminders }: RemindersCardProps) {
       )}
 
       {showForm && (
-        <div className="mt-3 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-3">
+        <div className="border-accent-info/30 bg-accent-info/10 mt-3 flex flex-col gap-3 rounded-control border p-3">
           <PillSelect
             name="reminder-type"
             value={type}
@@ -180,12 +180,12 @@ export function RemindersCard({ reminders }: RemindersCardProps) {
             <Button type="button" onClick={handleCreate} disabled={isSaving} className="flex-1">
               {isSaving ? "Saving…" : "Save reminder"}
             </Button>
-            <Button type="button" variant="glass" onClick={() => setShowForm(false)}>
+            <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
               Cancel
             </Button>
           </div>
         </div>
       )}
-    </GlassCard>
+    </Card>
   );
 }

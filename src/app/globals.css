@@ -3,8 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --font-display: "SF Pro Display", "Inter", system-ui, sans-serif;
-  --font-body: "SF Pro Text", "Inter", system-ui, sans-serif;
+  /* Dark mode is the default -- matches next-themes' defaultTheme="dark",
+     which adds no class to <html> for dark and adds class="light" when
+     the person switches. See src/components/theme-provider.tsx. */
+  --bg: #131310;
+  --surface: #1c1c15;
+  --surface-raised: #232319;
+  --border: rgba(243, 241, 232, 0.09);
+  --border-strong: rgba(243, 241, 232, 0.16);
+  --rule: #f3f1e8;
+  --brand: #e3ad49;
+  --brand-foreground: #1b1b14;
+  --text-primary: rgba(243, 241, 232, 0.94);
+  --text-secondary: rgba(243, 241, 232, 0.62);
+  --text-tertiary: rgba(243, 241, 232, 0.4);
+  --accent-info: #6fa3d8;
+  --accent-success: #7ec96a;
+  --accent-warning: #e3ad49;
+  --accent-danger: #e0725a;
+  --macro-protein: #d97457;
+  --macro-carbs: #e0b84a;
+  --macro-fat: #92a374;
+  --macro-fibre: #7fa9a3;
+}
+
+/* Light mode overrides -- every token gets a real, independently-chosen
+   value here rather than relying on opacity tricks against a white
+   background. The previous system left text.primary etc. as hardcoded
+   rgba(255,255,255,...) values that never flipped for light mode outside
+   the <body> element itself, which is why light mode never really worked. */
+html.light {
+  --bg: #eef0ea;
+  --surface: #ffffff;
+  --surface-raised: #f8f9f4;
+  --border: rgba(27, 27, 20, 0.1);
+  --border-strong: rgba(27, 27, 20, 0.18);
+  --rule: #1b1b14;
+  --brand: #9c6b18;
+  --brand-foreground: #ffffff;
+  --text-primary: #1b1b14;
+  --text-secondary: #6b6a5e;
+  --text-tertiary: #96958a;
+  --accent-info: #2c6fa8;
+  --accent-success: #3f7a2e;
+  --accent-warning: #96690f;
+  --accent-danger: #a8402a;
+  --macro-protein: #a8442e;
+  --macro-carbs: #93701c;
+  --macro-fat: #4e5c3b;
+  --macro-fibre: #3e6b65;
 }
 
 html,
@@ -14,14 +61,14 @@ body {
 
 body {
   @apply bg-base font-body text-text-primary antialiased;
-  /* Dark mode is the primary experience per spec; light mode is opt-in via .light on <html> */
 }
 
-html.light body {
-  @apply bg-base-light text-black;
+/* Smooth in-page scrolling everywhere (nav anchor jumps, scroll-into-view
+   calls), overridden by the reduced-motion block below. */
+html {
+  scroll-behavior: smooth;
 }
 
-/* Respect reduced-motion preferences across every animated widget */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -34,16 +81,31 @@ html.light body {
 }
 
 @layer components {
-  /* The single reusable glass surface every card, sheet and modal is built from.
-     backdrop-saturate pushes color underneath the blur so it reads as frosted
-     glass over a scene, not just a dimmed panel — this is the actual visual
-     trick Apple's material system relies on. */
-  .glass-panel {
-    @apply rounded-card border border-glass-border bg-glass shadow-glass backdrop-blur-glass backdrop-saturate-glass;
+  /* The solid surface every card, sheet and modal is built from -- flat,
+     no blur, no translucency. This is the direct replacement for the old
+     .glass-panel: same role in the markup, different visual language. */
+  .card-surface {
+    @apply rounded-card border border-border bg-surface;
   }
 
-  html.light .glass-panel {
-    @apply border-glass-lightBorder bg-glass-light;
+  /* The signature element: a bold rule then a thin rule beneath it,
+     lifted straight from the bold-then-thin line under "Calories" on a
+     real nutrition facts label. Sits between an eyebrow label and the
+     big number it belongs to -- used on every metric-first card
+     (calories remaining, macro breakdowns, weight trend) so the motif
+     reads as one consistent signature across the app, not a one-off. */
+  .label-rule {
+    height: 5px;
+    border-radius: 1px;
+    background: var(--rule);
+    margin: 7px 0 3px;
+  }
+  .label-rule-thin {
+    height: 1.5px;
+    border-radius: 1px;
+    background: var(--rule);
+    opacity: 0.5;
+    margin: 0 0 12px;
   }
 
   .control {
@@ -55,18 +117,8 @@ html.light body {
     @apply min-h-[44px] min-w-[44px];
   }
 
-  /* Visible keyboard focus ring — accessibility first per code standards */
+  /* Visible keyboard focus ring -- accessibility first per code standards */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-info focus-visible:ring-offset-2 focus-visible:ring-offset-base;
-  }
-
-  /* Soft, slow-drifting colour fields behind the glass panels — this is what
-     the panels are actually catching light from. Pure decoration, so it's
-     the first thing prefers-reduced-motion below turns off. */
-  .ambient-glow {
-    @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
-  }
-  .ambient-glow span {
-    @apply absolute h-[42vw] w-[42vw] rounded-full opacity-[0.14] blur-[110px];
   }
 }

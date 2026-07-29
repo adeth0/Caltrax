@@ -61,7 +61,7 @@ export default async function ProgressPage() {
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
       <header className="mb-4">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Progress</h1>
+        <h1 className="font-display text-2xl font-bold text-text-primary">Progress</h1>
         <p className="text-sm text-text-tertiary">Trends, reports, and achievements.</p>
       </header>
       <ProgressTabs

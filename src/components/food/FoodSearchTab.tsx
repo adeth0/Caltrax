@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
 import { searchFoodsAction } from "@/app/(app)/log/actions";
@@ -20,12 +20,12 @@ export function FoodSearchTab() {
 
   return (
     <>
-      <GlassCard>
+      <Card>
         <FoodSearchBox onSelect={setSelected} searchAction={searchFoodsAction} />
-      </GlassCard>
+      </Card>
 
       {selected && (
-        <GlassCard className="mt-4">
+        <Card className="mt-4">
           <div className="flex items-start gap-3">
             {selected.imageUrl ? (
               <Image
@@ -37,7 +37,7 @@ export function FoodSearchTab() {
                 className="h-14 w-14 shrink-0 rounded-lg object-cover"
               />
             ) : (
-              <div className="h-14 w-14 shrink-0 rounded-lg bg-white/10" aria-hidden />
+              <div className="h-14 w-14 shrink-0 rounded-lg bg-surface-raised" aria-hidden />
             )}
             <div className="min-w-0">
               <p className="truncate font-medium text-text-primary">{selected.name}</p>
@@ -68,7 +68,7 @@ export function FoodSearchTab() {
             </div>
           </div>
 
-          <dl className="mt-4 flex flex-col gap-1.5 border-t border-white/10 pt-4 text-sm">
+          <dl className="mt-4 flex flex-col gap-1.5 border-t border-border pt-4 text-sm">
             {MICRO_ROWS.map(({ key, label, unit }) => {
               const value = selected[key];
               if (value === undefined || value === null) return null;
@@ -87,7 +87,7 @@ export function FoodSearchTab() {
           <Button asChild className="mt-4 w-full">
             <Link href="/log">Log this food</Link>
           </Button>
-        </GlassCard>
+        </Card>
       )}
     </>
   );

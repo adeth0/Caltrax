@@ -1,6 +1,6 @@
 "use client";
 
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 interface WeightPoint {
@@ -19,11 +19,18 @@ export function WeightTrendCard({ points, goalWeightKg }: WeightTrendCardProps) 
   const delta = latest !== undefined && first !== undefined ? latest - first : 0;
 
   return (
-    <GlassCard>
+    <Card>
+      <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Weight trend</p>
+      <div className="label-rule" />
+      <div className="label-rule-thin" />
       <div className="flex items-baseline justify-between">
-        <p className="text-sm text-text-secondary">Weight trend</p>
+        {latest !== undefined && (
+          <p className="font-display text-2xl font-bold tabular-nums text-text-primary">
+            {latest.toFixed(1)} <span className="text-sm font-medium text-text-secondary">kg</span>
+          </p>
+        )}
         {points.length > 1 && (
-          <p className={`text-xs ${delta <= 0 ? "text-accent-success" : "text-accent-warning"}`}>
+          <p className={`text-xs font-medium ${delta <= 0 ? "text-accent-success" : "text-accent-warning"}`}>
             {delta > 0 ? "+" : ""}
             {delta.toFixed(1)} kg this week
           </p>
@@ -34,13 +41,13 @@ export function WeightTrendCard({ points, goalWeightKg }: WeightTrendCardProps) 
           <LineChart data={points} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
             <XAxis
               dataKey="date"
-              stroke="rgba(255,255,255,0.35)"
+              stroke="var(--text-tertiary)"
               tickLine={false}
               axisLine={false}
               fontSize={11}
             />
             <YAxis
-              stroke="rgba(255,255,255,0.35)"
+              stroke="var(--text-tertiary)"
               tickLine={false}
               axisLine={false}
               fontSize={11}
@@ -48,19 +55,20 @@ export function WeightTrendCard({ points, goalWeightKg }: WeightTrendCardProps) 
             />
             <Tooltip
               contentStyle={{
-                background: "rgba(15,17,20,0.9)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 12,
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
+                borderRadius: 10,
                 fontSize: 12,
+                color: "var(--text-primary)",
               }}
             />
-            <Line type="monotone" dataKey="weightKg" stroke="#0A84FF" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="weightKg" stroke="var(--brand)" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>
       {goalWeightKg !== undefined && (
         <p className="mt-2 text-xs text-text-tertiary">Goal: {goalWeightKg} kg</p>
       )}
-    </GlassCard>
+    </Card>
   );
 }

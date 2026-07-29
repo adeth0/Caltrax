@@ -66,7 +66,7 @@ export default async function DashboardPage() {
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-4 p-4 pb-24 sm:p-6">
       <header className="mb-2">
-        <h1 className="font-display text-2xl font-semibold text-text-primary">Today</h1>
+        <h1 className="font-display text-2xl font-bold text-text-primary">Today</h1>
         <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>
       </header>
 

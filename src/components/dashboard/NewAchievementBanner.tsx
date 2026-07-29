@@ -19,7 +19,7 @@ export function NewAchievementBanner({ achievements }: NewAchievementBannerProps
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="glass-panel flex items-center gap-3 border-accent-warning/30 bg-accent-warning/10 p-4"
+          className="card-surface border-accent-warning/30 bg-accent-warning/10 flex items-center gap-3 p-4"
         >
           <span className="text-2xl">{achievements[0]!.icon}</span>
           <div className="min-w-0 flex-1">

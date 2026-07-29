@@ -14,7 +14,7 @@ export function FoodsTabs({ recipes }: FoodsTabsProps) {
 
   return (
     <div>
-      <div className="mb-4 flex gap-2 rounded-control bg-white/5 p-1">
+      <div className="mb-4 flex gap-2 rounded-control bg-surface-raised p-1">
         {(
           [
             { value: "search", label: "Search" },

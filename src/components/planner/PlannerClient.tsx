@@ -3,7 +3,7 @@
 import { addDays, format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/Modal";
@@ -153,7 +153,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
 
   return (
     <div className="flex flex-col gap-4">
-      <GlassCard>
+      <Card>
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
@@ -183,7 +183,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                   "control focus-ring touch-target flex shrink-0 flex-col items-center px-3 py-2 transition-colors",
                   isSelected
                     ? "bg-accent-info/20 text-accent-info"
-                    : "bg-white/5 text-text-secondary hover:bg-white/10"
+                    : "bg-surface-raised text-text-secondary hover:bg-border-strong"
                 )}
               >
                 <span className="text-[10px] uppercase tracking-wide">{format(date, "EEE")}</span>
@@ -193,12 +193,12 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
             );
           })}
         </div>
-      </GlassCard>
+      </Card>
 
       {MEAL_TABS.map((tab) => {
         const items = dayMeals.filter((m) => m.mealType === tab.value);
         return (
-          <GlassCard key={tab.value}>
+          <Card key={tab.value}>
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-text-primary">{tab.label}</p>
               <button
@@ -215,7 +215,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                 {items.map((item) => (
                   <li
                     key={item.id}
-                    className="flex items-center justify-between gap-2 rounded-control bg-white/5 px-3 py-2"
+                    className="flex items-center justify-between gap-2 rounded-control bg-surface-raised px-3 py-2"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm text-text-primary">{item.label}</p>
@@ -248,7 +248,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
             )}
 
             {addingMealType === tab.value && (
-              <div className="mt-3 flex flex-col gap-3 rounded-control border border-accent-info/30 bg-accent-info/10 p-3">
+              <div className="border-accent-info/30 bg-accent-info/10 mt-3 flex flex-col gap-3 rounded-control border p-3">
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -311,7 +311,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                     <select
                       value={recipeId}
                       onChange={(e) => setRecipeId(e.target.value)}
-                      className="control h-11 w-full border border-white/10 bg-white/5 px-3 text-sm text-text-primary"
+                      className="control h-11 w-full border border-border bg-surface-raised px-3 text-sm text-text-primary"
                     >
                       {recipes.map((r) => (
                         <option key={r.id} value={r.id} className="bg-bg-primary">
@@ -337,7 +337,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                 )}
               </div>
             )}
-          </GlassCard>
+          </Card>
         );
       })}
 
@@ -350,7 +350,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
         description={pendingRemove?.label}
       >
         <div className="flex gap-3">
-          <Button type="button" variant="glass" className="flex-1" onClick={() => setPendingRemove(null)}>
+          <Button type="button" variant="secondary" className="flex-1" onClick={() => setPendingRemove(null)}>
             Cancel
           </Button>
           <Button
