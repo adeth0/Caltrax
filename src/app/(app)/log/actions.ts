@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { FOOD_SOURCE_TO_PRISMA, MEAL_TO_PRISMA } from "@/lib/enumMap";
-import { lookupBarcode, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
+import { lookupBarcode, searchLocalFoods, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
 import { recognizeMealPhoto, type MealRecognitionResult } from "@/lib/ai/mealRecognition";
 import { AIConfigError } from "@/lib/ai/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -21,14 +21,24 @@ async function requireUserId(): Promise<string> {
 export async function searchFoodsAction(query: string): Promise<FoodItem[]> {
   await requireUserId();
   try {
-    return await searchOpenFoodFacts(query);
+    // Local first: seeded common foods (fruits, vegetables, protein
+    // variants — the exact things OFF, a crowdsourced barcode database,
+    // covers poorly for unbranded items) plus anything already cached
+    // from a previous OFF lookup. Falls straight through to live OFF
+    // results for anything not already known locally, so nothing is
+    // lost versus the old OFF-only behavior.
+    const [local, remote] = await Promise.all([
+      searchLocalFoods(query),
+      searchOpenFoodFacts(query).catch((err) => {
+        console.error("searchFoodsAction (OFF) failed:", err);
+        return [];
+      }),
+    ]);
+
+    const seenNames = new Set(local.map((f) => f.name.toLowerCase()));
+    const deduped = remote.filter((f) => !seenNames.has(f.name.toLowerCase()));
+    return [...local, ...deduped];
   } catch (err) {
-    // FoodSearchBox has no error handling of its own around this call --
-    // an uncaught rejection here left the search box stuck silently
-    // (looking exactly like "search returns nothing") with no way to
-    // diagnose why from the client. Logging server-side and degrading to
-    // an empty result at least surfaces the existing "No results" message
-    // instead of a silent hang.
     console.error("searchFoodsAction failed:", err);
     return [];
   }
