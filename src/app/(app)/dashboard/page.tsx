@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
+import { MacroSplitChart } from "@/components/dashboard/MacroSplitChart";
 import { NewAchievementBanner } from "@/components/dashboard/NewAchievementBanner";
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { logWaterAction } from "@/app/(app)/progress/actions";
@@ -27,7 +28,7 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs, newlyUnlocked] = await Promise.all([
+  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked] = await Promise.all([
     db.mealEntry.findMany({
       where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
       include: { food: true },
@@ -37,6 +38,7 @@ export default async function DashboardPage() {
       where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
       orderBy: { loggedAt: "asc" },
     }),
+    db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
     checkAndUnlockAchievements(user.id),
   ]);
 
@@ -55,6 +57,14 @@ export default async function DashboardPage() {
 
   const waterMl = waterLogs.reduce((sum, w: (typeof waterLogs)[number]) => sum + w.amountMl, 0);
 
+  // Summed across any connected sources — if someone has two trackers
+  // reporting the same activity this double-counts, but that's a rare
+  // edge case versus the common one (exactly one device) working correctly.
+  const earnedCalories = activityLogs.reduce(
+    (sum: number, a: (typeof activityLogs)[number]) => sum + (a.activeCalories ?? 0),
+    0
+  );
+
   const weightPoints =
     weightLogs.length > 0
       ? weightLogs.map((w: (typeof weightLogs)[number]) => ({
@@ -64,37 +74,49 @@ export default async function DashboardPage() {
       : [{ date: format(new Date(), "EEE"), weightKg: profile.weightKg }];
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-4 p-4 pb-24 sm:p-6">
-      <header className="mb-2">
-        <h1 className="font-display text-2xl font-bold text-text-primary">Today</h1>
+    <main className="p-4 pb-24 sm:p-6 lg:mx-auto lg:max-w-[1400px] lg:pb-6">
+      <header className="mb-4 lg:mb-6">
+        <h1 className="font-display text-2xl font-bold text-text-primary lg:text-3xl">Today</h1>
         <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>
       </header>
 
       <NewAchievementBanner achievements={newlyUnlocked} />
 
-      <CaloriesRemainingCard
-        target={Math.round(targets.calories)}
-        consumed={Math.round(todayIntake.calories)}
-        burned={0}
-      />
+      {/* Single stacked column below lg; a real two-column desktop layout
+          from lg up so a wide monitor shows more at once instead of the
+          same mobile-width column floating in empty space. */}
+      <div className="mt-4 flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:items-start lg:gap-5">
+        <div className="flex flex-col gap-4 lg:col-span-2">
+          <CaloriesRemainingCard
+            target={Math.round(targets.calories)}
+            consumed={Math.round(todayIntake.calories)}
+            burned={earnedCalories}
+          />
+          <MacroRingsCard
+            targets={targets}
+            consumed={{
+              proteinG: Math.round(todayIntake.proteinG),
+              carbsG: Math.round(todayIntake.carbsG),
+              fatG: Math.round(todayIntake.fatG),
+              fibreG: Math.round(todayIntake.fibreG),
+            }}
+          />
+        </div>
 
-      <MacroRingsCard
-        targets={targets}
-        consumed={{
-          proteinG: Math.round(todayIntake.proteinG),
-          carbsG: Math.round(todayIntake.carbsG),
-          fatG: Math.round(todayIntake.fatG),
-          fibreG: Math.round(todayIntake.fibreG),
-        }}
-      />
-
-      <HydrationCard
-        consumedMl={waterMl}
-        targetMl={profile.dailyWaterGoalMl ?? targets.waterMl}
-        onAdd={logWaterAction}
-      />
-
-      <WeightTrendCard points={weightPoints} goalWeightKg={profile.targetWeightKg ?? undefined} />
+        <div className="flex flex-col gap-4">
+          <MacroSplitChart
+            proteinG={Math.round(todayIntake.proteinG)}
+            carbsG={Math.round(todayIntake.carbsG)}
+            fatG={Math.round(todayIntake.fatG)}
+          />
+          <HydrationCard
+            consumedMl={waterMl}
+            targetMl={profile.dailyWaterGoalMl ?? targets.waterMl}
+            onAdd={logWaterAction}
+          />
+          <WeightTrendCard points={weightPoints} goalWeightKg={profile.targetWeightKg ?? undefined} />
+        </div>
+      </div>
     </main>
   );
 }

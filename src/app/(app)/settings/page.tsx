@@ -4,19 +4,32 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
+import {
+  WearableConnectionsCard,
+  type WearableConnectionRow,
+} from "@/components/settings/WearableConnectionsCard";
 import { db } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PROVIDERS } from "@/lib/wearables";
 import { signOutAction } from "./actions";
 
-export default async function SettingsPage() {
+interface SettingsPageProps {
+  searchParams: Promise<{ wearable_connected?: string; wearable_error?: string; provider?: string }>;
+}
+
+export default async function SettingsPage({ searchParams }: SettingsPageProps) {
+  const params = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const reminders = user
-    ? await db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
-    : [];
+  const [reminders, wearableConnections] = await Promise.all([
+    user
+      ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
+      : Promise.resolve([]),
+    user ? db.wearableConnection.findMany({ where: { userId: user.id } }) : Promise.resolve([]),
+  ]);
 
   const reminderRows: ReminderRow[] = reminders.map((r: (typeof reminders)[number]) => ({
     id: r.id,
@@ -26,8 +39,28 @@ export default async function SettingsPage() {
     active: r.active,
   }));
 
+  const wearableRows: WearableConnectionRow[] = Object.values(PROVIDERS).map((adapter) => {
+    const existing = wearableConnections.find(
+      (c: (typeof wearableConnections)[number]) => c.provider === adapter.id
+    );
+    return {
+      provider: adapter.id,
+      label: adapter.label,
+      description: adapter.description,
+      connected: Boolean(existing),
+      lastSyncedAt: existing?.lastSyncedAt ? existing.lastSyncedAt.toLocaleString() : null,
+      lastSyncError: existing?.lastSyncError ?? null,
+    };
+  });
+
+  const wearableNotice = params.wearable_connected
+    ? { type: "connected" as const, provider: params.wearable_connected }
+    : params.wearable_error
+      ? { type: "error" as const, provider: params.provider, error: params.wearable_error }
+      : undefined;
+
   return (
-    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
+    <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-text-primary">Settings</h1>
 
       <Card className="mt-4 flex items-center justify-between">
@@ -44,6 +77,10 @@ export default async function SettingsPage() {
 
       <div className="mt-4">
         <RemindersCard reminders={reminderRows} />
+      </div>
+
+      <div className="mt-4">
+        <WearableConnectionsCard connections={wearableRows} notice={wearableNotice} />
       </div>
 
       <Card className="mt-4">
