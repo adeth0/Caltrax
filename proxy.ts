@@ -42,7 +42,12 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublicPath = PUBLIC_PATHS.some((path) => request.nextUrl.pathname.startsWith(path));
+  // The landing page is exact-matched rather than folded into
+  // PUBLIC_PATHS' startsWith check -- "/" as a startsWith prefix would
+  // match literally every route, making the whole session gate a no-op.
+  const isPublicPath =
+    request.nextUrl.pathname === "/" ||
+    PUBLIC_PATHS.some((path) => request.nextUrl.pathname.startsWith(path));
   const isAuthFormPath =
     request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/signup");
 
