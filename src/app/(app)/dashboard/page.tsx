@@ -5,6 +5,7 @@ import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
 import { MacroSplitChart } from "@/components/dashboard/MacroSplitChart";
 import { NewAchievementBanner } from "@/components/dashboard/NewAchievementBanner";
+import { PendingWearableRedirect } from "@/components/dashboard/PendingWearableRedirect";
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { logWaterAction } from "@/app/(app)/progress/actions";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
@@ -75,6 +76,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="p-4 pb-24 sm:p-6 lg:mx-auto lg:max-w-[1400px] lg:pb-6">
+      <PendingWearableRedirect />
       <header className="mb-4 lg:mb-6">
         <h1 className="font-display text-2xl font-bold text-text-primary lg:text-3xl">Today</h1>
         <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>

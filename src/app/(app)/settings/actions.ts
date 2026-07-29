@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { WearableProvider } from "@prisma/client";
 import { db } from "@/lib/db";
+import { ACTIVITY_TO_PRISMA, DIET_TO_PRISMA, GOAL_TO_PRISMA, SEX_TO_PRISMA } from "@/lib/enumMap";
 import { sendPushToUser } from "@/lib/push";
+import { onboardingSchema } from "@/lib/validations/profile";
 import { syncWearableConnection } from "@/lib/wearables/sync";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -119,4 +121,56 @@ export async function manualSyncWearableAction(provider: WearableProvider) {
   if (!connection) throw new Error("Not connected");
   await syncWearableConnection(connection);
   revalidatePath("/settings");
+}
+
+export interface UpdateProfileActionState {
+  error?: string;
+  fieldErrors?: Record<string, string>;
+  success?: boolean;
+}
+
+/**
+ * Edits the same fields onboarding collects. Onboarding's own copy has
+ * promised "you can change any of this later in Settings" since it was
+ * first written -- this is what actually makes that true, replacing the
+ * placeholder that used to sit here instead.
+ */
+export async function updateProfileAction(
+  _prevState: UpdateProfileActionState,
+  formData: FormData
+): Promise<UpdateProfileActionState> {
+  const userId = await requireUserId();
+
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = onboardingSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path[0];
+      if (typeof key === "string" && !fieldErrors[key]) fieldErrors[key] = issue.message;
+    }
+    return { error: "Please fix the highlighted fields.", fieldErrors };
+  }
+
+  const input = parsed.data;
+
+  await db.profile.update({
+    where: { id: userId },
+    data: {
+      name: input.name || undefined,
+      sex: SEX_TO_PRISMA[input.sex],
+      age: input.age,
+      heightCm: input.heightCm,
+      weightKg: input.weightKg,
+      targetWeightKg: input.targetWeightKg ?? null,
+      activityLevel: ACTIVITY_TO_PRISMA[input.activityLevel],
+      primaryGoal: GOAL_TO_PRISMA[input.primaryGoal] as never,
+      dietaryPreference: DIET_TO_PRISMA[input.dietaryPreference] as never,
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/dashboard");
+  return { success: true };
 }

@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ProfileEditCard, type ProfileFormValues } from "@/components/settings/ProfileEditCard";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
 import {
@@ -9,6 +10,7 @@ import {
   type WearableConnectionRow,
 } from "@/components/settings/WearableConnectionsCard";
 import { db } from "@/lib/db";
+import { ACTIVITY_FROM_PRISMA, DIET_FROM_PRISMA, GOAL_FROM_PRISMA, SEX_FROM_PRISMA } from "@/lib/enumMap";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PROVIDERS } from "@/lib/wearables";
 import { signOutAction } from "./actions";
@@ -24,12 +26,27 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [reminders, wearableConnections] = await Promise.all([
+  const [reminders, wearableConnections, profile] = await Promise.all([
     user
       ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
       : Promise.resolve([]),
     user ? db.wearableConnection.findMany({ where: { userId: user.id } }) : Promise.resolve([]),
+    user ? db.profile.findUnique({ where: { id: user.id } }) : Promise.resolve(null),
   ]);
+
+  const profileFormValues: ProfileFormValues | null = profile
+    ? {
+        name: profile.name ?? "",
+        sex: SEX_FROM_PRISMA[profile.sex],
+        age: profile.age,
+        heightCm: profile.heightCm,
+        weightKg: profile.weightKg,
+        targetWeightKg: profile.targetWeightKg,
+        activityLevel: ACTIVITY_FROM_PRISMA[profile.activityLevel],
+        primaryGoal: GOAL_FROM_PRISMA[profile.primaryGoal],
+        dietaryPreference: DIET_FROM_PRISMA[profile.dietaryPreference],
+      }
+    : null;
 
   const reminderRows: ReminderRow[] = reminders.map((r: (typeof reminders)[number]) => ({
     id: r.id,
@@ -83,11 +100,11 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         <WearableConnectionsCard connections={wearableRows} notice={wearableNotice} />
       </div>
 
-      <Card className="mt-4">
-        <p className="text-sm text-text-secondary">
-          Profile editing, units, and full micronutrient targets land in a future update.
-        </p>
-      </Card>
+      {profileFormValues && (
+        <div className="mt-4">
+          <ProfileEditCard initial={profileFormValues} />
+        </div>
+      )}
 
       <Card className="mt-4">
         <p className="mb-3 text-sm font-medium text-text-primary">Account</p>
