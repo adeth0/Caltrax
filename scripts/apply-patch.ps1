@@ -70,6 +70,19 @@ if (Test-Path ".git\rebase-apply") {
 }
 
 Write-Host "== Checking for uncommitted local changes ==" -ForegroundColor Cyan
+
+# This script's own file must never be stashed/popped. Patches are the
+# source of truth for updating it -- if it has uncommitted edits sitting
+# in the working tree, they're discarded here rather than stashed, so it
+# can never be the thing a stash-pop conflicts on. Without this, if the
+# file's committed content differs between the current branch and
+# wherever this run checks out to (origin/main, or an existing feature
+# branch), restoring the stash afterward forces a 3-way merge on this
+# exact file -- and a conflicted merge writes literal <<<<<<< markers
+# straight into it, corrupting the very script that's running. That is
+# what corrupted this file on multiple previous runs.
+git checkout -- scripts/apply-patch.ps1 2>$null
+
 $dirty = git status --porcelain
 $stashed = $false
 if ($dirty) {
@@ -89,6 +102,15 @@ function RestoreStashIfAny {
     if ($LASTEXITCODE -ne 0) {
       Write-Host "Note: your stash didn't reapply cleanly. It's still safe — run 'git stash list' then 'git stash pop' manually." -ForegroundColor Yellow
     }
+  }
+  # Defense in depth: this exact script file has been corrupted with
+  # literal git conflict markers by a stash-pop conflict before. If that
+  # ever happens again despite excluding it from stashing above, catch it
+  # here immediately rather than silently reporting success.
+  $selfContent = Get-Content -Path $PSCommandPath -Raw -ErrorAction SilentlyContinue
+  if ($selfContent -and $selfContent -match "<<<<<<<") {
+    Write-Host "`n[WARNING] scripts\apply-patch.ps1 itself contains git conflict markers after this run." -ForegroundColor Red
+    Write-Host "Do not run it again until this is fixed — ask Claude for a fresh copy of the script." -ForegroundColor Red
   }
 }
 
