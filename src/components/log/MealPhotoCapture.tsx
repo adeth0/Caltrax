@@ -5,7 +5,11 @@ import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/input";
-import { logCustomFoodAction, recognizeMealPhotoAction } from "@/app/(app)/log/actions";
+import {
+  logCustomFoodAction,
+  recognizeMealPhotoAction,
+  uploadMealPhotoAction,
+} from "@/app/(app)/log/actions";
 import type { RecognizedFoodItem } from "@/lib/ai/mealRecognition";
 import type { MealType } from "@/types";
 
@@ -36,6 +40,7 @@ interface MealPhotoCaptureProps {
 export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [photoBase64, setPhotoBase64] = useState<string | null>(null);
   const [items, setItems] = useState<EditableItem[] | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +49,7 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
 
   function reset() {
     setPreviewUrl(null);
+    setPhotoBase64(null);
     setItems(null);
     setNotes(null);
     setError(null);
@@ -60,6 +66,7 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
     startAnalyzing(async () => {
       try {
         const base64 = await downscaleToJpegBase64(file);
+        setPhotoBase64(base64);
         const response = await recognizeMealPhotoAction(base64, "image/jpeg");
         if (!response.success) {
           setError(response.error);
@@ -90,6 +97,14 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
     }
     startSaving(async () => {
       try {
+        // Uploaded once here, not per item -- a single photo commonly
+        // produces several detected food items, and each gets the same
+        // "photo of the plate this came from" image rather than
+        // triggering a redundant upload per item.
+        const imageUrl = photoBase64
+          ? ((await uploadMealPhotoAction(photoBase64, "image/jpeg")) ?? undefined)
+          : undefined;
+
         for (const item of toSave) {
           await logCustomFoodAction({
             name: item.name,
@@ -99,6 +114,7 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
             fatPer100g: item.fatPer100g,
             servingGrams: item.estimatedGrams,
             mealType,
+            imageUrl,
           });
         }
         reset();

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { FOOD_SOURCE_TO_PRISMA, MEAL_TO_PRISMA } from "@/lib/enumMap";
 import { lookupBarcode, searchLocalFoods, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
+import { uploadBase64Image } from "@/lib/storage";
 import { recognizeMealPhoto, type MealRecognitionResult } from "@/lib/ai/mealRecognition";
 import { AIConfigError } from "@/lib/ai/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -148,6 +149,34 @@ interface CustomFoodInput {
   fatPer100g: number;
   servingGrams: number;
   mealType: MealType;
+  /** Already-uploaded photo URL (via uploadMealPhotoAction) -- a single
+   * photo often produces several detected items, so the upload happens
+   * once and the resulting URL is reused across all of them, rather than
+   * re-uploading the same image per item. */
+  imageUrl?: string;
+}
+
+/**
+ * Uploads the same downscaled photo already sent for AI recognition, so
+ * it can be reused as the resulting food's image -- matching how Open
+ * Food Facts results already show a picture. Called once per capture,
+ * not once per detected item.
+ */
+export async function uploadMealPhotoAction(imageBase64: string, mediaType: string): Promise<string | null> {
+  const userId = await requireUserId();
+  try {
+    return await uploadBase64Image({
+      userId,
+      base64: imageBase64,
+      mediaType,
+      path: `meal-photos/${crypto.randomUUID()}.jpg`,
+    });
+  } catch (err) {
+    // A missing picture is a much smaller problem than blocking the
+    // whole meal-logging flow over an upload hiccup.
+    console.error("uploadMealPhotoAction failed:", err);
+    return null;
+  }
 }
 
 /**
@@ -170,11 +199,13 @@ export async function logCustomFoodAction(input: CustomFoodInput) {
     data: {
       source: FOOD_SOURCE_TO_PRISMA.custom,
       sourceId: crypto.randomUUID(),
+      ownerId: userId,
       name: input.name.trim(),
       caloriesPer100g: input.caloriesPer100g,
       proteinPer100g: input.proteinPer100g,
       carbsPer100g: input.carbsPer100g,
       fatPer100g: input.fatPer100g,
+      imageUrl: input.imageUrl,
     },
   });
 
