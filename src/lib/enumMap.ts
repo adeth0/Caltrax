@@ -95,6 +95,11 @@ export const FOOD_SOURCE_TO_PRISMA: Record<FoodItem["source"], PrismaFoodSource>
   usda: "USDA",
   custom: "CUSTOM",
 };
+export const FOOD_SOURCE_FROM_PRISMA: Record<PrismaFoodSource, FoodItem["source"]> = {
+  OPEN_FOOD_FACTS: "open_food_facts",
+  USDA: "usda",
+  CUSTOM: "custom",
+};
 
 /** Build the goal engine's input shape straight from a Prisma `Profile` row. */
 export function profileToGoalInput(profile: Profile): UserProfileInput {

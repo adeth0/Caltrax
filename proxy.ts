@@ -3,7 +3,22 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback"];
 
+/**
+ * Routes that authenticate themselves (a bearer secret, not a Supabase
+ * session) and must never hit the session gate below. Without this, an
+ * external caller with no session cookie — e.g. a cron scheduler hitting
+ * /api/cron/reminders with just an Authorization header — gets redirected
+ * to /login before the route handler's own auth check ever runs, silently
+ * making the endpoint unreachable. This is exactly what was happening to
+ * the reminders cron.
+ */
+const SELF_AUTHENTICATING_PREFIXES = ["/api/cron"];
+
 export async function proxy(request: NextRequest) {
+  if (SELF_AUTHENTICATING_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix))) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -27,7 +42,12 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublicPath = PUBLIC_PATHS.some((path) => request.nextUrl.pathname.startsWith(path));
+  // The landing page is exact-matched rather than folded into
+  // PUBLIC_PATHS' startsWith check -- "/" as a startsWith prefix would
+  // match literally every route, making the whole session gate a no-op.
+  const isPublicPath =
+    request.nextUrl.pathname === "/" ||
+    PUBLIC_PATHS.some((path) => request.nextUrl.pathname.startsWith(path));
   const isAuthFormPath =
     request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/signup");
 

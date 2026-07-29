@@ -31,9 +31,18 @@ export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearc
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       startTransition(async () => {
-        const found = await searchAction(query);
-        setResults(found);
-        setHasSearched(true);
+        try {
+          const found = await searchAction(query);
+          setResults(found);
+        } catch {
+          // Server actions now catch their own errors and return an empty
+          // array, but this stays as a safety net against any other
+          // unexpected client-side failure — better than leaving the
+          // search box silently stuck with no feedback at all.
+          setResults([]);
+        } finally {
+          setHasSearched(true);
+        }
       });
     }, 350);
     return () => clearTimeout(debounceRef.current);

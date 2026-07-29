@@ -108,6 +108,8 @@ model Profile {
   plannedMeals        PlannedMeal[]
   pushSubscriptions   PushSubscription[]
   unlockedAchievements UnlockedAchievement[]
+  wearableConnections  WearableConnection[]
+  activityLogs         ActivityLog[]
 
   @@map("profiles")
 }
@@ -185,6 +187,11 @@ model WeightLog {
   user       Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
   weightKg   Float
   bodyFatPct Float?
+  /// "manual" (default) or a WearableProvider value (e.g. "WITHINGS") when
+  /// auto-imported from a connected smart scale — lets the UI show "via
+  /// Withings" and lets sync logic update today's synced entry instead of
+  /// creating a duplicate every time it re-polls.
+  source     String   @default("manual")
   loggedAt   DateTime @default(now())
 
   @@index([userId, loggedAt])
@@ -335,7 +342,78 @@ model UnlockedAchievement {
 }
 
 // ---------------------------------------------------------------------
-// Still pending: weekly/monthly/yearly report persistence (currently
-// computed on demand, not stored) and wearable-sync tables. Add as their
-// own migration when scheduled.
+// Phase 4 (slice 1-2): wearable/device sync via cloud OAuth APIs — Fitbit
+// and Withings (slice 1), then Oura and Whoop (slice 2). Apple Health and
+// Android Health Connect deliberately aren't here: both are on-device-only
+// frameworks with no cloud REST API, so they need the native app wrapper
+// (Capacitor/Expo) from a later phase, not this one. Garmin is also not
+// here yet — its Health API is push/webhook-based (not poll-for-recent
+// like the other four) and needs a formal partner application with real
+// review time, so it's deferred until that's actually approved rather than
+// guessing at a webhook contract nobody's seen yet.
+//
+// Tokens are stored as plain columns rather than field-level-encrypted —
+// acceptable for now since they're never read outside trusted server
+// code (API routes/cron, never sent to the client), same trust boundary
+// as DATABASE_URL itself. Revisit with pgcrypto or a KMS-backed column if
+// this ever needs a stricter compliance posture (e.g. before handling
+// health data at real scale).
+//
+// Still pending after this: weekly/monthly/yearly report persistence
+// (currently computed on demand, not stored), and Garmin/Oura/Whoop.
 // ---------------------------------------------------------------------
+
+enum WearableProvider {
+  FITBIT
+  WITHINGS
+  OURA
+  WHOOP
+}
+
+/// One OAuth connection per (user, provider). Access tokens are short-lived
+/// (Fitbit: 8h, Withings: 3h) and refreshed on demand by the sync code using
+/// refreshToken — see src/lib/wearables/<provider>.ts.
+model WearableConnection {
+  id             String           @id @default(cuid())
+  userId         String
+  user           Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider       WearableProvider
+  /// The provider's own user identifier, where they expose one (Fitbit does;
+  /// Withings' scope covers only the connecting user, so this stays null there).
+  externalUserId String?
+  accessToken    String
+  refreshToken   String
+  expiresAt      DateTime
+  scope          String?
+  lastSyncedAt   DateTime?
+  /// Set on a failed sync (e.g. revoked access) so the UI can surface
+  /// "reconnect needed" instead of silently going stale.
+  lastSyncError  String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([userId, provider])
+  @@map("wearable_connections")
+}
+
+/// Daily activity summary synced from a wearable. One row per (user, date,
+/// source) — kept per-provider rather than merged, so switching devices
+/// mid-month never silently overwrites another device's history for the
+/// same day.
+model ActivityLog {
+  id               String           @id @default(cuid())
+  userId           String
+  user             Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Date-only (stored at UTC midnight) — the calendar day this activity is for.
+  date             DateTime         @db.Date
+  source           WearableProvider
+  steps            Int?
+  activeCalories   Int?
+  restingHeartRate Int?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@unique([userId, date, source])
+  @@index([userId, date])
+  @@map("activity_logs")
+}

@@ -60,10 +60,18 @@ export function MealPhotoCapture({ mealType, onDone }: MealPhotoCaptureProps) {
     startAnalyzing(async () => {
       try {
         const base64 = await downscaleToJpegBase64(file);
-        const result = await recognizeMealPhotoAction(base64, "image/jpeg");
-        setItems(result.items.map((item) => ({ ...item, include: true })));
-        setNotes(result.notes ?? null);
+        const response = await recognizeMealPhotoAction(base64, "image/jpeg");
+        if (!response.success) {
+          setError(response.error);
+          return;
+        }
+        setItems(response.data.items.map((item) => ({ ...item, include: true })));
+        setNotes(response.data.notes ?? null);
       } catch (err) {
+        // Only reachable for client-side failures now (e.g. the browser
+        // failing to decode the photo before it's ever sent to the
+        // server) -- recognizeMealPhotoAction itself always resolves with
+        // a { success, ... } object rather than throwing.
         setError(err instanceof Error ? err.message : "Couldn't analyze that photo.");
       }
     });
