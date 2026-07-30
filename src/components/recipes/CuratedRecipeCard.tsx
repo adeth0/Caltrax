@@ -15,6 +15,8 @@ export interface CuratedRecipeSummary {
   caloriesPerServing: number;
   averageRating: number | null;
   ratingCount: number;
+  /** Only set for community-submitted (non-curated) recipes. */
+  creatorName?: string | null;
 }
 
 function RecipeThumbnail({ recipe }: { recipe: CuratedRecipeSummary }) {
@@ -45,6 +47,7 @@ export function CuratedRecipeCard({ recipe }: { recipe: CuratedRecipeSummary }) 
       <RecipeThumbnail recipe={recipe} />
       <div className="p-3">
         <p className="truncate text-sm font-semibold text-text-primary">{recipe.name}</p>
+        {recipe.creatorName && <p className="truncate text-xs text-text-tertiary">by {recipe.creatorName}</p>}
         <div className="mt-1 flex items-center justify-between text-xs text-text-tertiary">
           <span className="tabular-nums">{recipe.caloriesPerServing} kcal</span>
           {recipe.averageRating !== null ? (

@@ -876,6 +876,7 @@ async function main() {
       data: {
         userId: null,
         source: "CURATED",
+        isPublished: true,
         name: recipe.name,
         description: recipe.description,
         category: recipe.category,

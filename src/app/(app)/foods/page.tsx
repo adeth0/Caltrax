@@ -19,6 +19,7 @@ type RecipeWithItemsAndRatings = {
     food: { caloriesPer100g: number; proteinPer100g: number; carbsPer100g: number; fatPer100g: number };
   }[];
   ratings: { stars: number }[];
+  user?: { name: string | null } | null;
 };
 
 function toCuratedSummary(r: RecipeWithItemsAndRatings): CuratedRecipeSummary {
@@ -34,6 +35,7 @@ function toCuratedSummary(r: RecipeWithItemsAndRatings): CuratedRecipeSummary {
     caloriesPerServing: Math.round(perServing.calories),
     averageRating: averageRating(r.ratings),
     ratingCount: r.ratings.length,
+    creatorName: r.user?.name,
   };
 }
 
@@ -43,7 +45,7 @@ export default async function FoodsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [myRecipes, curatedRecipes, savedRecipeLinks] = await Promise.all([
+  const [myRecipes, curatedRecipes, communityRecipes, savedRecipeLinks] = await Promise.all([
     user
       ? db.recipe.findMany({
           where: { userId: user.id, source: "USER" },
@@ -55,6 +57,11 @@ export default async function FoodsPage() {
       where: { source: "CURATED" },
       orderBy: { createdAt: "desc" },
       include: { items: { include: { food: true } }, ratings: true },
+    }),
+    db.recipe.findMany({
+      where: { source: "USER", isPublished: true },
+      orderBy: { createdAt: "desc" },
+      include: { items: { include: { food: true } }, ratings: true, user: { select: { name: true } } },
     }),
     user
       ? db.savedRecipe.findMany({
@@ -83,6 +90,10 @@ export default async function FoodsPage() {
     toCuratedSummary(r)
   );
 
+  const communitySummaries: CuratedRecipeSummary[] = communityRecipes.map(
+    (r: (typeof communityRecipes)[number]) => toCuratedSummary(r)
+  );
+
   const savedSummaries: CuratedRecipeSummary[] = savedRecipeLinks.map(
     (s: (typeof savedRecipeLinks)[number]) => toCuratedSummary(s.recipe)
   );
@@ -96,7 +107,12 @@ export default async function FoodsPage() {
         </p>
       </header>
 
-      <FoodsTabs recipes={recipeSummaries} curatedRecipes={curatedSummaries} savedRecipes={savedSummaries} />
+      <FoodsTabs
+        recipes={recipeSummaries}
+        curatedRecipes={curatedSummaries}
+        communityRecipes={communitySummaries}
+        savedRecipes={savedSummaries}
+      />
     </main>
   );
 }
