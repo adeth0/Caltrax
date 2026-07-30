@@ -1,34 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Clock, Coffee, Croissant, Salad, Soup, Star, UtensilsCrossed } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { CuratedRecipeCard, type CuratedRecipeSummary } from "./CuratedRecipeCard";
+import { type MealCategoryValue } from "./recipeCategoryMeta";
 
-export type MealCategoryValue = "BREAKFAST" | "BRUNCH" | "LUNCH" | "TEA" | "SNACK";
-
-export interface CuratedRecipeSummary {
-  id: string;
-  name: string;
-  description: string | null;
-  category: MealCategoryValue | null;
-  imageUrl: string | null;
-  prepMinutes: number | null;
-  cookMinutes: number | null;
-  caloriesPerServing: number;
-  averageRating: number | null;
-  ratingCount: number;
-}
-
-const CATEGORY_META: Record<MealCategoryValue, { label: string; icon: typeof Coffee; colorClass: string }> = {
-  BREAKFAST: { label: "Breakfast", icon: Coffee, colorClass: "text-macro-carbs" },
-  BRUNCH: { label: "Brunch", icon: Croissant, colorClass: "text-brand" },
-  LUNCH: { label: "Lunch", icon: Salad, colorClass: "text-macro-fibre" },
-  TEA: { label: "Tea", icon: Soup, colorClass: "text-macro-protein" },
-  SNACK: { label: "Snack", icon: UtensilsCrossed, colorClass: "text-macro-fat" },
-};
+export type { CuratedRecipeSummary, MealCategoryValue };
 
 const CATEGORY_FILTERS: { value: MealCategoryValue | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -40,28 +18,6 @@ const CATEGORY_FILTERS: { value: MealCategoryValue | "all"; label: string }[] = 
 ];
 
 type SortMode = "recommended" | "rated" | "newest";
-
-function RecipeThumbnail({ recipe }: { recipe: CuratedRecipeSummary }) {
-  if (recipe.imageUrl) {
-    return (
-      <Image
-        src={recipe.imageUrl}
-        alt=""
-        width={200}
-        height={140}
-        unoptimized
-        className="h-32 w-full rounded-t-card object-cover"
-      />
-    );
-  }
-  const meta = recipe.category ? CATEGORY_META[recipe.category] : CATEGORY_META.LUNCH;
-  const Icon = meta.icon;
-  return (
-    <div className="flex h-32 w-full items-center justify-center rounded-t-card bg-surface-raised">
-      <Icon className={cn("h-9 w-9", meta.colorClass)} strokeWidth={1.5} />
-    </div>
-  );
-}
 
 export function FindMealsClient({ recipes }: { recipes: CuratedRecipeSummary[] }) {
   const [query, setQuery] = useState("");
@@ -150,32 +106,7 @@ export function FindMealsClient({ recipes }: { recipes: CuratedRecipeSummary[] }
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {filtered.map((recipe) => (
-            <Link
-              key={recipe.id}
-              href={`/foods/recipes/${recipe.id}`}
-              className="control focus-ring card-surface overflow-hidden"
-            >
-              <RecipeThumbnail recipe={recipe} />
-              <div className="p-3">
-                <p className="truncate text-sm font-semibold text-text-primary">{recipe.name}</p>
-                <div className="mt-1 flex items-center justify-between text-xs text-text-tertiary">
-                  <span className="tabular-nums">{recipe.caloriesPerServing} kcal</span>
-                  {recipe.averageRating !== null ? (
-                    <span className="flex items-center gap-0.5">
-                      <Star className="h-3 w-3 fill-accent-warning text-accent-warning" />
-                      {recipe.averageRating.toFixed(1)}
-                    </span>
-                  ) : (
-                    (recipe.prepMinutes ?? 0) + (recipe.cookMinutes ?? 0) > 0 && (
-                      <span className="flex items-center gap-0.5">
-                        <Clock className="h-3 w-3" />
-                        {(recipe.prepMinutes ?? 0) + (recipe.cookMinutes ?? 0)}m
-                      </span>
-                    )
-                  )}
-                </div>
-              </div>
-            </Link>
+            <CuratedRecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </div>
       )}

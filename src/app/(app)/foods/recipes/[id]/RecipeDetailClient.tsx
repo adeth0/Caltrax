@@ -3,34 +3,15 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  Bookmark,
-  BookmarkCheck,
-  Clock,
-  Coffee,
-  Croissant,
-  Salad,
-  Soup,
-  Star,
-  UtensilsCrossed,
-} from "lucide-react";
+import { Bookmark, BookmarkCheck, Clock, Star } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
 import { cn } from "@/lib/utils";
 import { logRecipeAction, rateRecipeAction, toggleSaveRecipeAction } from "@/app/(app)/foods/actions";
+import { CATEGORY_META, type MealCategoryValue } from "@/components/recipes/recipeCategoryMeta";
 import type { MealType } from "@/types";
-
-type MealCategoryValue = "BREAKFAST" | "BRUNCH" | "LUNCH" | "TEA" | "SNACK";
-
-const CATEGORY_META: Record<MealCategoryValue, { label: string; icon: typeof Coffee; colorClass: string }> = {
-  BREAKFAST: { label: "Breakfast", icon: Coffee, colorClass: "text-macro-carbs" },
-  BRUNCH: { label: "Brunch", icon: Croissant, colorClass: "text-brand" },
-  LUNCH: { label: "Lunch", icon: Salad, colorClass: "text-macro-fibre" },
-  TEA: { label: "Tea", icon: Soup, colorClass: "text-macro-protein" },
-  SNACK: { label: "Snack", icon: UtensilsCrossed, colorClass: "text-macro-fat" },
-};
 
 // A recipe's meal-time category isn't the same set of values as the
 // logging system's MealType (which only has 4 options, no brunch/tea) --

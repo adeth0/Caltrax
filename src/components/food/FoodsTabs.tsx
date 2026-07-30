@@ -3,17 +3,19 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { FoodSearchTab } from "@/components/food/FoodSearchTab";
-import { RecipesClient, type RecipeSummary } from "@/components/recipes/RecipesClient";
+import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import { FindMealsClient, type CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
+import { MyRecipesClient } from "@/components/recipes/MyRecipesClient";
 
 interface FoodsTabsProps {
   recipes: RecipeSummary[];
   curatedRecipes: CuratedRecipeSummary[];
-  savedRecipeIds: string[];
+  savedRecipes: CuratedRecipeSummary[];
 }
 
-export function FoodsTabs({ recipes, curatedRecipes }: FoodsTabsProps) {
+export function FoodsTabs({ recipes, curatedRecipes, savedRecipes }: FoodsTabsProps) {
   const [tab, setTab] = useState<"search" | "meals" | "recipes">("search");
+  const myRecipesCount = recipes.length + savedRecipes.length;
 
   return (
     <div>
@@ -22,7 +24,7 @@ export function FoodsTabs({ recipes, curatedRecipes }: FoodsTabsProps) {
           [
             { value: "search", label: "Search" },
             { value: "meals", label: "Find meals" },
-            { value: "recipes", label: `My recipes${recipes.length > 0 ? ` (${recipes.length})` : ""}` },
+            { value: "recipes", label: `My recipes${myRecipesCount > 0 ? ` (${myRecipesCount})` : ""}` },
           ] as const
         ).map((t) => (
           <button
@@ -43,7 +45,7 @@ export function FoodsTabs({ recipes, curatedRecipes }: FoodsTabsProps) {
 
       {tab === "search" && <FoodSearchTab />}
       {tab === "meals" && <FindMealsClient recipes={curatedRecipes} />}
-      {tab === "recipes" && <RecipesClient recipes={recipes} />}
+      {tab === "recipes" && <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} />}
     </div>
   );
 }

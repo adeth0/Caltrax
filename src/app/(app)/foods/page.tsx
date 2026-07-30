@@ -5,13 +5,45 @@ import { db } from "@/lib/db";
 import { averageRating, computeRecipeNutritionPerServing } from "@/lib/recipeNutrition";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+type RecipeWithItemsAndRatings = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: CuratedRecipeSummary["category"];
+  imageUrl: string | null;
+  prepMinutes: number | null;
+  cookMinutes: number | null;
+  servings: number;
+  items: {
+    grams: number;
+    food: { caloriesPer100g: number; proteinPer100g: number; carbsPer100g: number; fatPer100g: number };
+  }[];
+  ratings: { stars: number }[];
+};
+
+function toCuratedSummary(r: RecipeWithItemsAndRatings): CuratedRecipeSummary {
+  const perServing = computeRecipeNutritionPerServing(r.items, r.servings);
+  return {
+    id: r.id,
+    name: r.name,
+    description: r.description,
+    category: r.category,
+    imageUrl: r.imageUrl,
+    prepMinutes: r.prepMinutes,
+    cookMinutes: r.cookMinutes,
+    caloriesPerServing: Math.round(perServing.calories),
+    averageRating: averageRating(r.ratings),
+    ratingCount: r.ratings.length,
+  };
+}
+
 export default async function FoodsPage() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [myRecipes, curatedRecipes, savedRecipeIds] = await Promise.all([
+  const [myRecipes, curatedRecipes, savedRecipeLinks] = await Promise.all([
     user
       ? db.recipe.findMany({
           where: { userId: user.id, source: "USER" },
@@ -25,7 +57,11 @@ export default async function FoodsPage() {
       include: { items: { include: { food: true } }, ratings: true },
     }),
     user
-      ? db.savedRecipe.findMany({ where: { userId: user.id }, select: { recipeId: true } })
+      ? db.savedRecipe.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+          include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
+        })
       : Promise.resolve([]),
   ]);
 
@@ -43,25 +79,13 @@ export default async function FoodsPage() {
     };
   });
 
-  const curatedSummaries: CuratedRecipeSummary[] = curatedRecipes.map(
-    (r: (typeof curatedRecipes)[number]) => {
-      const perServing = computeRecipeNutritionPerServing(r.items, r.servings);
-      return {
-        id: r.id,
-        name: r.name,
-        description: r.description,
-        category: r.category,
-        imageUrl: r.imageUrl,
-        prepMinutes: r.prepMinutes,
-        cookMinutes: r.cookMinutes,
-        caloriesPerServing: Math.round(perServing.calories),
-        averageRating: averageRating(r.ratings),
-        ratingCount: r.ratings.length,
-      };
-    }
+  const curatedSummaries: CuratedRecipeSummary[] = curatedRecipes.map((r: (typeof curatedRecipes)[number]) =>
+    toCuratedSummary(r)
   );
 
-  const savedRecipeIdList = savedRecipeIds.map((s: (typeof savedRecipeIds)[number]) => s.recipeId);
+  const savedSummaries: CuratedRecipeSummary[] = savedRecipeLinks.map(
+    (s: (typeof savedRecipeLinks)[number]) => toCuratedSummary(s.recipe)
+  );
 
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
@@ -72,11 +96,7 @@ export default async function FoodsPage() {
         </p>
       </header>
 
-      <FoodsTabs
-        recipes={recipeSummaries}
-        curatedRecipes={curatedSummaries}
-        savedRecipeIds={savedRecipeIdList}
-      />
+      <FoodsTabs recipes={recipeSummaries} curatedRecipes={curatedSummaries} savedRecipes={savedSummaries} />
     </main>
   );
 }
