@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { MEAL_TO_PRISMA } from "@/lib/enumMap";
 import { upsertFoodItem } from "@/lib/foodSearch";
+import { uploadBase64Image } from "@/lib/storage";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { FoodItem, MealType } from "@/types";
 
@@ -21,10 +22,24 @@ interface RecipeItemInput {
   grams: number;
 }
 
+interface RecipeStepInput {
+  content: string;
+  durationSeconds?: number;
+}
+
 interface CreateRecipeInput {
   name: string;
+  description?: string;
+  category?: "BREAKFAST" | "BRUNCH" | "LUNCH" | "TEA" | "SNACK";
   servings: number;
+  prepMinutes?: number;
+  cookMinutes?: number;
   items: RecipeItemInput[];
+  steps: RecipeStepInput[];
+  isPublished: boolean;
+  /** Downscaled photo, same shape as the meal-scan upload flow. */
+  imageBase64?: string;
+  imageMediaType?: string;
 }
 
 export async function createRecipeAction(input: CreateRecipeInput) {
@@ -39,16 +54,50 @@ export async function createRecipeAction(input: CreateRecipeInput) {
   // Upsert every ingredient's Food row first so we have real foodIds to attach.
   const dbFoods = await Promise.all(input.items.map((item) => upsertFoodItem(item.food)));
 
+  let imageUrl: string | undefined;
+  if (input.imageBase64 && input.imageMediaType) {
+    try {
+      imageUrl = await uploadBase64Image({
+        userId,
+        base64: input.imageBase64,
+        mediaType: input.imageMediaType,
+        path: `recipe-photos/${crypto.randomUUID()}.jpg`,
+      });
+    } catch (err) {
+      // The recipe should still get created even if the photo upload
+      // fails for some reason -- a missing picture is a much smaller
+      // problem than losing everything the person just filled in.
+      console.error("createRecipeAction: image upload failed, continuing without it:", err);
+    }
+  }
+
   await db.recipe.create({
     data: {
       userId,
+      source: "USER",
+      isPublished: input.isPublished,
       name: input.name.trim(),
+      description: input.description?.trim() || undefined,
+      category: input.category,
       servings: input.servings,
+      prepMinutes: input.prepMinutes,
+      cookMinutes: input.cookMinutes,
+      imageUrl,
       items: {
         create: input.items.map((item, i) => ({
           foodId: dbFoods[i]!.id,
           grams: item.grams,
+          displayLabel: `${item.food.name}, ${Math.round(item.grams)}g`,
         })),
+      },
+      steps: {
+        create: input.steps
+          .filter((step) => step.content.trim())
+          .map((step, i) => ({
+            order: i + 1,
+            content: step.content.trim(),
+            durationSeconds: step.durationSeconds,
+          })),
       },
     },
   });
@@ -78,7 +127,10 @@ export async function logRecipeAction(recipeId: string, mealType: MealType, serv
   }
 
   const recipe = await db.recipe.findFirst({
-    where: { id: recipeId, OR: [{ userId }, { source: "CURATED" }] },
+    where: {
+      id: recipeId,
+      OR: [{ userId }, { source: "CURATED" }, { source: "USER", isPublished: true }],
+    },
     include: { items: true },
   });
   if (!recipe) throw new Error("Recipe not found");
@@ -106,6 +158,15 @@ export async function rateRecipeAction(recipeId: string, stars: number) {
     throw new Error("Rating must be between 1 and 5 stars");
   }
 
+  const visible = await db.recipe.findFirst({
+    where: {
+      id: recipeId,
+      OR: [{ userId }, { source: "CURATED" }, { source: "USER", isPublished: true }],
+    },
+    select: { id: true },
+  });
+  if (!visible) throw new Error("Recipe not found");
+
   await db.recipeRating.upsert({
     where: { userId_recipeId: { userId, recipeId } },
     create: { userId, recipeId, stars },
@@ -124,6 +185,14 @@ export async function toggleSaveRecipeAction(recipeId: string) {
   if (existing) {
     await db.savedRecipe.delete({ where: { id: existing.id } });
   } else {
+    const visible = await db.recipe.findFirst({
+      where: {
+        id: recipeId,
+        OR: [{ userId }, { source: "CURATED" }, { source: "USER", isPublished: true }],
+      },
+      select: { id: true },
+    });
+    if (!visible) throw new Error("Recipe not found");
     await db.savedRecipe.create({ data: { userId, recipeId } });
   }
 

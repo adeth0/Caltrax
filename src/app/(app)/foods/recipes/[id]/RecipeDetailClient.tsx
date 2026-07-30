@@ -46,7 +46,8 @@ export interface RecipeDetailData {
   servings: number;
   prepMinutes: number | null;
   cookMinutes: number | null;
-  isCurated: boolean;
+  isCommunityRecipe: boolean;
+  canSave: boolean;
   ingredients: RecipeDetailIngredient[];
   steps: RecipeDetailStep[];
   caloriesPerServing: number;
@@ -187,7 +188,7 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
           <h1 className="font-display text-2xl font-bold text-text-primary">{recipe.name}</h1>
           {recipe.description && <p className="mt-1 text-sm text-text-secondary">{recipe.description}</p>}
         </div>
-        {recipe.isCurated && (
+        {recipe.canSave && (
           <button
             type="button"
             onClick={handleToggleSave}
@@ -217,7 +218,7 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
         {meta && <span className={meta.colorClass}>{meta.label}</span>}
       </div>
 
-      {recipe.isCurated && (
+      {recipe.isCommunityRecipe && (
         <div className="mt-3 flex items-center gap-3">
           <div className="flex items-center gap-0.5">
             {[1, 2, 3, 4, 5].map((star) => (

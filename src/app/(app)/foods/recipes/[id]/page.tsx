@@ -13,7 +13,10 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
   if (!user) notFound();
 
   const recipe = await db.recipe.findFirst({
-    where: { id, OR: [{ source: "CURATED" }, { userId: user.id }] },
+    where: {
+      id,
+      OR: [{ source: "CURATED" }, { userId: user.id }, { source: "USER", isPublished: true }],
+    },
     include: {
       items: { include: { food: true } },
       steps: { orderBy: { order: "asc" } },
@@ -43,7 +46,8 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
         servings: recipe.servings,
         prepMinutes: recipe.prepMinutes,
         cookMinutes: recipe.cookMinutes,
-        isCurated: recipe.source === "CURATED",
+        isCommunityRecipe: recipe.source === "CURATED" || recipe.isPublished,
+        canSave: (recipe.source === "CURATED" || recipe.isPublished) && recipe.userId !== user.id,
         ingredients: recipe.items.map((item: (typeof recipe.items)[number]) => ({
           id: item.id,
           label: item.displayLabel ?? `${item.food.name}, ${Math.round(item.grams)}g`,

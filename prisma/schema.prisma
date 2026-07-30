@@ -278,6 +278,11 @@ model Recipe {
   userId      String?
   user        Profile?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   source      RecipeSource  @default(USER)
+  /// USER recipes are private by default -- only visible in the
+  /// creator's own "My Recipes". Explicitly opting in (a checkbox on the
+  /// create form) makes it visible to everyone in "User Recipes & Meals"
+  /// and to search/logging by other users. Always true for CURATED.
+  isPublished Boolean       @default(false)
   name        String
   description String?
   category    MealCategory?
@@ -294,6 +299,7 @@ model Recipe {
 
   @@index([userId])
   @@index([source, category])
+  @@index([source, isPublished])
   @@map("recipes")
 }
 

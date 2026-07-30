@@ -19,7 +19,13 @@ const CATEGORY_FILTERS: { value: MealCategoryValue | "all"; label: string }[] = 
 
 type SortMode = "recommended" | "rated" | "newest";
 
-export function FindMealsClient({ recipes }: { recipes: CuratedRecipeSummary[] }) {
+export function FindMealsClient({
+  recipes,
+  emptyMessage = "No meals match that search.",
+}: {
+  recipes: CuratedRecipeSummary[];
+  emptyMessage?: string;
+}) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<MealCategoryValue | "all">("all");
   const [sort, setSort] = useState<SortMode>("recommended");
@@ -102,7 +108,7 @@ export function FindMealsClient({ recipes }: { recipes: CuratedRecipeSummary[] }
       </div>
 
       {filtered.length === 0 ? (
-        <p className="py-8 text-center text-sm text-text-tertiary">No meals match that search.</p>
+        <p className="py-8 text-center text-sm text-text-tertiary">{emptyMessage}</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {filtered.map((recipe) => (
