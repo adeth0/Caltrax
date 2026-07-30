@@ -1,0 +1,45 @@
+"use client";
+
+import { useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { WorkoutLogClient, type ExerciseOption, type TodayWorkoutSetRow } from "./WorkoutLogClient";
+
+interface LogModeToggleProps {
+  /** The already-rendered meal-logging UI, passed through rather than re-fetching its data here. */
+  mealSlot: ReactNode;
+  exercises: ExerciseOption[];
+  todaySets: TodayWorkoutSetRow[];
+}
+
+export function LogModeToggle({ mealSlot, exercises, todaySets }: LogModeToggleProps) {
+  const [mode, setMode] = useState<"meal" | "workout">("meal");
+
+  return (
+    <div>
+      <div className="mb-4 flex gap-2 rounded-control bg-surface-raised p-1">
+        {(
+          [
+            { value: "meal", label: "Meal" },
+            { value: "workout", label: "Workout" },
+          ] as const
+        ).map((m) => (
+          <button
+            key={m.value}
+            type="button"
+            onClick={() => setMode(m.value)}
+            className={cn(
+              "control focus-ring touch-target flex-1 px-3 py-2 text-sm font-medium transition-colors",
+              mode === m.value
+                ? "bg-accent-info/20 text-accent-info"
+                : "text-text-tertiary hover:text-text-secondary"
+            )}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
+      {mode === "meal" ? mealSlot : <WorkoutLogClient exercises={exercises} todaySets={todaySets} />}
+    </div>
+  );
+}

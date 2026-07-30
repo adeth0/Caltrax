@@ -113,6 +113,7 @@ model Profile {
   recipeRatings        RecipeRating[]
   savedRecipes         SavedRecipe[]
   shoppingListItems    ShoppingListItem[]
+  workouts             Workout[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -478,6 +479,67 @@ model ShoppingListItem {
 
   @@index([userId, checked])
   @@map("shopping_list_items")
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  LEGS
+  SHOULDERS
+  ARMS
+  CORE
+  FULL_BODY
+  CARDIO
+}
+
+/// Curated exercise library -- global reference data, not tied to any
+/// one user, same pattern as CURATED recipes and Supplement.
+model Exercise {
+  id          String        @id @default(cuid())
+  name        String
+  muscleGroup MuscleGroup
+  /// e.g. "Barbell", "Dumbbell", "Bodyweight", "Machine", "Cable" -- free text, purely descriptive.
+  equipment   String?
+  createdAt   DateTime      @default(now())
+  sets        WorkoutSet[]
+
+  @@index([muscleGroup])
+  @@map("exercises")
+}
+
+/// One training session -- "today's workout" as a single browsable unit,
+/// with sets across however many exercises nested underneath. Mirrors
+/// how a real workout is actually experienced (several exercises, each
+/// with multiple sets) rather than a flat list of unconnected sets.
+model Workout {
+  id       String       @id @default(cuid())
+  userId   String
+  user     Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Optional custom name, e.g. "Push Day" -- purely descriptive, not required.
+  name     String?
+  loggedAt DateTime     @default(now())
+  notes    String?
+  sets     WorkoutSet[]
+
+  @@index([userId, loggedAt])
+  @@map("workouts")
+}
+
+model WorkoutSet {
+  id         String   @id @default(cuid())
+  workoutId  String
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  setNumber  Int
+  reps       Int
+  /// Null for bodyweight-only exercises (e.g. plank, push-ups without added load).
+  weightKg   Float?
+  /// Overall order within the workout, across all exercises, so the UI can display sets in the sequence they were actually logged.
+  order      Int
+
+  @@index([workoutId])
+  @@map("workout_sets")
 }
 
 model Favourite {
