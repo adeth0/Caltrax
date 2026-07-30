@@ -13,8 +13,15 @@ interface PillSelectProps {
   value: string;
   onChange: (value: string) => void;
   options: PillOption[];
-  columns?: 1 | 2;
+  columns?: 1 | 2 | 3 | 4;
 }
+
+const COLUMNS_CLASS: Record<1 | 2 | 3 | 4, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+};
 
 /**
  * Grid of large, thumb-friendly toggle buttons for a single-choice enum
@@ -23,7 +30,7 @@ interface PillSelectProps {
  */
 export function PillSelect({ name, value, onChange, options, columns = 1 }: PillSelectProps) {
   return (
-    <div className={cn("grid gap-2", columns === 2 ? "grid-cols-2" : "grid-cols-1")} role="radiogroup">
+    <div className={cn("grid gap-2", COLUMNS_CLASS[columns])} role="radiogroup">
       <input type="hidden" name={name} value={value} />
       {options.map((option) => {
         const isActive = option.value === value;
