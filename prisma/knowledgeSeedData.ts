@@ -218,4 +218,232 @@ Signs you might be overtraining: persistent fatigue that doesn't improve with a 
 
 Practical guidance: DOMS itself isn't a sign you need to do more or less -- it's simply part of adapting to new or increased training stress and typically eases as your body adjusts to a given routine. Structuring training so that any given muscle group gets at least 48 hours before being worked intensely again is a reasonable general guideline, and building in at least one genuinely lower-intensity day or full rest day per week supports longer-term consistency far more than pushing hard every single day.`,
   },
+
+  // --- More supplements ---
+  {
+    slug: "magnesium-the-relaxation-mineral",
+    title: "Magnesium: The Relaxation Mineral",
+    category: "SUPPLEMENTS",
+    summary: "Involved in over 300 processes in the body, and easy to fall short on.",
+    relatedSupplementName: "Magnesium Glycinate",
+    content: `Magnesium is involved in muscle and nerve function, blood sugar regulation, blood pressure, and making protein, bone, and DNA. Despite being needed for so much, many people don't get quite enough from diet alone, particularly if vegetables and whole grains -- the main dietary sources -- make up a small part of their meals.
+
+What it's linked to: adequate magnesium is associated with better muscle function and recovery, more stable blood sugar, and improved sleep quality for some people. Low levels have been linked to muscle cramps and fatigue, though these symptoms have many possible causes.
+
+Which form matters: magnesium oxide (the cheapest, most common form in generic supplements) is poorly absorbed and often causes digestive upset. Glycinate and citrate forms are absorbed considerably better and are gentler on the stomach.
+
+How to take it: often taken in the evening, since it's commonly associated with promoting relaxation, though it works regardless of time of day. Pairing with food can help reduce any mild digestive effects.`,
+  },
+  {
+    slug: "zinc-small-amounts-big-role",
+    title: "Zinc: Small Amounts, Big Role",
+    category: "SUPPLEMENTS",
+    summary: "A trace mineral with an outsized role in immunity and hormone health.",
+    relatedSupplementName: "Zinc",
+    content: `Zinc is needed in only small amounts, but it's involved in immune function, wound healing, DNA synthesis, and testosterone production. Red meat, shellfish, and legumes are the main dietary sources.
+
+Who's more likely to fall short: vegetarians and vegans (plant sources are less bioavailable), older adults, and anyone with a diet low in meat or shellfish. Athletes with high sweat rates may also lose more zinc than average.
+
+What it does: adequate zinc supports normal immune response and is a genuine building block for testosterone production -- though supplementing beyond what the body needs does not raise testosterone further in someone who isn't deficient.
+
+How to take it: best taken with food, since it can cause nausea on an empty stomach. Very high doses over long periods can interfere with copper absorption, so sticking to standard label doses rather than mega-dosing is sensible.`,
+  },
+  {
+    slug: "iron-why-deficiency-is-common",
+    title: "Iron: Why Deficiency Is So Common",
+    category: "SUPPLEMENTS",
+    summary: "The most common nutrient deficiency worldwide, and who's most at risk.",
+    relatedSupplementName: "Iron",
+    content: `Iron is essential for haemoglobin, the protein in red blood cells that carries oxygen around the body. Without enough, oxygen delivery to muscles and organs suffers, leading to fatigue, poor concentration, and reduced exercise capacity.
+
+Who's most at risk: menstruating women (regular blood loss increases iron needs substantially), vegans and vegetarians (plant-based "non-haem" iron is absorbed far less efficiently than the haem iron in meat), endurance athletes (foot-strike impact and increased red blood cell turnover both increase losses), and pregnant women.
+
+Getting a blood test first matters here more than with most supplements: iron overload is a genuine risk for people who don't actually need it, since the body has no efficient way to excrete excess iron. Supplementing without a confirmed deficiency isn't a "just in case" safe bet the way something like vitamin C generally is.
+
+How to take it: taking iron with vitamin C-rich food improves absorption, while tea, coffee, and calcium-rich foods taken at the same time can meaningfully reduce it.`,
+  },
+  {
+    slug: "collagen-what-it-can-and-cant-do",
+    title: "Collagen: What It Can (and Can't) Do",
+    category: "SUPPLEMENTS",
+    summary: "The most abundant protein in the body -- but an incomplete one nutritionally.",
+    relatedSupplementName: "Collagen Peptides",
+    content: `Collagen is the main structural protein in skin, tendons, ligaments, and joints. Supplemental collagen (usually hydrolysed into smaller peptides for easier absorption) is popular for skin and joint health specifically.
+
+What the evidence suggests: several studies point to modest improvements in skin elasticity and hydration with consistent use over 8-12 weeks, and some evidence supports a role in joint comfort, particularly for people with joint-related exercise activity. Evidence quality varies across these areas, and effects tend to be modest rather than dramatic.
+
+An important nutritional distinction: collagen is missing or very low in some essential amino acids (notably tryptophan), making it an "incomplete" protein. It's a reasonable addition alongside your main protein sources, not a substitute for whey, meat, eggs, or other complete proteins when the goal is muscle building or general protein targets.
+
+How to take it: typically taken as a flavourless powder mixed into coffee, smoothies, or other drinks, since consistency over weeks matters more than any specific timing.`,
+  },
+  {
+    slug: "electrolytes-beyond-just-water",
+    title: "Electrolytes: Beyond Just Water",
+    category: "SUPPLEMENTS",
+    summary: "Why plain water alone sometimes isn't enough during longer or harder sessions.",
+    relatedSupplementName: "Electrolyte Mix",
+    content: `Electrolytes -- mainly sodium, potassium, and magnesium -- are minerals lost through sweat that are essential for muscle contraction, nerve signalling, and fluid balance. During short or moderate exercise, food and normal drinking water usually replace what's lost without any special attention needed.
+
+When they matter more: sessions lasting longer than about 60-90 minutes, particularly in heat, or anyone who sweats heavily and notices salt residue on skin or clothing after training. In these situations, water alone can actually dilute remaining sodium levels rather than fully solving the problem.
+
+What they do: adequate electrolyte balance supports normal muscle function (low sodium and magnesium are both linked to cramping in some people) and helps the body actually retain the fluid you drink, rather than losing it straight back out.
+
+How to use them: for most everyday training, plain water and normal meals are enough -- electrolyte drinks or tablets are most useful specifically around longer, hotter, or sweatier sessions rather than as a constant daily habit.`,
+  },
+  {
+    slug: "b-vitamins-and-energy-metabolism",
+    title: "B Vitamins and Energy Metabolism",
+    category: "SUPPLEMENTS",
+    summary: "A group of eight vitamins that help turn the food you eat into usable energy.",
+    relatedSupplementName: "B-Complex",
+    content: `The B vitamins (B1, B2, B3, B5, B6, B9/folate, and B12) each play distinct roles, but collectively they're central to converting carbohydrates, fat, and protein into energy your cells can actually use.
+
+What deficiency looks like: fatigue is a common early sign across several B vitamins, which is part of why B-complex supplements are often marketed around "energy" -- though for someone who isn't actually deficient, supplementing won't provide extra energy beyond normal levels.
+
+The one worth knowing about specifically: B12 is found almost exclusively in animal products, making it the B vitamin vegans and vegetarians are most commonly advised to supplement or get from fortified foods, since deficiency can take years to show symptoms but cause lasting nerve damage if left unaddressed.
+
+How to take it: B vitamins are water-soluble, meaning excess is simply excreted rather than stored, so there's little risk of overdoing it at standard supplemental doses -- unlike fat-soluble vitamins such as A, D, E, and K.`,
+  },
+
+  // --- General topics ---
+  {
+    slug: "meal-timing-and-intermittent-fasting",
+    title: "Meal Timing and Intermittent Fasting",
+    category: "NUTRITION_BASICS",
+    summary: "What fasting approaches can and can't do, separate from the calories themselves.",
+    content: `Intermittent fasting describes eating within a restricted daily window (commonly 8 hours) or fasting on alternate days, rather than any specific list of foods. Its popularity comes from being a simple rule to follow rather than tracking every meal.
+
+What the evidence shows: for weight loss specifically, intermittent fasting appears to work about as well as any other approach that results in the same calorie deficit -- the fasting window itself doesn't appear to provide a special metabolic advantage beyond making it easier for some people to naturally eat less. Some people find a restricted window genuinely easier to stick to; others find it harder, particularly around training performance if workouts fall during the fasted period.
+
+Who it may not suit well: people with a history of disordered eating, pregnant or breastfeeding women, and anyone whose training performance noticeably suffers when fasted (strength and high-intensity performance can be blunted without adequate fuel beforehand for some individuals).
+
+The practical takeaway: fasting windows are a tool for calorie control and personal preference, not a requirement for fat loss or health -- if it doesn't fit your life or training, a more evenly spread eating pattern works just as well for the same total calorie and protein intake.`,
+  },
+  {
+    slug: "alcohol-and-your-fitness-goals",
+    title: "Alcohol and Your Fitness Goals",
+    category: "NUTRITION_BASICS",
+    summary: "What alcohol actually does to recovery, sleep, and body composition.",
+    content: `Alcohol provides 7 calories per gram -- nearly as much as fat -- with no nutritional value, and mixers often add substantial sugar on top. Beyond the calories themselves, it affects several things relevant to training and body composition.
+
+Sleep quality: alcohol can help you fall asleep faster but measurably reduces sleep quality, particularly REM sleep, later in the night -- which matters given how much recovery happens during sleep.
+
+Muscle protein synthesis: research suggests alcohol can blunt the muscle-building response to a workout and to dietary protein, particularly at higher intakes, though moderate amounts appear to have a smaller effect than heavier drinking.
+
+Recovery and decision-making: alcohol is also associated with poorer next-day training performance and a higher likelihood of missing planned workouts or making less considered food choices.
+
+A practical way to think about it: occasional, moderate drinking is unlikely to meaningfully derail consistent training and nutrition -- it's the combination of frequency, quantity, and how it fits into an otherwise consistent routine that determines the real impact, not any single drink.`,
+  },
+  {
+    slug: "added-sugar-what-it-actually-means",
+    title: "Added Sugar: What It Actually Means",
+    category: "NUTRITION_BASICS",
+    summary: "The difference between naturally occurring sugar and the kind worth paying attention to.",
+    content: `"Added sugar" refers to sugars and syrups added to food during processing or preparation -- distinct from sugars naturally present in whole foods like fruit (fructose) or milk (lactose), which come packaged with fibre, protein, or other nutrients.
+
+Why the distinction matters: a can of soda and an apple might have similar total sugar content, but the apple's fibre slows sugar absorption and adds satiety, while the soda offers neither. Most health guidance around "reducing sugar" is specifically about added sugar, not fruit.
+
+Where it hides: added sugar isn't limited to obviously sweet foods -- pasta sauces, granola, flavoured yoghurts, and salad dressings often contain meaningful amounts. Checking ingredient lists (sugar, syrup, and words ending in "-ose" like dextrose or maltose) reveals sources that aren't obvious from a product's name or category.
+
+Practical guidance: added sugar isn't inherently "toxic" in moderate amounts within an otherwise balanced diet -- the issue is more that sugary foods are often calorie-dense and easy to overeat, displacing more nutritious options, rather sugar itself being uniquely harmful compared to other sources of excess calories.`,
+  },
+  {
+    slug: "how-to-read-a-nutrition-label",
+    title: "How to Read a Nutrition Label",
+    category: "NUTRITION_BASICS",
+    summary: "The handful of numbers actually worth checking, and the ones that mislead.",
+    content: `Nutrition labels can be genuinely useful once you know which numbers matter for your goals, rather than trying to evaluate everything on the panel at once.
+
+Serving size first: every other number on the label is based on the stated serving size, which is sometimes unrealistically small compared to how much people actually eat in one sitting. Always check this before comparing calories or macros between products.
+
+For most goals, the numbers worth prioritising are: calories per serving (for overall energy balance), protein (useful to check against your daily target), and fibre (higher is generally better for fullness and digestion). Saturated fat and sodium are worth a glance if you're managing a specific health condition.
+
+A number that misleads more than it helps: "per 100g" comparisons are useful for comparing similar products, but meaningless on their own for foods with very different typical serving sizes -- olive oil and lettuce both have a "per 100g" calorie figure, but nobody eats 100g of olive oil in one sitting.
+
+Ingredient lists are ordered by weight, from most to least -- if sugar or a refined oil appears in the first few ingredients, it makes up a meaningful proportion of the product regardless of front-of-pack marketing claims.`,
+  },
+  {
+    slug: "strength-training-vs-cardio",
+    title: "Strength Training vs Cardio: Do You Need Both?",
+    category: "TRAINING",
+    summary: "What each type of training actually does, and how they complement rather than compete.",
+    content: `Strength (resistance) training and cardiovascular exercise produce different, largely complementary adaptations rather than one being categorically "better" than the other.
+
+What strength training does: builds and preserves muscle mass, increases bone density, and improves metabolic health -- muscle tissue is metabolically active, meaning more of it modestly raises how many calories you burn at rest. It's also the primary driver of the "toned" appearance many people associate with fat loss, since that look comes from a combination of muscle and low enough body fat to see it.
+
+What cardio does: improves heart and lung capacity, supports cardiovascular health markers like resting heart rate and blood pressure, and burns calories efficiently during the session itself.
+
+For fat loss specifically: both contribute to the calorie deficit that actually drives fat loss, but strength training has the added benefit of helping preserve muscle mass while in a deficit, which cardio alone doesn't do as effectively.
+
+A reasonable default: most general health and body composition goals are well served by including both -- resistance training a few times a week as the priority, with cardio added based on preference, time, and specific goals like endurance performance.`,
+  },
+  {
+    slug: "portion-control-without-counting-every-gram",
+    title: "Portion Control Without Counting Every Gram",
+    category: "NUTRITION_BASICS",
+    summary: "Practical estimation tools for days you don't want to weigh everything.",
+    content: `Precise tracking (weighing food, logging every gram) is genuinely useful for learning realistic portion sizes, but it's not the only way to manage intake, and isn't necessary forever or for every meal.
+
+The hand-based method: a palm-sized portion of protein, a cupped-hand portion of carbohydrates, a thumb-sized portion of fats, and a fist-sized portion of vegetables is a well-known rough visual guide that scales naturally with hand size (which roughly correlates with body size) and needs no scale.
+
+Plate-based methods: filling half the plate with vegetables, a quarter with protein, and a quarter with carbohydrates is another simple, visual approach that tends to naturally support a reasonable calorie and nutrient balance without any counting at all.
+
+When precision matters more: if progress has stalled and you genuinely don't know why, a short period of accurate weighing and logging is the most reliable way to find out what's actually happening -- portion estimation is a maintenance tool more than a diagnostic one.
+
+The two approaches aren't mutually exclusive: many people track precisely for a period to calibrate their eye, then shift to portion-based estimation day-to-day once they have a realistic sense of what their target intake actually looks like on a plate.`,
+  },
+  {
+    slug: "stress-cortisol-and-body-composition",
+    title: "Stress, Cortisol, and Body Composition",
+    category: "RECOVERY",
+    summary: "The real, more modest relationship behind the popular 'cortisol makes you fat' claim.",
+    content: `Cortisol is a hormone released in response to physical and psychological stress, including intense exercise itself. It plays a genuine role in regulating blood sugar, metabolism, and the body's stress response -- it isn't inherently "bad," despite how it's often framed.
+
+What chronic stress is actually linked to: persistently elevated stress is associated with poorer sleep, increased cravings for high-calorie foods in some people, and reduced motivation or consistency for training and meal preparation. These behavioural effects likely explain far more of any stress-weight connection than a direct hormonal mechanism.
+
+What the evidence does NOT strongly support: the popular claim that cortisol from a hard workout or a stressful week directly and substantially drives fat storage is not well supported by the research -- the effect size, where it exists, is small compared to the impact of consistent calorie intake and activity levels.
+
+Practical takeaway: managing stress is worthwhile for its own sake (sleep quality, mood, consistency with healthy habits) rather than because of a dramatic direct effect on fat storage. Reasonable approaches include regular movement, adequate sleep, and whatever stress-management techniques genuinely work for you personally.`,
+  },
+  {
+    slug: "muscle-protein-synthesis-explained",
+    title: "Muscle Protein Synthesis Explained",
+    category: "TRAINING",
+    summary: "The actual biological process underneath 'eat protein to build muscle.'",
+    content: `Muscle protein synthesis (MPS) is the process by which your body builds new muscle protein, using amino acids from the protein you eat as building blocks. Muscle tissue is constantly being broken down and rebuilt -- growth happens when synthesis outpaces breakdown over time.
+
+What triggers it: resistance training is the strongest trigger for an elevated MPS response, which stays raised for roughly 24-48 hours after a workout in trained individuals. Eating protein, particularly sources rich in the amino acid leucine (found in meat, dairy, and eggs), independently triggers MPS as well.
+
+Why total daily protein matters more than any single meal: since the elevated MPS window from training lasts a day or two, and protein-triggered MPS happens with every adequate protein-containing meal, what matters most is consistently hitting your daily protein target across enough meals -- not perfectly timing one "magic" post-workout meal.
+
+A practical implication: spreading protein across 3-4 meals of 25-40g each throughout the day, rather than one very large serving, appears to support MPS slightly more efficiently, since there's a point of diminishing returns for how much protein a single meal can meaningfully use for this specific process.`,
+  },
+  {
+    slug: "neat-calories-you-burn-without-trying",
+    title: "NEAT: The Calories You Burn Without Trying",
+    category: "TRAINING",
+    summary: "Non-Exercise Activity Thermogenesis -- an underrated lever in weight management.",
+    content: `NEAT (Non-Exercise Activity Thermogenesis) is the energy burned through everyday movement that isn't deliberate exercise -- walking, standing, fidgeting, taking the stairs, even the physical demands of some jobs.
+
+Why it matters more than most people realise: for many people, NEAT accounts for a larger share of total daily calorie burn than structured exercise sessions do, and it varies enormously between individuals -- some naturally move far more throughout the day than others, even at similar body sizes and activity levels.
+
+The dieting connection: NEAT tends to drop, often without someone noticing, when in a sustained calorie deficit -- the body subtly reduces spontaneous movement as an energy-conservation response, which can partly explain why weight loss sometimes slows over time even with consistent tracking.
+
+Practical ways to support it: taking regular short walks, using stairs where practical, standing periodically during long sitting stretches, and simply staying aware that daily movement outside the gym genuinely adds up. Some fitness trackers' step counts are a reasonable proxy for tracking this if you want a number to watch.`,
+  },
+  {
+    slug: "why-bmi-isnt-the-whole-picture",
+    title: "Why BMI Isn't the Whole Picture",
+    category: "NUTRITION_BASICS",
+    summary: "A useful population-level screening tool, with real individual limitations.",
+    content: `Body Mass Index (BMI) is calculated from height and weight alone, and was originally developed as a population-level statistical tool, not a precise measure of individual health.
+
+What it does reasonably well: at a population level, BMI correlates fairly well with body fat percentage and health risk on average, which is why it remains widely used for public health screening and research.
+
+Where it breaks down for individuals: BMI can't distinguish between muscle and fat mass, meaning a muscular, lean athlete can show as "overweight" or even "obese" despite having low body fat, while someone with low muscle mass and high body fat can show as "normal weight" despite carrying more health risk than the number suggests. It also doesn't account for where fat is distributed, which matters for health risk independent of total amount.
+
+A more complete picture: waist circumference, body fat percentage (from methods like skinfold callipers, bioelectrical impedance, or DEXA scans), and simply how your clothes fit and how you feel and perform, all provide useful context that BMI alone can't.
+
+Practical takeaway: BMI is a reasonable quick screening number for the general population, but not something to take as a precise verdict on your own individual health or progress, particularly if you train regularly.`,
+  },
 ];
