@@ -21,6 +21,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { PrismaClient, FoodSource } from "@prisma/client";
+import { CURATED_RECIPES } from "./recipeSeedData";
 
 const db = new PrismaClient();
 
@@ -663,6 +664,161 @@ const FOODS: SeedFood[] = [
     fatPer100g: 50.0,
     fibrePer100g: 6.0,
   },
+
+  // --- Pantry staples (for recipes) ---
+  {
+    slug: "olive-oil",
+    name: "Olive oil",
+    category: "pantry",
+    caloriesPer100g: 884,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    fatPer100g: 100,
+  },
+  {
+    slug: "honey",
+    name: "Honey",
+    category: "pantry",
+    caloriesPer100g: 304,
+    proteinPer100g: 0.3,
+    carbsPer100g: 82.4,
+    fatPer100g: 0,
+    sugarPer100g: 82.1,
+  },
+  {
+    slug: "garlic-raw",
+    name: "Garlic, raw",
+    category: "vegetable",
+    caloriesPer100g: 149,
+    proteinPer100g: 6.4,
+    carbsPer100g: 33.1,
+    fatPer100g: 0.5,
+    fibrePer100g: 2.1,
+  },
+  {
+    slug: "whole-wheat-tortilla",
+    name: "Whole wheat tortilla wrap",
+    category: "grain",
+    caloriesPer100g: 280,
+    proteinPer100g: 9.0,
+    carbsPer100g: 46.0,
+    fatPer100g: 7.0,
+    fibrePer100g: 5.0,
+  },
+  {
+    slug: "hummus",
+    name: "Hummus",
+    category: "pantry",
+    caloriesPer100g: 166,
+    proteinPer100g: 7.9,
+    carbsPer100g: 14.3,
+    fatPer100g: 9.6,
+    fibrePer100g: 6.0,
+  },
+  {
+    slug: "feta-cheese",
+    name: "Feta cheese",
+    category: "dairy",
+    caloriesPer100g: 264,
+    proteinPer100g: 14.2,
+    carbsPer100g: 4.1,
+    fatPer100g: 21.3,
+  },
+  {
+    slug: "cheddar-cheese",
+    name: "Cheddar cheese",
+    category: "dairy",
+    caloriesPer100g: 403,
+    proteinPer100g: 24.9,
+    carbsPer100g: 1.3,
+    fatPer100g: 33.1,
+  },
+  {
+    slug: "milk-semi-skimmed",
+    name: "Milk, semi-skimmed",
+    category: "dairy",
+    caloriesPer100g: 46,
+    proteinPer100g: 3.4,
+    carbsPer100g: 4.8,
+    fatPer100g: 1.7,
+  },
+  {
+    slug: "mixed-salad-greens",
+    name: "Mixed salad greens",
+    category: "vegetable",
+    caloriesPer100g: 15,
+    proteinPer100g: 1.4,
+    carbsPer100g: 2.9,
+    fatPer100g: 0.2,
+    fibrePer100g: 1.5,
+  },
+  {
+    slug: "lime-raw",
+    name: "Lime, raw",
+    category: "fruit",
+    caloriesPer100g: 30,
+    proteinPer100g: 0.7,
+    carbsPer100g: 10.5,
+    fatPer100g: 0.2,
+    fibrePer100g: 2.8,
+  },
+  {
+    slug: "black-beans-cooked",
+    name: "Black beans, cooked",
+    category: "grain",
+    caloriesPer100g: 132,
+    proteinPer100g: 8.9,
+    carbsPer100g: 23.7,
+    fatPer100g: 0.5,
+    fibrePer100g: 8.7,
+  },
+  {
+    slug: "corn-tortilla",
+    name: "Corn tortilla",
+    category: "grain",
+    caloriesPer100g: 218,
+    proteinPer100g: 5.7,
+    carbsPer100g: 44.6,
+    fatPer100g: 2.8,
+    fibrePer100g: 3.6,
+  },
+  {
+    slug: "salsa",
+    name: "Salsa",
+    category: "pantry",
+    caloriesPer100g: 36,
+    proteinPer100g: 1.6,
+    carbsPer100g: 7.9,
+    fatPer100g: 0.2,
+    fibrePer100g: 1.5,
+  },
+  {
+    slug: "soy-sauce",
+    name: "Soy sauce",
+    category: "pantry",
+    caloriesPer100g: 53,
+    proteinPer100g: 8.1,
+    carbsPer100g: 4.9,
+    fatPer100g: 0.1,
+  },
+  {
+    slug: "sesame-oil",
+    name: "Sesame oil",
+    category: "pantry",
+    caloriesPer100g: 884,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    fatPer100g: 100,
+  },
+  {
+    slug: "turkey-breast-cooked",
+    name: "Turkey breast, cooked",
+    category: "protein",
+    caloriesPer100g: 135,
+    proteinPer100g: 30.1,
+    carbsPer100g: 0,
+    fatPer100g: 0.9,
+  },
 ];
 
 async function main() {
@@ -695,6 +851,58 @@ async function main() {
     });
   }
   console.log(`Seeded ${FOODS.length} common foods.`);
+
+  // Curated recipes reference Food rows by slug (sourceId) -- build a
+  // lookup now that every FOODS entry above is guaranteed to exist.
+  const foodBySlug = new Map<string, string>();
+  const allFoods = await db.food.findMany({
+    where: { source: FoodSource.CUSTOM, sourceId: { in: FOODS.map((f) => f.slug) } },
+    select: { id: true, sourceId: true },
+  });
+  for (const food of allFoods) foodBySlug.set(food.sourceId, food.id);
+
+  let recipesSeeded = 0;
+  for (const recipe of CURATED_RECIPES) {
+    const existing = await db.recipe.findFirst({ where: { name: recipe.name, source: "CURATED" } });
+    if (existing) continue;
+
+    const missingSlugs = recipe.ingredients.map((i) => i.foodSlug).filter((slug) => !foodBySlug.has(slug));
+    if (missingSlugs.length > 0) {
+      console.warn(`Skipping "${recipe.name}" -- missing Food entries for: ${missingSlugs.join(", ")}`);
+      continue;
+    }
+
+    await db.recipe.create({
+      data: {
+        userId: null,
+        source: "CURATED",
+        name: recipe.name,
+        description: recipe.description,
+        category: recipe.category,
+        servings: recipe.servings,
+        prepMinutes: recipe.prepMinutes,
+        cookMinutes: recipe.cookMinutes,
+        items: {
+          create: recipe.ingredients.map((ing) => ({
+            foodId: foodBySlug.get(ing.foodSlug)!,
+            grams: ing.grams,
+            displayLabel: ing.displayLabel,
+          })),
+        },
+        steps: {
+          create: recipe.steps.map((step, i) => ({
+            order: i + 1,
+            content: step.content,
+            durationSeconds: step.durationSeconds,
+          })),
+        },
+      },
+    });
+    recipesSeeded++;
+  }
+  console.log(
+    `Seeded ${recipesSeeded} curated recipes (${CURATED_RECIPES.length - recipesSeeded} already existed).`
+  );
 }
 
 main()

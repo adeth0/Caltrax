@@ -110,6 +110,8 @@ model Profile {
   unlockedAchievements UnlockedAchievement[]
   wearableConnections  WearableConnection[]
   activityLogs         ActivityLog[]
+  recipeRatings        RecipeRating[]
+  savedRecipes         SavedRecipe[]
 
   @@map("profiles")
 }
@@ -253,17 +255,45 @@ model PushSubscription {
 /// recipe writes one MealEntry per RecipeItem (scaled by servings eaten) —
 /// there's no separate "recipe entry" concept, so existing daily-total
 /// aggregation (which just sums MealEntry+Food) needs no changes.
+enum MealCategory {
+  BREAKFAST
+  BRUNCH
+  LUNCH
+  TEA
+  SNACK
+}
+
+enum RecipeSource {
+  /// Professionally-written, seeded content -- browsable by everyone,
+  /// not owned by any one user. See prisma/seedRecipes.ts.
+  CURATED
+  /// Created by a user via the "create your own recipe" form.
+  USER
+}
+
 model Recipe {
-  id        String       @id @default(cuid())
-  userId    String
-  user      Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  servings  Float        @default(1)
-  createdAt DateTime     @default(now())
-  items     RecipeItem[]
+  id          String        @id @default(cuid())
+  /// Null for CURATED recipes -- they belong to everyone, not one user.
+  /// Required in practice (enforced in app code) for USER recipes.
+  userId      String?
+  user        Profile?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source      RecipeSource  @default(USER)
+  name        String
+  description String?
+  category    MealCategory?
+  imageUrl    String?
+  servings    Float         @default(1)
+  prepMinutes Int?
+  cookMinutes Int?
+  createdAt   DateTime      @default(now())
+  items        RecipeItem[]
+  steps        RecipeStep[]
   plannedMeals PlannedMeal[]
+  ratings      RecipeRating[]
+  savedBy      SavedRecipe[]
 
   @@index([userId])
+  @@index([source, category])
   @@map("recipes")
 }
 
@@ -275,9 +305,62 @@ model RecipeItem {
   food     Food   @relation(fields: [foodId], references: [id])
   /// Grams of this food in the WHOLE recipe (i.e. across all `Recipe.servings`), not per serving.
   grams    Float
+  /// Human-readable ingredient line for display (e.g. "2 cups rolled oats") --
+  /// recipes read naturally in cups/tbsp/pieces, not raw grams. Falls back to
+  /// a computed "{food.name}, {grams}g" in the UI when null (always true for
+  /// recipes created via the plain create-recipe form).
+  displayLabel String?
 
   @@index([recipeId])
   @@map("recipe_items")
+}
+
+/// Ordered cooking instructions for a recipe. Curated recipes always have
+/// these; user-created recipes may have zero if someone just wants to log
+/// ingredients without writing a method.
+model RecipeStep {
+  id              String @id @default(cuid())
+  recipeId        String
+  recipe          Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  order           Int
+  content         String
+  /// Optional -- populates a countdown timer in the cooking UI for steps
+  /// like "simmer for 10 minutes".
+  durationSeconds Int?
+
+  @@index([recipeId])
+  @@map("recipe_steps")
+}
+
+/// One star rating per (user, recipe). Average is computed on read, not
+/// stored/cached -- recipe rating volume is nowhere near large enough to
+/// need that optimization yet.
+model RecipeRating {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  stars     Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, recipeId])
+  @@map("recipe_ratings")
+}
+
+/// A curated recipe someone has bookmarked into "My Recipes" without
+/// copying/owning it -- distinct from actually creating one via USER
+/// source. Deleting a saved recipe never deletes the underlying Recipe.
+model SavedRecipe {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, recipeId])
+  @@map("saved_recipes")
 }
 
 model Favourite {
