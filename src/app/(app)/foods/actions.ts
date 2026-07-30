@@ -200,3 +200,19 @@ export async function toggleSaveRecipeAction(recipeId: string) {
   revalidatePath(`/foods/recipes/${recipeId}`);
   return { saved: !existing };
 }
+
+export async function logSupplementAction(supplementId: string, servingsTaken: number) {
+  const userId = await requireUserId();
+  if (!Number.isFinite(servingsTaken) || servingsTaken <= 0) {
+    throw new Error("Enter a valid number of servings");
+  }
+
+  await db.supplementLog.create({ data: { userId, supplementId, servingsTaken } });
+  revalidatePath("/foods");
+}
+
+export async function deleteSupplementLogAction(logId: string) {
+  const userId = await requireUserId();
+  await db.supplementLog.deleteMany({ where: { id: logId, userId } });
+  revalidatePath("/foods");
+}
