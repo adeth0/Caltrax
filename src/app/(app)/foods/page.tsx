@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 import { FoodsTabs } from "@/components/food/FoodsTabs";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import type { CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
@@ -136,11 +138,20 @@ export default async function FoodsPage() {
 
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
-      <header className="mb-4">
-        <h1 className="font-display text-2xl font-bold text-text-primary">Foods</h1>
-        <p className="text-sm text-text-tertiary">
-          Search Open Food Facts, find pre-made meals, build your own recipes, or track supplements.
-        </p>
+      <header className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-text-primary">Foods</h1>
+          <p className="text-sm text-text-tertiary">
+            Search Open Food Facts, find pre-made meals, build your own recipes, or track supplements.
+          </p>
+        </div>
+        <Link
+          href="/shopping-list"
+          className="control focus-ring touch-target flex shrink-0 items-center gap-1.5 rounded-control bg-surface-raised px-3 py-2 text-sm font-medium text-text-secondary hover:bg-border-strong"
+        >
+          <ShoppingCart className="h-4 w-4" />
+          <span className="hidden sm:inline">Shopping list</span>
+        </Link>
       </header>
 
       <FoodsTabs

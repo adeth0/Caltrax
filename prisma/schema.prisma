@@ -112,6 +112,7 @@ model Profile {
   activityLogs         ActivityLog[]
   recipeRatings        RecipeRating[]
   savedRecipes         SavedRecipe[]
+  shoppingListItems    ShoppingListItem[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -454,6 +455,29 @@ model SavedRecipe {
 
   @@unique([userId, recipeId])
   @@map("saved_recipes")
+}
+
+/// A persistent, accumulating list -- "add to shopping list" on a recipe
+/// appends its ingredients here rather than replacing anything, so
+/// planning several recipes for the week naturally builds one combined
+/// list. Deliberately doesn't attempt to merge/sum quantities across
+/// items (e.g. "2 cups rice" + "1 cup rice" -> "3 cups rice") since
+/// ingredient units are free-text display labels, not a structured
+/// quantity+unit pair that could be safely combined -- checking off or
+/// deleting an accidental duplicate is simpler and more reliable than
+/// getting automatic merging wrong.
+model ShoppingListItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  checked   Boolean  @default(false)
+  /// Which recipe this came from, if any -- shown as a small source tag, purely informational (deleting the recipe doesn't remove the item).
+  recipeName String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, checked])
+  @@map("shopping_list_items")
 }
 
 model Favourite {

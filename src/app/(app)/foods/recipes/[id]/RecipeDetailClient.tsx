@@ -3,13 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Bookmark, BookmarkCheck, Clock, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, Clock, ShoppingCart, Star } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
 import { cn } from "@/lib/utils";
 import { logRecipeAction, rateRecipeAction, toggleSaveRecipeAction } from "@/app/(app)/foods/actions";
+import { addRecipeToShoppingListAction } from "@/app/(app)/shopping-list/actions";
 import { CATEGORY_META, type MealCategoryValue } from "@/components/recipes/recipeCategoryMeta";
 import type { MealType } from "@/types";
 
@@ -114,6 +115,8 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
   const [saved, setSaved] = useState(recipe.isSaved);
   const [myRating, setMyRating] = useState(recipe.myRating);
   const [logError, setLogError] = useState<string | null>(null);
+  const [shoppingListAdded, setShoppingListAdded] = useState(false);
+  const [isAddingToList, startAddingToList] = useTransition();
   const [logSuccess, setLogSuccess] = useState(false);
 
   const meta = recipe.category ? CATEGORY_META[recipe.category] : null;
@@ -146,6 +149,14 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
     setSaved((s) => !s); // optimistic
     startSaving(async () => {
       await toggleSaveRecipeAction(recipe.id);
+    });
+  }
+
+  function handleAddToShoppingList() {
+    setShoppingListAdded(false);
+    startAddingToList(async () => {
+      await addRecipeToShoppingListAction(recipe.id);
+      setShoppingListAdded(true);
     });
   }
 
@@ -268,7 +279,18 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
       </Card>
 
       <Card className="mt-4">
-        <p className="text-sm font-semibold text-text-primary">Ingredients</p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-text-primary">Ingredients</p>
+          <button
+            type="button"
+            onClick={handleAddToShoppingList}
+            disabled={isAddingToList}
+            className="control focus-ring touch-target flex items-center gap-1.5 text-xs font-medium text-accent-info hover:underline"
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
+            {isAddingToList ? "Adding…" : shoppingListAdded ? "Added!" : "Add to shopping list"}
+          </button>
+        </div>
         <ul className="mt-2 flex flex-col gap-1.5">
           {recipe.ingredients.map((ing) => (
             <li key={ing.id} className="text-sm text-text-secondary">
