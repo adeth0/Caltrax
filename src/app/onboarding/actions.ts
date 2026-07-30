@@ -66,5 +66,5 @@ export async function createProfile(
     },
   });
 
-  redirect("/dashboard");
+  redirect("/welcome");
 }
