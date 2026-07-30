@@ -23,6 +23,7 @@ config({ path: ".env.local" });
 import { PrismaClient, FoodSource } from "@prisma/client";
 import { CURATED_RECIPES } from "./recipeSeedData";
 import { RECIPE_IMAGE_MAP } from "./recipeImageMap";
+import { CURATED_EXERCISES } from "./exerciseSeedData";
 import { CURATED_SUPPLEMENTS } from "./supplementSeedData";
 import { CURATED_ARTICLES } from "./knowledgeSeedData";
 
@@ -1230,6 +1231,20 @@ async function main() {
   }
   console.log(
     `Seeded ${articlesSeeded} knowledge articles (${CURATED_ARTICLES.length - articlesSeeded} already existed).`
+  );
+
+  let exercisesSeeded = 0;
+  for (const exercise of CURATED_EXERCISES) {
+    const existing = await db.exercise.findFirst({ where: { name: exercise.name } });
+    if (existing) continue;
+
+    await db.exercise.create({
+      data: { name: exercise.name, muscleGroup: exercise.muscleGroup, equipment: exercise.equipment },
+    });
+    exercisesSeeded++;
+  }
+  console.log(
+    `Seeded ${exercisesSeeded} exercises (${CURATED_EXERCISES.length - exercisesSeeded} already existed).`
   );
 }
 

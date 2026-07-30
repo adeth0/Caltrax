@@ -1,4 +1,6 @@
 import { LogClient, type QuickAddFood, type TodayEntryRow } from "@/components/log/LogClient";
+import { LogModeToggle } from "@/components/log/LogModeToggle";
+import type { ExerciseOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { MEAL_FROM_PRISMA } from "@/lib/enumMap";
@@ -33,6 +35,16 @@ export default async function LogPage() {
         }),
       ])
     : [[], [], []];
+
+  const [exercises, todaysWorkout] = await Promise.all([
+    db.exercise.findMany({ orderBy: { name: "asc" } }),
+    user
+      ? db.workout.findFirst({
+          where: { userId: user.id, loggedAt: { gte: start, lte: end } },
+          include: { sets: { include: { exercise: true }, orderBy: { order: "asc" } } },
+        })
+      : Promise.resolve(null),
+  ]);
 
   const todayEntries: TodayEntryRow[] = entries.map((e: (typeof entries)[number]) => {
     const scale = e.servingUnitG / 100;
@@ -81,13 +93,37 @@ export default async function LogPage() {
     .map((e: (typeof recentEntries)[number]) => toQuickAdd(e.food))
     .filter((f: QuickAddFood) => !favouritedFoodIds.has(f.foodId));
 
+  const exerciseOptions: ExerciseOption[] = exercises.map((e: (typeof exercises)[number]) => ({
+    id: e.id,
+    name: e.name,
+    muscleGroup: e.muscleGroup,
+    equipment: e.equipment,
+  }));
+
+  const todayWorkoutSets: TodayWorkoutSetRow[] = (todaysWorkout?.sets ?? []).map(
+    (s: NonNullable<typeof todaysWorkout>["sets"][number]) => ({
+      id: s.id,
+      exerciseId: s.exerciseId,
+      exerciseName: s.exercise.name,
+      setNumber: s.setNumber,
+      reps: s.reps,
+      weightKg: s.weightKg,
+    })
+  );
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
-        <h1 className="font-display text-2xl font-bold text-text-primary">Log a meal</h1>
-        <p className="text-sm text-text-tertiary">Search Open Food Facts and add it to today.</p>
+        <h1 className="font-display text-2xl font-bold text-text-primary">Log</h1>
+        <p className="text-sm text-text-tertiary">Track a meal, or log today&apos;s workout.</p>
       </header>
-      <LogClient todayEntries={todayEntries} favouriteFoods={favouriteFoods} recentFoods={recentFoods} />
+      <LogModeToggle
+        mealSlot={
+          <LogClient todayEntries={todayEntries} favouriteFoods={favouriteFoods} recentFoods={recentFoods} />
+        }
+        exercises={exerciseOptions}
+        todaySets={todayWorkoutSets}
+      />
     </main>
   );
 }
