@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
+import { GettingStartedCard } from "@/components/dashboard/GettingStartedCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
 import { MacroSplitChart } from "@/components/dashboard/MacroSplitChart";
@@ -9,6 +10,7 @@ import { PendingWearableRedirect } from "@/components/dashboard/PendingWearableR
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { logWaterAction } from "@/app/(app)/progress/actions";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
+import { getDashboardEngagement } from "@/lib/dashboardTips";
 import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getLastNDaysRange, getTodayRange } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
@@ -29,7 +31,7 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked] = await Promise.all([
+  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked, engagement] = await Promise.all([
     db.mealEntry.findMany({
       where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
       include: { food: true },
@@ -41,6 +43,7 @@ export default async function DashboardPage() {
     }),
     db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
     checkAndUnlockAchievements(user.id),
+    getDashboardEngagement(user.id),
   ]);
 
   const todayIntake = mealEntries.reduce(
@@ -77,12 +80,21 @@ export default async function DashboardPage() {
   return (
     <main className="p-4 pb-24 sm:p-6 lg:mx-auto lg:max-w-[1400px] lg:pb-6">
       <PendingWearableRedirect />
-      <header className="mb-4 lg:mb-6">
-        <h1 className="font-display text-2xl font-bold text-text-primary lg:text-3xl">Today</h1>
-        <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>
+      <header className="mb-4 flex items-center justify-between lg:mb-6">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-text-primary lg:text-3xl">Today</h1>
+          <p className="text-sm text-text-tertiary">{format(new Date(), "EEEE, d MMMM")}</p>
+        </div>
+        {engagement.currentStreak >= 2 && (
+          <div className="flex items-center gap-1.5 rounded-full bg-surface-raised px-3 py-1.5 text-sm font-semibold text-text-primary">
+            <span aria-hidden>🔥</span>
+            {engagement.currentStreak} day streak
+          </div>
+        )}
       </header>
 
       <NewAchievementBanner achievements={newlyUnlocked} />
+      <GettingStartedCard tips={engagement.tips} />
 
       {/* Single stacked column below lg; a real two-column desktop layout
           from lg up so a wide monitor shows more at once instead of the
