@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { DiagnosticErrorBoundary } from "@/components/ErrorBoundary";
 import { FoodSearchTab } from "@/components/food/FoodSearchTab";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import { FindMealsClient, type CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
@@ -62,18 +63,34 @@ export function FoodsTabs({
         ))}
       </div>
 
-      {tab === "search" && <FoodSearchTab />}
-      {tab === "meals" && <FindMealsClient recipes={curatedRecipes} />}
+      {tab === "search" && (
+        <DiagnosticErrorBoundary label="search">
+          <FoodSearchTab />
+        </DiagnosticErrorBoundary>
+      )}
+      {tab === "meals" && (
+        <DiagnosticErrorBoundary label="meals">
+          <FindMealsClient recipes={curatedRecipes} />
+        </DiagnosticErrorBoundary>
+      )}
       {tab === "community" && (
-        <FindMealsClient
-          recipes={communityRecipes}
-          emptyMessage="No shared recipes yet — be the first to publish one from My Recipes."
-        />
+        <DiagnosticErrorBoundary label="community">
+          <FindMealsClient
+            recipes={communityRecipes}
+            emptyMessage="No shared recipes yet — be the first to publish one from My Recipes."
+          />
+        </DiagnosticErrorBoundary>
       )}
       {tab === "supplements" && (
-        <SupplementsClient supplements={supplements} todayLogs={todaySupplementLogs} />
+        <DiagnosticErrorBoundary label="supplements">
+          <SupplementsClient supplements={supplements} todayLogs={todaySupplementLogs} />
+        </DiagnosticErrorBoundary>
       )}
-      {tab === "recipes" && <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} />}
+      {tab === "recipes" && (
+        <DiagnosticErrorBoundary label="recipes">
+          <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} />
+        </DiagnosticErrorBoundary>
+      )}
     </div>
   );
 }
