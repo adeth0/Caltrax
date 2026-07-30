@@ -3,9 +3,14 @@ import { ShoppingCart } from "lucide-react";
 import { FoodsTabs } from "@/components/food/FoodsTabs";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import type { CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
-import type { LoggedSupplement, SupplementSummary } from "@/components/supplements/SupplementsClient";
+import type {
+  LoggedSupplement,
+  SuggestedSupplement,
+  SupplementSummary,
+} from "@/components/supplements/SupplementsClient";
 import { db } from "@/lib/db";
 import { averageRating, computeRecipeNutritionPerServing } from "@/lib/recipeNutrition";
+import { getSuggestedSupplements } from "@/lib/supplementSuggestions";
 import { getTodayRange } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -51,41 +56,54 @@ export default async function FoodsPage() {
 
   const { start: todayStart, end: todayEnd } = getTodayRange();
 
-  const [myRecipes, curatedRecipes, communityRecipes, savedRecipeLinks, allSupplements, todaySupplementLogs] =
-    await Promise.all([
-      user
-        ? db.recipe.findMany({
-            where: { userId: user.id, source: "USER" },
-            orderBy: { createdAt: "desc" },
-            include: { items: { include: { food: true } } },
-          })
-        : Promise.resolve([]),
-      db.recipe.findMany({
-        where: { source: "CURATED" },
-        orderBy: { createdAt: "desc" },
-        include: { items: { include: { food: true } }, ratings: true },
-      }),
-      db.recipe.findMany({
-        where: { source: "USER", isPublished: true },
-        orderBy: { createdAt: "desc" },
-        include: { items: { include: { food: true } }, ratings: true, user: { select: { name: true } } },
-      }),
-      user
-        ? db.savedRecipe.findMany({
-            where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
-            include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
-          })
-        : Promise.resolve([]),
-      db.supplement.findMany({ orderBy: { name: "asc" } }),
-      user
-        ? db.supplementLog.findMany({
-            where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
-            include: { supplement: { select: { name: true } } },
-            orderBy: { loggedAt: "desc" },
-          })
-        : Promise.resolve([]),
-    ]);
+  const [
+    myRecipes,
+    curatedRecipes,
+    communityRecipes,
+    savedRecipeLinks,
+    allSupplements,
+    todaySupplementLogs,
+    profile,
+  ] = await Promise.all([
+    user
+      ? db.recipe.findMany({
+          where: { userId: user.id, source: "USER" },
+          orderBy: { createdAt: "desc" },
+          include: { items: { include: { food: true } } },
+        })
+      : Promise.resolve([]),
+    db.recipe.findMany({
+      where: { source: "CURATED" },
+      orderBy: { createdAt: "desc" },
+      include: { items: { include: { food: true } }, ratings: true },
+    }),
+    db.recipe.findMany({
+      where: { source: "USER", isPublished: true },
+      orderBy: { createdAt: "desc" },
+      include: { items: { include: { food: true } }, ratings: true, user: { select: { name: true } } },
+    }),
+    user
+      ? db.savedRecipe.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+          include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
+        })
+      : Promise.resolve([]),
+    db.supplement.findMany({ orderBy: { name: "asc" } }),
+    user
+      ? db.supplementLog.findMany({
+          where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
+          include: { supplement: { select: { name: true } } },
+          orderBy: { loggedAt: "desc" },
+        })
+      : Promise.resolve([]),
+    user
+      ? db.profile.findUnique({
+          where: { id: user.id },
+          select: { primaryGoal: true, dietaryPreference: true },
+        })
+      : Promise.resolve(null),
+  ]);
 
   const recipeSummaries: RecipeSummary[] = myRecipes.map((r: (typeof myRecipes)[number]) => {
     const perServing = computeRecipeNutritionPerServing(r.items, r.servings);
@@ -136,6 +154,15 @@ export default async function FoodsPage() {
     })
   );
 
+  const suggestedSupplements: SuggestedSupplement[] = profile
+    ? getSuggestedSupplements(profile.primaryGoal, profile.dietaryPreference)
+        .map((suggestion) => {
+          const match = supplementSummaries.find((s) => s.name === suggestion.supplementName);
+          return match ? { ...match, reason: suggestion.reason } : null;
+        })
+        .filter((s): s is SuggestedSupplement => s !== null)
+    : [];
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4 flex items-start justify-between gap-3">
@@ -160,6 +187,7 @@ export default async function FoodsPage() {
         communityRecipes={communitySummaries}
         savedRecipes={savedSummaries}
         supplements={supplementSummaries}
+        suggestedSupplements={suggestedSupplements}
         todaySupplementLogs={todayLoggedSupplements}
       />
     </main>

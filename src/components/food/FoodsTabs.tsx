@@ -10,6 +10,7 @@ import { MyRecipesClient } from "@/components/recipes/MyRecipesClient";
 import {
   SupplementsClient,
   type LoggedSupplement,
+  type SuggestedSupplement,
   type SupplementSummary,
 } from "@/components/supplements/SupplementsClient";
 
@@ -19,6 +20,7 @@ interface FoodsTabsProps {
   communityRecipes: CuratedRecipeSummary[];
   savedRecipes: CuratedRecipeSummary[];
   supplements: SupplementSummary[];
+  suggestedSupplements: SuggestedSupplement[];
   todaySupplementLogs: LoggedSupplement[];
 }
 
@@ -30,6 +32,7 @@ export function FoodsTabs({
   communityRecipes,
   savedRecipes,
   supplements,
+  suggestedSupplements,
   todaySupplementLogs,
 }: FoodsTabsProps) {
   const [tab, setTab] = useState<TabValue>("search");
@@ -83,7 +86,11 @@ export function FoodsTabs({
       )}
       {tab === "supplements" && (
         <DiagnosticErrorBoundary label="supplements">
-          <SupplementsClient supplements={supplements} todayLogs={todaySupplementLogs} />
+          <SupplementsClient
+            supplements={supplements}
+            suggestedSupplements={suggestedSupplements}
+            todayLogs={todaySupplementLogs}
+          />
         </DiagnosticErrorBoundary>
       )}
       {tab === "recipes" && (

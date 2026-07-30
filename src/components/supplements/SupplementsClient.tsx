@@ -29,6 +29,11 @@ export interface LoggedSupplement {
   servingsTaken: number;
 }
 
+/** A supplement suggested based on the person's stated goal and diet, with a plain-language reason -- see src/lib/supplementSuggestions.ts. */
+export interface SuggestedSupplement extends SupplementSummary {
+  reason: string;
+}
+
 const CATEGORY_META: Record<
   SupplementCategoryValue,
   { label: string; icon: typeof Pill; colorClass: string }
@@ -53,10 +58,11 @@ const CATEGORY_FILTERS: { value: SupplementCategoryValue | "all"; label: string 
 
 interface SupplementsClientProps {
   supplements: SupplementSummary[];
+  suggestedSupplements: SuggestedSupplement[];
   todayLogs: LoggedSupplement[];
 }
 
-export function SupplementsClient({ supplements, todayLogs }: SupplementsClientProps) {
+export function SupplementsClient({ supplements, suggestedSupplements, todayLogs }: SupplementsClientProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<SupplementCategoryValue | "all">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -88,6 +94,26 @@ export function SupplementsClient({ supplements, todayLogs }: SupplementsClientP
 
   return (
     <div>
+      {suggestedSupplements.length > 0 && query.trim() === "" && category === "all" && (
+        <Card className="mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+            Recommended for your goals
+          </p>
+          <div className="mt-2 flex flex-col gap-2.5">
+            {suggestedSupplements.map((supp) => (
+              <div key={supp.id} className="rounded-control bg-surface-raised p-3">
+                <p className="text-sm font-semibold text-text-primary">{supp.name}</p>
+                <p className="mt-0.5 text-xs text-text-tertiary">{supp.reason}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-text-tertiary">
+            A general starting point based on your goal and diet -- see the Learn section for the evidence
+            behind each one.
+          </p>
+        </Card>
+      )}
+
       {todayLogs.length > 0 && (
         <Card className="mb-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Taken today</p>
