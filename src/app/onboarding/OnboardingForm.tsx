@@ -74,7 +74,18 @@ export default function OnboardingForm() {
   const [primaryGoal, setPrimaryGoal] = useState("lose_fat");
   const [dietaryPreference, setDietaryPreference] = useState("none");
 
-  const fieldError = (field: string) => state.fieldErrors?.[field];
+  // Errors from useActionState persist until the NEXT actual submission --
+  // editing a field afterward doesn't clear its old error message on its
+  // own, which looks exactly like "I fixed this, but it still says it's
+  // wrong." Tracking which fields have been touched since the last
+  // server response lets the error disappear the moment someone actually
+  // changes the value, rather than sitting there stale until they submit
+  // again.
+  const [dismissedErrors, setDismissedErrors] = useState<Set<string>>(new Set());
+  const fieldError = (field: string) => (dismissedErrors.has(field) ? undefined : state.fieldErrors?.[field]);
+  function dismiss(field: string) {
+    setDismissedErrors((prev) => (prev.has(field) ? prev : new Set(prev).add(field)));
+  }
 
   // If the server rejected the final submit, jump back to whichever step
   // actually owns the invalid field rather than leaving the person on the
@@ -86,6 +97,7 @@ export default function OnboardingForm() {
   const [handledFieldErrors, setHandledFieldErrors] = useState(state.fieldErrors);
   if (state.fieldErrors !== handledFieldErrors) {
     setHandledFieldErrors(state.fieldErrors);
+    setDismissedErrors(new Set());
     if (state.fieldErrors) {
       const firstBadField = Object.keys(state.fieldErrors)[0];
       const badStep = firstBadField ? FIELD_STEP[firstBadField] : undefined;
@@ -172,7 +184,10 @@ export default function OnboardingForm() {
                     <PillSelect
                       name="sex"
                       value={sex}
-                      onChange={setSex}
+                      onChange={(v) => {
+                        setSex(v);
+                        dismiss("sex");
+                      }}
                       columns={2}
                       options={[
                         { value: "male", label: "Male" },
@@ -193,7 +208,10 @@ export default function OnboardingForm() {
                       min={13}
                       max={120}
                       value={age}
-                      onChange={(e) => setAge(e.target.value)}
+                      onChange={(e) => {
+                        setAge(e.target.value);
+                        dismiss("age");
+                      }}
                     />
                     {fieldError("age") && (
                       <p className="mt-1 text-xs text-accent-danger">{fieldError("age")}</p>
@@ -218,7 +236,10 @@ export default function OnboardingForm() {
                       min={90}
                       max={250}
                       value={heightCm}
-                      onChange={(e) => setHeightCm(e.target.value)}
+                      onChange={(e) => {
+                        setHeightCm(e.target.value);
+                        dismiss("heightCm");
+                      }}
                     />
                     {fieldError("heightCm") && (
                       <p className="mt-1 text-xs text-accent-danger">{fieldError("heightCm")}</p>
@@ -235,7 +256,10 @@ export default function OnboardingForm() {
                       min={30}
                       max={300}
                       value={weightKg}
-                      onChange={(e) => setWeightKg(e.target.value)}
+                      onChange={(e) => {
+                        setWeightKg(e.target.value);
+                        dismiss("weightKg");
+                      }}
                     />
                     {fieldError("weightKg") && (
                       <p className="mt-1 text-xs text-accent-danger">{fieldError("weightKg")}</p>
