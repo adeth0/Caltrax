@@ -1,8 +1,10 @@
 import { FoodsTabs } from "@/components/food/FoodsTabs";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import type { CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
+import type { LoggedSupplement, SupplementSummary } from "@/components/supplements/SupplementsClient";
 import { db } from "@/lib/db";
 import { averageRating, computeRecipeNutritionPerServing } from "@/lib/recipeNutrition";
+import { getTodayRange } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type RecipeWithItemsAndRatings = {
@@ -45,32 +47,43 @@ export default async function FoodsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [myRecipes, curatedRecipes, communityRecipes, savedRecipeLinks] = await Promise.all([
-    user
-      ? db.recipe.findMany({
-          where: { userId: user.id, source: "USER" },
-          orderBy: { createdAt: "desc" },
-          include: { items: { include: { food: true } } },
-        })
-      : Promise.resolve([]),
-    db.recipe.findMany({
-      where: { source: "CURATED" },
-      orderBy: { createdAt: "desc" },
-      include: { items: { include: { food: true } }, ratings: true },
-    }),
-    db.recipe.findMany({
-      where: { source: "USER", isPublished: true },
-      orderBy: { createdAt: "desc" },
-      include: { items: { include: { food: true } }, ratings: true, user: { select: { name: true } } },
-    }),
-    user
-      ? db.savedRecipe.findMany({
-          where: { userId: user.id },
-          orderBy: { createdAt: "desc" },
-          include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
-        })
-      : Promise.resolve([]),
-  ]);
+  const { start: todayStart, end: todayEnd } = getTodayRange();
+
+  const [myRecipes, curatedRecipes, communityRecipes, savedRecipeLinks, allSupplements, todaySupplementLogs] =
+    await Promise.all([
+      user
+        ? db.recipe.findMany({
+            where: { userId: user.id, source: "USER" },
+            orderBy: { createdAt: "desc" },
+            include: { items: { include: { food: true } } },
+          })
+        : Promise.resolve([]),
+      db.recipe.findMany({
+        where: { source: "CURATED" },
+        orderBy: { createdAt: "desc" },
+        include: { items: { include: { food: true } }, ratings: true },
+      }),
+      db.recipe.findMany({
+        where: { source: "USER", isPublished: true },
+        orderBy: { createdAt: "desc" },
+        include: { items: { include: { food: true } }, ratings: true, user: { select: { name: true } } },
+      }),
+      user
+        ? db.savedRecipe.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+            include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
+          })
+        : Promise.resolve([]),
+      db.supplement.findMany({ orderBy: { name: "asc" } }),
+      user
+        ? db.supplementLog.findMany({
+            where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
+            include: { supplement: { select: { name: true } } },
+            orderBy: { loggedAt: "desc" },
+          })
+        : Promise.resolve([]),
+    ]);
 
   const recipeSummaries: RecipeSummary[] = myRecipes.map((r: (typeof myRecipes)[number]) => {
     const perServing = computeRecipeNutritionPerServing(r.items, r.servings);
@@ -98,12 +111,35 @@ export default async function FoodsPage() {
     (s: (typeof savedRecipeLinks)[number]) => toCuratedSummary(s.recipe)
   );
 
+  const supplementSummaries: SupplementSummary[] = allSupplements.map(
+    (s: (typeof allSupplements)[number]) => ({
+      id: s.id,
+      name: s.name,
+      brand: s.brand,
+      category: s.category,
+      servingLabel: s.servingLabel,
+      activeIngredient: s.activeIngredient,
+      summary: s.summary,
+      caloriesPerServing: s.caloriesPerServing,
+      proteinPerServing: s.proteinPerServing,
+    })
+  );
+
+  const todayLoggedSupplements: LoggedSupplement[] = todaySupplementLogs.map(
+    (log: (typeof todaySupplementLogs)[number]) => ({
+      id: log.id,
+      supplementId: log.supplementId,
+      supplementName: log.supplement.name,
+      servingsTaken: log.servingsTaken,
+    })
+  );
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
         <h1 className="font-display text-2xl font-bold text-text-primary">Foods</h1>
         <p className="text-sm text-text-tertiary">
-          Search Open Food Facts, find pre-made meals, or build your own recipes.
+          Search Open Food Facts, find pre-made meals, build your own recipes, or track supplements.
         </p>
       </header>
 
@@ -112,6 +148,8 @@ export default async function FoodsPage() {
         curatedRecipes={curatedSummaries}
         communityRecipes={communitySummaries}
         savedRecipes={savedSummaries}
+        supplements={supplementSummaries}
+        todaySupplementLogs={todayLoggedSupplements}
       />
     </main>
   );

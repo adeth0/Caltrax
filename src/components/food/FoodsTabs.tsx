@@ -6,17 +6,31 @@ import { FoodSearchTab } from "@/components/food/FoodSearchTab";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import { FindMealsClient, type CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
 import { MyRecipesClient } from "@/components/recipes/MyRecipesClient";
+import {
+  SupplementsClient,
+  type LoggedSupplement,
+  type SupplementSummary,
+} from "@/components/supplements/SupplementsClient";
 
 interface FoodsTabsProps {
   recipes: RecipeSummary[];
   curatedRecipes: CuratedRecipeSummary[];
   communityRecipes: CuratedRecipeSummary[];
   savedRecipes: CuratedRecipeSummary[];
+  supplements: SupplementSummary[];
+  todaySupplementLogs: LoggedSupplement[];
 }
 
-type TabValue = "search" | "meals" | "community" | "recipes";
+type TabValue = "search" | "meals" | "community" | "supplements" | "recipes";
 
-export function FoodsTabs({ recipes, curatedRecipes, communityRecipes, savedRecipes }: FoodsTabsProps) {
+export function FoodsTabs({
+  recipes,
+  curatedRecipes,
+  communityRecipes,
+  savedRecipes,
+  supplements,
+  todaySupplementLogs,
+}: FoodsTabsProps) {
   const [tab, setTab] = useState<TabValue>("search");
   const myRecipesCount = recipes.length + savedRecipes.length;
 
@@ -24,6 +38,7 @@ export function FoodsTabs({ recipes, curatedRecipes, communityRecipes, savedReci
     { value: "search", label: "Search" },
     { value: "meals", label: "Find meals" },
     { value: "community", label: "User recipes" },
+    { value: "supplements", label: "Supplements" },
     { value: "recipes", label: `My recipes${myRecipesCount > 0 ? ` (${myRecipesCount})` : ""}` },
   ];
 
@@ -54,6 +69,9 @@ export function FoodsTabs({ recipes, curatedRecipes, communityRecipes, savedReci
           recipes={communityRecipes}
           emptyMessage="No shared recipes yet — be the first to publish one from My Recipes."
         />
+      )}
+      {tab === "supplements" && (
+        <SupplementsClient supplements={supplements} todayLogs={todaySupplementLogs} />
       )}
       {tab === "recipes" && <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} />}
     </div>

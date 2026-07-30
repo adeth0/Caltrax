@@ -22,6 +22,7 @@ config({ path: ".env.local" });
 
 import { PrismaClient, FoodSource } from "@prisma/client";
 import { CURATED_RECIPES } from "./recipeSeedData";
+import { CURATED_SUPPLEMENTS } from "./supplementSeedData";
 
 const db = new PrismaClient();
 
@@ -903,6 +904,28 @@ async function main() {
   }
   console.log(
     `Seeded ${recipesSeeded} curated recipes (${CURATED_RECIPES.length - recipesSeeded} already existed).`
+  );
+
+  let supplementsSeeded = 0;
+  for (const supplement of CURATED_SUPPLEMENTS) {
+    const existing = await db.supplement.findFirst({ where: { name: supplement.name } });
+    if (existing) continue;
+
+    await db.supplement.create({
+      data: {
+        name: supplement.name,
+        category: supplement.category,
+        servingLabel: supplement.servingLabel,
+        activeIngredient: supplement.activeIngredient,
+        caloriesPerServing: supplement.caloriesPerServing,
+        proteinPerServing: supplement.proteinPerServing,
+        summary: supplement.summary,
+      },
+    });
+    supplementsSeeded++;
+  }
+  console.log(
+    `Seeded ${supplementsSeeded} supplements (${CURATED_SUPPLEMENTS.length - supplementsSeeded} already existed).`
   );
 }
 

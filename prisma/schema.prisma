@@ -112,6 +112,7 @@ model Profile {
   activityLogs         ActivityLog[]
   recipeRatings        RecipeRating[]
   savedRecipes         SavedRecipe[]
+  supplementLogs       SupplementLog[]
 
   @@map("profiles")
 }
@@ -163,6 +164,57 @@ model Food {
   @@unique([source, sourceId])
   @@index([barcode])
   @@map("foods")
+}
+
+enum SupplementCategory {
+  PROTEIN
+  VITAMIN
+  MINERAL
+  OMEGA3
+  PERFORMANCE
+  OTHER
+}
+
+/// Deliberately a separate model from Food, not a variant of it --
+/// supplement dosing is per-serving (a scoop, a capsule, a spray), not
+/// per-100g, and most supplements genuinely have no meaningful calorie/
+/// macro content at all (a vitamin D capsule isn't "food"). Content here
+/// is curated the same way as CURATED recipes: real, accurate,
+/// science-grounded facts written for this app, not scraped from or
+/// attributed to a specific external database (see prisma/seedSupplements.ts).
+model Supplement {
+  id                 String             @id @default(cuid())
+  name               String
+  brand              String?
+  category           SupplementCategory
+  servingLabel       String
+  /// Human-readable summary of the active ingredient(s) and dose per
+  /// serving, e.g. "5g Creatine Monohydrate" or "2000 IU (50mcg) Vitamin D3".
+  activeIngredient   String
+  caloriesPerServing Float?
+  proteinPerServing  Float?
+  /// A few sentences on what it does, typical timing, and who it suits --
+  /// shown on the detail view and reused by goal-based suggestions.
+  summary            String
+  imageUrl           String?
+  createdAt          DateTime           @default(now())
+  logs               SupplementLog[]
+
+  @@index([category])
+  @@map("supplements")
+}
+
+model SupplementLog {
+  id            String     @id @default(cuid())
+  userId        String
+  user          Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  supplementId  String
+  supplement    Supplement @relation(fields: [supplementId], references: [id])
+  servingsTaken Float      @default(1)
+  loggedAt      DateTime   @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("supplement_logs")
 }
 
 model MealEntry {
