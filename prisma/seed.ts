@@ -22,6 +22,7 @@ config({ path: ".env.local" });
 
 import { PrismaClient, FoodSource } from "@prisma/client";
 import { CURATED_RECIPES } from "./recipeSeedData";
+import { RECIPE_IMAGE_MAP } from "./recipeImageMap";
 import { CURATED_SUPPLEMENTS } from "./supplementSeedData";
 import { CURATED_ARTICLES } from "./knowledgeSeedData";
 
@@ -1112,13 +1113,32 @@ async function main() {
 
   let recipesSeeded = 0;
   for (const recipe of CURATED_RECIPES) {
-    const existing = await db.recipe.findFirst({ where: { name: recipe.name, source: "CURATED" } });
-    if (existing) continue;
+    const existing = await db.recipe.findFirst({
+      where: { name: recipe.name, source: "CURATED" },
+      select: { id: true, imageUrl: true },
+    });
+    if (existing) {
+      // Backfill images onto recipes seeded before illustrations existed,
+      // without re-running the (idempotency-unsafe) full create below.
+      const illustrationName = RECIPE_IMAGE_MAP[recipe.name];
+      if (!existing.imageUrl && illustrationName) {
+        await db.recipe.update({
+          where: { id: existing.id },
+          data: { imageUrl: `/recipe-illustrations/${illustrationName}.svg` },
+        });
+      }
+      continue;
+    }
 
     const missingSlugs = recipe.ingredients.map((i) => i.foodSlug).filter((slug) => !foodBySlug.has(slug));
     if (missingSlugs.length > 0) {
       console.warn(`Skipping "${recipe.name}" -- missing Food entries for: ${missingSlugs.join(", ")}`);
       continue;
+    }
+
+    const illustrationName = RECIPE_IMAGE_MAP[recipe.name];
+    if (!illustrationName) {
+      console.warn(`No image mapping for "${recipe.name}" -- seeding without an image.`);
     }
 
     await db.recipe.create({
@@ -1129,6 +1149,7 @@ async function main() {
         name: recipe.name,
         description: recipe.description,
         category: recipe.category,
+        imageUrl: illustrationName ? `/recipe-illustrations/${illustrationName}.svg` : undefined,
         servings: recipe.servings,
         prepMinutes: recipe.prepMinutes,
         cookMinutes: recipe.cookMinutes,
