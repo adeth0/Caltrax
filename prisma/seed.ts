@@ -23,6 +23,7 @@ config({ path: ".env.local" });
 import { PrismaClient, FoodSource } from "@prisma/client";
 import { CURATED_RECIPES } from "./recipeSeedData";
 import { CURATED_SUPPLEMENTS } from "./supplementSeedData";
+import { CURATED_ARTICLES } from "./knowledgeSeedData";
 
 const db = new PrismaClient();
 
@@ -926,6 +927,41 @@ async function main() {
   }
   console.log(
     `Seeded ${supplementsSeeded} supplements (${CURATED_SUPPLEMENTS.length - supplementsSeeded} already existed).`
+  );
+
+  // Look up related supplements by name now that they're guaranteed to exist.
+  const supplementByName = new Map<string, string>();
+  const allSupplementRows = await db.supplement.findMany({ select: { id: true, name: true } });
+  for (const s of allSupplementRows) supplementByName.set(s.name, s.id);
+
+  let articlesSeeded = 0;
+  for (const article of CURATED_ARTICLES) {
+    const existing = await db.knowledgeArticle.findUnique({ where: { slug: article.slug } });
+    if (existing) continue;
+
+    const relatedSupplementId = article.relatedSupplementName
+      ? supplementByName.get(article.relatedSupplementName)
+      : undefined;
+    if (article.relatedSupplementName && !relatedSupplementId) {
+      console.warn(
+        `Article "${article.title}" references unknown supplement "${article.relatedSupplementName}" -- seeding without the link.`
+      );
+    }
+
+    await db.knowledgeArticle.create({
+      data: {
+        slug: article.slug,
+        title: article.title,
+        category: article.category,
+        summary: article.summary,
+        content: article.content,
+        relatedSupplementId,
+      },
+    });
+    articlesSeeded++;
+  }
+  console.log(
+    `Seeded ${articlesSeeded} knowledge articles (${CURATED_ARTICLES.length - articlesSeeded} already existed).`
   );
 }
 

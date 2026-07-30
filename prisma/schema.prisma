@@ -199,6 +199,7 @@ model Supplement {
   imageUrl           String?
   createdAt          DateTime           @default(now())
   logs               SupplementLog[]
+  knowledgeArticles  KnowledgeArticle[]
 
   @@index([category])
   @@map("supplements")
@@ -215,6 +216,40 @@ model SupplementLog {
 
   @@index([userId, loggedAt])
   @@map("supplement_logs")
+}
+
+enum KnowledgeCategory {
+  NUTRITION_BASICS
+  SUPPLEMENTS
+  TRAINING
+  RECOVERY
+}
+
+/// Educational articles for the "Learn" section. Same content philosophy
+/// as CURATED recipes and supplements: real, accurate, carefully-written
+/// material (see prisma/knowledgeSeedData.ts), not scraped from or
+/// attributed to a specific external source, and framed as general
+/// education rather than personalized medical/dosing advice.
+model KnowledgeArticle {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  category    KnowledgeCategory
+  /// One-line summary shown on the article card and in search results.
+  summary     String
+  /// Full article body, written as plain paragraphs separated by blank
+  /// lines (rendered with simple whitespace-aware formatting) rather than
+  /// a markdown/rich-text pipeline this app doesn't otherwise need.
+  content     String
+  /// Optional link to a specific Supplement this article is most closely
+  /// related to (e.g. the "Creatine" article <-> the Creatine Monohydrate
+  /// supplement), surfaced as a "related supplement" card.
+  relatedSupplementId String?
+  relatedSupplement   Supplement? @relation(fields: [relatedSupplementId], references: [id])
+  createdAt   DateTime          @default(now())
+
+  @@index([category])
+  @@map("knowledge_articles")
 }
 
 model MealEntry {

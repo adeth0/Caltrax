@@ -17,7 +17,7 @@ export function MobileTabBar() {
       className="card-surface fixed inset-x-4 bottom-4 z-40 flex items-center justify-between px-2 py-2 md:hidden"
       style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
     >
-      {otherItems.slice(0, 2).map((item) => (
+      {otherItems.slice(0, 3).map((item) => (
         <TabLink key={item.href} item={item} isActive={pathname.startsWith(item.href)} />
       ))}
 
@@ -33,7 +33,7 @@ export function MobileTabBar() {
         <LogIcon className="h-7 w-7" />
       </Link>
 
-      {otherItems.slice(2).map((item) => (
+      {otherItems.slice(3).map((item) => (
         <TabLink key={item.href} item={item} isActive={pathname.startsWith(item.href)} />
       ))}
     </nav>
