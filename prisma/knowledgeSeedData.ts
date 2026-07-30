@@ -446,4 +446,203 @@ A more complete picture: waist circumference, body fat percentage (from methods 
 
 Practical takeaway: BMI is a reasonable quick screening number for the general population, but not something to take as a precise verdict on your own individual health or progress, particularly if you train regularly.`,
   },
+
+  // --- Round 2: more topics ---
+  {
+    slug: "caffeine-performance-benefits-and-limits",
+    title: "Caffeine: Performance Benefits and Limits",
+    category: "TRAINING",
+    summary: "One of the most reliable, well-studied performance aids -- and one you likely already use.",
+    content: `Caffeine is a stimulant that blocks adenosine, a chemical that builds up in the brain and contributes to feelings of tiredness. Beyond the alertness effect, it has genuine, well-documented performance benefits for exercise.
+
+What it does: research consistently shows caffeine can improve endurance performance, reduce perceived effort during exercise (workouts feel a bit easier at the same intensity), and modestly improve strength and power output. Effects are generally most reliable at doses of roughly 3-6mg per kilogram of bodyweight, taken 45-60 minutes before training.
+
+Diminishing returns with regular use: the body adapts to regular caffeine intake, reducing its stimulant and performance effects over time. Some people cycle their intake or reserve higher doses for important sessions specifically to preserve sensitivity.
+
+Practical limits: doses much above the effective range don't provide additional performance benefit and increase the likelihood of side effects like jitteriness, anxiety, or digestive upset. Caffeine also has a fairly long half-life (roughly 5-6 hours on average), so afternoon or evening intake can measurably disrupt that night's sleep even if you don't feel obviously wired.`,
+  },
+  {
+    slug: "pre-workout-nutrition",
+    title: "Pre-Workout Nutrition: What to Eat Before Training",
+    category: "TRAINING",
+    summary: "What actually helps performance versus what's just habit or marketing.",
+    content: `What you eat before training affects how much energy is available and how you feel during the session, though the effect size varies depending on training type, duration, and individual tolerance.
+
+General guidance: a meal with carbohydrates and moderate protein, eaten 2-3 hours before training, is a reasonable default for most people doing resistance training or moderate cardio. Carbohydrates top up muscle glycogen stores (the body's stored fuel for exercise), which matters more for longer or higher-intensity sessions than very short ones.
+
+If time is tight: something smaller and easily digested (a banana, a small amount of toast, a sports drink) 30-60 minutes before training can still help, particularly for avoiding the sluggishness some people feel training on an empty stomach. Very high-fat or high-fibre meals close to training can cause digestive discomfort for some people, so lighter, more easily digested options tend to work better the closer you are to a session.
+
+Training fasted: some people train fasted deliberately (first thing in the morning, or as part of an intermittent fasting approach) without noticeable performance issues, particularly for lower-intensity or shorter sessions -- individual tolerance varies considerably here, and it's worth experimenting to see what works for you rather than assuming one approach is universally correct.`,
+  },
+  {
+    slug: "post-workout-nutrition",
+    title: "Post-Workout Nutrition: What Actually Matters",
+    category: "TRAINING",
+    summary: "Simpler than the supplement industry often makes it sound.",
+    content: `The core things that matter after training are refuelling (replacing used glycogen with carbohydrates) and providing amino acids for muscle repair (protein) -- everything else is largely secondary refinement.
+
+On timing: as covered in more depth in the dedicated article on protein timing, the old idea of a narrow "anabolic window" that must be hit within minutes has been significantly overstated by the fitness industry -- a meal within a few hours of training, containing adequate protein and carbohydrate, covers the great majority of the benefit for most people.
+
+What's actually worth prioritising: getting a genuine meal in within a reasonable window (rather than skipping eating for hours after training), containing both protein (to support muscle repair) and carbohydrate (to support glycogen replenishment, particularly important if training again within 24 hours).
+
+What's not necessary for most people: specific "recovery" supplement stacks, precisely timed shakes consumed within a specific number of minutes, or complex combinations of ingredients -- a normal meal with adequate protein and carbohydrate achieves the same outcome for the vast majority of training goals.`,
+  },
+  {
+    slug: "vegetarian-and-vegan-protein-sources",
+    title: "Vegetarian and Vegan Protein Sources",
+    category: "NUTRITION_BASICS",
+    summary: "Hitting protein targets without meat, fish, or any animal products at all.",
+    content: `Getting adequate protein on a vegetarian or vegan diet is entirely achievable, though it typically requires a bit more deliberate planning than an omnivorous diet, since plant proteins are generally less protein-dense per calorie and often "incomplete" (missing or low in one or more essential amino acids) on their own.
+
+Strong vegetarian sources: eggs and dairy (Greek yoghurt, cottage cheese, milk) are complete proteins and among the most protein-dense options available to anyone eating them.
+
+Strong vegan sources: tofu, tempeh, edamame, and other soy products are complete proteins and among the most efficient plant-based options. Legumes (lentils, chickpeas, black beans) and grains (quinoa, oats) are excellent but often benefit from being combined across a day's meals, since many are individually lower in one or two specific amino acids -- eating a reasonable variety across the day naturally covers this without needing to carefully pair specific foods at every single meal.
+
+Making up the gap practically: plant-based protein powders (pea, rice, or blends) are a convenient way to add meaningful protein without needing a large volume of whole food, particularly useful for anyone finding it hard to hit higher protein targets through whole foods alone.`,
+  },
+  {
+    slug: "metabolic-adaptation-and-plateaus",
+    title: "Metabolic Adaptation: Why Weight Loss Plateaus",
+    category: "NUTRITION_BASICS",
+    summary: "Why the same calorie deficit that worked at first can eventually stop working.",
+    content: `Metabolic adaptation refers to the body's tendency to reduce energy expenditure in response to sustained calorie restriction -- a genuine, well-documented phenomenon that explains why weight loss commonly slows over time, even with consistent adherence.
+
+What drives it: as body weight decreases, the body simply needs fewer calories to maintain itself (a smaller body burns less energy at rest). On top of this baseline effect, the body also makes some active adaptations -- subtly reducing NEAT (spontaneous daily movement), and sometimes reducing resting metabolic rate slightly beyond what weight loss alone would predict.
+
+Why this isn't cause for alarm: this is a normal, expected physiological response, not a sign that something has gone wrong or that your metabolism is "broken." It simply means that a calorie target that worked at the start of a diet may need periodic recalculation as body weight decreases and adaptation occurs.
+
+Practical implications: expecting weight loss to slow over time (rather than continue at a constant linear rate) helps avoid unnecessary frustration, and periodically reassessing calorie targets as weight changes is a normal part of managing a longer fat-loss phase rather than a sign of failure.`,
+  },
+  {
+    slug: "diet-breaks-and-refeed-days",
+    title: "Diet Breaks and Refeed Days",
+    category: "NUTRITION_BASICS",
+    summary: "Deliberately planned pauses in a calorie deficit, and what they're actually for.",
+    content: `A diet break is a planned period (commonly 1-2 weeks) of eating at maintenance calories during a longer fat-loss phase, while a refeed day is a shorter, single-day increase in calories (usually from carbohydrates specifically) within an otherwise consistent deficit.
+
+What they're for: extended calorie deficits can be mentally and physically demanding, and both approaches are tools to support longer-term adherence -- giving a physical and psychological break from restriction, which can make a longer diet more sustainable overall. There's also some evidence diet breaks may help temper the metabolic adaptations covered in the plateau article, though this effect is more modest than sometimes claimed.
+
+What they're not: neither is a "free pass" to eat without any limit, and neither directly "boosts metabolism" in a dramatic way some marketing suggests -- the primary benefit is adherence and psychological sustainability, not a metabolic hack.
+
+When they make sense: most useful for longer fat-loss phases (many weeks to months) where diet fatigue becomes a genuine risk to sticking with the plan, rather than something needed for every single week of a shorter or more moderate deficit.`,
+  },
+  {
+    slug: "training-to-failure",
+    title: "Training to Failure: Is It Necessary?",
+    category: "TRAINING",
+    summary: "The point where you genuinely can't complete another rep -- and whether you need to reach it.",
+    content: `Training to failure means performing reps until you physically cannot complete another one with good form. It's a genuine training tool, but not a requirement for every set of every workout.
+
+What the evidence suggests: training close to failure (within 1-3 reps of it) appears to be sufficient to drive muscle growth for most people, without needing to reach absolute failure on every set. Training to true failure adds significant fatigue and recovery cost without a proportional additional benefit for most training goals.
+
+When failure training has a place: occasionally, on isolation exercises specifically, or near the end of a workout when the extra fatigue matters less for subsequent performance, some lifters do use failure sets deliberately as part of a periodised plan.
+
+Practical guidance: leaving 1-3 reps "in the tank" (a rep or two before true failure) on most working sets is a reasonable, sustainable default that still drives progress, reserving true failure training for occasional, deliberate use rather than as a default approach to every set.`,
+  },
+  {
+    slug: "rep-ranges-explained",
+    title: "Rep Ranges Explained",
+    category: "TRAINING",
+    summary: "Why 'low reps for strength, high reps for size' is more of a rough guide than a strict rule.",
+    content: `Rep ranges are often categorised as low (1-5, associated with strength), moderate (6-12, associated with muscle growth), and high (15+, associated with muscular endurance) -- a useful rough framework, though the real picture is less rigid than these categories suggest.
+
+What the more recent research shows: muscle growth can occur across a wide range of rep counts (roughly 5-30 reps per set), provided sets are taken reasonably close to failure. Very low reps do have a genuine strength-specific advantage though, since they allow practising with heavier loads and refining the specific motor skill of lifting near-maximal weight.
+
+Why the categories still have practical value: very high rep sets (20+) tend to be more uncomfortable and fatiguing per set of actual muscle growth achieved compared to moderate rep ranges, and very low reps (1-3) carry more technical demand and joint stress per session -- so while growth is possible across a wide range, moderate rep ranges (6-15) remain a practical, comfortable default for most people, most of the time.
+
+Practical guidance: varying rep ranges across a training block, or between different exercises in the same session, is a reasonable way to get some benefit of each approach rather than rigidly committing to just one range for every single exercise.`,
+  },
+  {
+    slug: "importance-of-a-proper-warm-up",
+    title: "The Importance of a Proper Warm-Up",
+    category: "TRAINING",
+    summary:
+      "More than just injury prevention -- a warm-up genuinely affects the quality of your working sets.",
+    content: `A warm-up gradually prepares the body for the demands of a training session, and its benefits extend well beyond the commonly cited "injury prevention" framing.
+
+What it actually does: increases blood flow and temperature in the muscles you're about to use, improves the nervous system's ability to recruit muscle fibres effectively, and lets you rehearse the movement pattern with lighter loads before adding real weight -- all of which can directly improve the quality and safety of your heaviest working sets, not just reduce injury risk in a vague, general sense.
+
+A practical structure: a few minutes of light general movement (a short walk, easy cycling, or similar) to raise overall body temperature, followed by progressively heavier warm-up sets of the specific exercise you're about to perform, working up toward your actual working weight rather than jumping straight to it.
+
+How much is enough: warm-up needs scale with the load and complexity of what follows -- a heavy squat or deadlift session warrants more warm-up sets than a light accessory exercise. There's no need to warm up every single exercise from scratch if you've already warmed up a similar movement pattern earlier in the same session.`,
+  },
+  {
+    slug: "understanding-glycemic-index",
+    title: "Understanding Glycemic Index",
+    category: "NUTRITION_BASICS",
+    summary: "What it measures, and why it matters less for total health than its reputation suggests.",
+    content: `The Glycemic Index (GI) ranks carbohydrate-containing foods by how quickly they raise blood sugar compared to a reference food (usually pure glucose), on a scale from 0-100. High-GI foods cause a faster, sharper blood sugar rise; low-GI foods raise it more gradually.
+
+What affects GI: how processed or refined a food is, its fibre content, ripeness (for fruit), and even how it's cooked and cooled (cooked-then-cooled potatoes and rice have measurably lower GI than freshly cooked, due to changes in starch structure).
+
+Where it genuinely matters: GI is most clinically relevant for people managing blood sugar conditions like diabetes, where blood sugar spikes have direct health implications, and can be a useful concept for choosing foods around training when steady energy is preferred over a quick spike and crash.
+
+Where it matters less than commonly assumed: for general health and weight management in people without blood sugar conditions, GI alone is a fairly weak predictor -- portion size and overall dietary pattern matter considerably more, and a food's GI value doesn't account for real-world context, like eating it alongside protein or fat, which slows absorption and blunts the blood sugar response regardless of the food's GI in isolation.`,
+  },
+  {
+    slug: "basics-of-meal-prep",
+    title: "The Basics of Meal Prep",
+    category: "NUTRITION_BASICS",
+    summary: "A practical system for staying consistent without cooking from scratch every single day.",
+    content: `Meal prep -- cooking food in advance for the days ahead -- is less about any specific recipe and more about removing decision fatigue and last-minute takeaway temptation during a busy week.
+
+A simple starting structure: pick one or two protein sources, one or two carbohydrate sources, and two or three vegetables, cook them in bulk (a large tray-bake or batch of a simple dish works well), and portion into containers for the days ahead. Rotating the sauce or seasoning across the week keeps the same base ingredients from feeling repetitive.
+
+Storage basics: most cooked meals keep safely in the refrigerator for 3-4 days; freezing extends this considerably for batches you don't plan to eat within that window. Cooling food before refrigerating, and reheating thoroughly, are both worth being deliberate about for food safety.
+
+Making it sustainable: meal prep doesn't need to mean identical meals every day -- prepping components separately (a cooked protein, a cooked grain, and raw or lightly prepped vegetables) rather than fully-assembled meals gives more flexibility to mix and match through the week while still saving the bulk of the cooking time upfront.`,
+  },
+  {
+    slug: "water-retention-why-the-scale-fluctuates",
+    title: "Water Retention: Why the Scale Fluctuates",
+    category: "NUTRITION_BASICS",
+    summary:
+      "Why your weight can swing by a kilogram or more day to day with no fat actually gained or lost.",
+    content: `Day-to-day scale weight fluctuations are overwhelmingly driven by water balance, not actual fat gain or loss -- fat loss or gain happens far too slowly to explain a 1-2kg swing overnight.
+
+Common causes of water retention: higher sodium intake (sodium causes the body to retain more water), higher carbohydrate intake (each gram of stored glycogen holds roughly 3g of water alongside it), the luteal phase of the menstrual cycle for many women, recent intense exercise (micro-damage to muscle triggers a temporary inflammatory water retention response), and simply how much food is currently in the digestive system.
+
+Why this matters practically: weighing daily and reacting emotionally to a single day's number is a common source of unnecessary frustration during a diet -- a single high reading rarely reflects a real setback. Tracking a weekly (or rolling) average, rather than any single day's weight, gives a far more reliable picture of the actual underlying trend.
+
+What's NOT normal water-related fluctuation: rapid, unexplained swelling (particularly in just one limb, or alongside shortness of breath or chest discomfort) is a different matter and worth medical attention rather than being written off as routine water retention.`,
+  },
+  {
+    slug: "body-recomposition-muscle-and-fat",
+    title: "Body Recomposition: Building Muscle and Losing Fat Together",
+    category: "TRAINING",
+    summary: "Possible for some people, under specific conditions -- not the universal default outcome.",
+    content: `Body recomposition -- building muscle and losing fat at the same time -- is a genuinely appealing goal, and it is possible under the right conditions, though it's not equally achievable for everyone.
+
+Who it works best for: people newer to resistance training (their bodies respond especially efficiently to a new training stimulus), people returning to training after time off (partly regaining previously-held muscle, a documented phenomenon called "muscle memory"), and people carrying more body fat to begin with, who can draw on stored energy more efficiently to support muscle-building while still in a slight deficit.
+
+Who it's harder for: experienced, already-lean trainees generally find dedicated phases (a deliberate surplus specifically for building, followed by a deliberate deficit specifically for cutting) more effective than trying to do both simultaneously, since the biological requirements of each process work somewhat against each other at that level of training experience.
+
+Practical approach: eating at a slight deficit or right around maintenance, prioritising a solid protein intake, and following a structured resistance training programme with progressive overload gives the best chance of true recomposition for those in the more favourable groups above -- patience matters here, since visible recomposition happens more slowly than either dedicated fat loss or dedicated muscle gain alone.`,
+  },
+  {
+    slug: "hunger-vs-appetite",
+    title: "Understanding Hunger vs Appetite",
+    category: "NUTRITION_BASICS",
+    summary: "Two related but genuinely different signals, worth being able to tell apart.",
+    content: `Hunger and appetite are often used interchangeably, but they describe different things: hunger is the physiological need for food (driven by things like blood sugar and stomach emptiness), while appetite is the psychological desire to eat, which can be influenced by sight, smell, habit, emotion, and simply the time of day, independent of genuine physical need.
+
+Why the distinction matters: eating in response to appetite without genuine hunger (a common pattern -- seeing food, feeling stressed, or simply because "it's lunchtime") is a normal part of being human, but recognising the difference can help with more deliberate eating decisions when that's a goal, without needing to treat every urge to eat as a moral failing.
+
+Hormones involved: ghrelin (often called the "hunger hormone") rises before meals and falls after eating; leptin signals fullness to the brain over a longer timeframe. Both are affected by sleep quality, stress, and consistency of eating patterns -- poor sleep in particular is linked to higher ghrelin and lower leptin, which is part of why sleep-deprived people tend to feel hungrier and less satisfied by the same amount of food.
+
+Practical takeaway: checking in with genuine physical hunger before eating (rather than reflexively eating whenever the appetite/urge appears) is a skill that develops with practice, not something to expect to get perfectly right immediately -- and it's fine to eat for enjoyment or social reasons sometimes too, without needing every meal to be driven purely by physiological hunger.`,
+  },
+  {
+    slug: "whey-vs-plant-protein",
+    title: "Whey vs Plant Protein: Which Should You Choose?",
+    category: "SUPPLEMENTS",
+    summary: "Fewer differences than the marketing on either side suggests.",
+    content: `Whey and plant-based protein powders both exist to solve the same problem -- a convenient way to hit a daily protein target -- and for most practical purposes, the differences between them matter less than people often assume.
+
+Amino acid profile: whey is naturally a complete protein with a particularly high leucine content (the amino acid most directly linked to triggering muscle protein synthesis). Single-source plant proteins (pea alone, rice alone) are often lower in one or two essential amino acids, which is why most quality plant protein powders use a blend (commonly pea and rice together) to cover this gap.
+
+Digestion and practical differences: whey digests slightly faster on average, though this matters far less than total daily intake for most goals, as covered in the protein timing article. Plant proteins are naturally dairy-free, making them the default choice for anyone vegan, lactose-intolerant, or otherwise avoiding dairy.
+
+The practical bottom line: once total protein and amino acid completeness are accounted for, both support muscle building and general protein needs effectively -- the choice mostly comes down to dietary preference, digestion, cost, and taste rather than one being objectively superior for typical fitness goals.`,
+  },
 ];
