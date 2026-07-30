@@ -2,6 +2,11 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { ArticleDetailClient } from "./ArticleDetailClient";
 
+// Same reasoning as the /learn listing page -- explicit rather than
+// relying on the default (unspecified) behavior for a dynamic segment
+// with no generateStaticParams.
+export const dynamic = "force-dynamic";
+
 export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
