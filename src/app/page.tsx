@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { LandingHero } from "@/components/landing/LandingHero";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function RootPage() {
@@ -13,7 +13,9 @@ export default async function RootPage() {
   // or finish setup if they don't (e.g. mid-onboarding, or a pre-existing
   // session from before onboarding ever successfully saved).
   if (user) {
-    const profile = await db.profile.findUnique({ where: { id: user.id }, select: { id: true } });
+    const profile = await withPreparedStatementRetry(() =>
+      db.profile.findUnique({ where: { id: user.id }, select: { id: true } })
+    );
     redirect(profile ? "/dashboard" : "/onboarding");
   }
 

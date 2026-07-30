@@ -9,7 +9,7 @@ import { PendingWearableRedirect } from "@/components/dashboard/PendingWearableR
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { logWaterAction } from "@/app/(app)/progress/actions";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getLastNDaysRange, getTodayRange } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const profile = await db.profile.findUnique({ where: { id: user.id } });
+  const profile = await withPreparedStatementRetry(() => db.profile.findUnique({ where: { id: user.id } }));
   if (!profile) redirect("/onboarding");
 
   const { targets } = calculateGoals(profileToGoalInput(profile));

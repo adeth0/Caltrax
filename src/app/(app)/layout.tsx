@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/nav/AppShell";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function AppGroupLayout({ children }: { children: React.ReactNode }) {
@@ -13,7 +13,9 @@ export default async function AppGroupLayout({ children }: { children: React.Rea
   // here, but keep this as a defensive fallback.
   if (!user) redirect("/login");
 
-  const profile = await db.profile.findUnique({ where: { id: user.id }, select: { id: true } });
+  const profile = await withPreparedStatementRetry(() =>
+    db.profile.findUnique({ where: { id: user.id }, select: { id: true } })
+  );
   if (!profile) redirect("/onboarding");
 
   return <AppShell>{children}</AppShell>;

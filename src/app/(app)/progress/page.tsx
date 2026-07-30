@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ProgressTabs } from "@/components/progress/ProgressTabs";
 import type { WeightPointRow } from "@/components/progress/ProgressClient";
 import type { UnlockedInfo } from "@/components/progress/AchievementsGrid";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { profileToGoalInput, SEX_FROM_PRISMA } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
@@ -17,7 +17,7 @@ export default async function ProgressPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const profile = await db.profile.findUnique({ where: { id: user.id } });
+  const profile = await withPreparedStatementRetry(() => db.profile.findUnique({ where: { id: user.id } }));
   if (!profile) redirect("/onboarding");
 
   const { start, end } = getTodayRange();

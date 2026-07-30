@@ -38,6 +38,17 @@ once Supabase is configured (see below).
    session-based client has no permission to do).
 4. Project Settings → Database: copy the pooled (port 6543) and direct (port 5432)
    connection strings into `DATABASE_URL` / `DIRECT_URL`.
+
+   **⚠️ `DATABASE_URL` MUST end with `?pgbouncer=true`** — Supabase's dashboard does
+   not include this in the connection string it shows you; you have to add it
+   yourself. Without it, Prisma's prepared-statement caching collides with
+   Supabase's Transaction-mode pooler (PgBouncer), causing intermittent
+   `PostgresError 42P05: prepared statement "sN" already exists` failures on
+   essentially any page — this exact gap caused a real signup/login-crashing
+   incident. If you ever reset your database password or otherwise re-paste
+   this connection string, double-check the `?pgbouncer=true` survived the
+   copy-paste.
+
 5. Authentication → Providers: enable Google if you want the "Continue with Google"
    button to work (Apple is spec'd as future-ready, not wired up yet).
 6. Authentication → URL Configuration: add `https://caltrax.kavauralabs.com/auth/callback`
