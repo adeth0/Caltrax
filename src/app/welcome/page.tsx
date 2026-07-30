@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { WelcomeSplash } from "./WelcomeSplash";
 
@@ -18,7 +18,9 @@ export default async function WelcomePage() {
 
   if (!user) redirect("/login");
 
-  const profile = await db.profile.findUnique({ where: { id: user.id }, select: { name: true } });
+  const profile = await withPreparedStatementRetry(() =>
+    db.profile.findUnique({ where: { id: user.id }, select: { name: true } })
+  );
   if (!profile) redirect("/onboarding");
 
   return <WelcomeSplash name={profile.name} />;

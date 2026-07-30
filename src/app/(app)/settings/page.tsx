@@ -10,7 +10,7 @@ import {
   WearableConnectionsCard,
   type WearableConnectionRow,
 } from "@/components/settings/WearableConnectionsCard";
-import { db } from "@/lib/db";
+import { db, withPreparedStatementRetry } from "@/lib/db";
 import { ACTIVITY_FROM_PRISMA, DIET_FROM_PRISMA, GOAL_FROM_PRISMA, SEX_FROM_PRISMA } from "@/lib/enumMap";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PROVIDERS } from "@/lib/wearables";
@@ -32,7 +32,9 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
       : Promise.resolve([]),
     user ? db.wearableConnection.findMany({ where: { userId: user.id } }) : Promise.resolve([]),
-    user ? db.profile.findUnique({ where: { id: user.id } }) : Promise.resolve(null),
+    user
+      ? withPreparedStatementRetry(() => db.profile.findUnique({ where: { id: user.id } }))
+      : Promise.resolve(null),
   ]);
 
   const profileFormValues: ProfileFormValues | null = profile
