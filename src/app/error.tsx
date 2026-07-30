@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/Card";
 
@@ -21,11 +22,17 @@ export default function RootError({
       <Card className="w-full max-w-sm text-center">
         <h2 className="font-display text-lg font-bold text-text-primary">Something went wrong</h2>
         <p className="mt-2 text-sm text-text-secondary">
-          The page hit an unexpected error. You can try again, or head back to the dashboard.
+          The page hit an unexpected error. You can try again, or head back to the start.
         </p>
         <Button className="mt-5 w-full" onClick={reset}>
           Try again
         </Button>
+        <Link
+          href="/"
+          className="mt-3 block text-center text-sm text-text-tertiary hover:text-text-secondary"
+        >
+          Back to the start
+        </Link>
       </Card>
     </div>
   );

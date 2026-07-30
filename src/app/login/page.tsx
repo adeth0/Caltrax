@@ -11,11 +11,28 @@ import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 
+const CALLBACK_ERROR_MESSAGES: Record<string, string> = {
+  code_exchange_failed:
+    "That confirmation link has expired or was already used. Try signing in, or sign up again.",
+  otp_verify_failed:
+    "That confirmation link has expired or was already used. Try signing in, or sign up again.",
+  missing_code_or_token: "That link looks incomplete. Try opening it again from the original email.",
+  unexpected_exception:
+    "Something went wrong confirming your email. Please try signing in, or sign up again.",
+  auth_callback_failed:
+    "Something went wrong confirming your account. Please try signing in, or sign up again.",
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
-  const [serverError, setServerError] = useState<string | null>(null);
+  const callbackError = searchParams.get("error");
+  const [serverError, setServerError] = useState<string | null>(
+    callbackError
+      ? (CALLBACK_ERROR_MESSAGES[callbackError] ?? "Something went wrong. Please try again.")
+      : null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
