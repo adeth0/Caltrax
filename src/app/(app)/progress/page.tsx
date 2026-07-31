@@ -5,6 +5,7 @@ import type { WeightPointRow } from "@/components/progress/ProgressClient";
 import type { UnlockedInfo } from "@/components/progress/AchievementsGrid";
 import type { LoggedExerciseOption, WorkoutSessionRow } from "@/components/progress/WorkoutHistoryClient";
 import type { LatestMeasurement } from "@/components/progress/MeasurementsCard";
+import type { ProgressPhotoRow } from "@/components/progress/ProgressPhotosClient";
 import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { profileToGoalInput, SEX_FROM_PRISMA } from "@/lib/enumMap";
@@ -24,29 +25,37 @@ export default async function ProgressPage() {
 
   const { start, end } = getTodayRange();
 
-  const [weightLogs, waterLogs, todayMealEntries, unlockedAchievements, workouts, recentMeasurements] =
-    await Promise.all([
-      db.weightLog.findMany({
-        where: { userId: user.id },
-        orderBy: { loggedAt: "asc" },
-        take: 60,
-      }),
-      db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: start, lte: end } } }),
-      db.mealEntry.findMany({
-        where: { userId: user.id, loggedAt: { gte: start, lte: end } },
-        include: { food: true },
-      }),
-      db.unlockedAchievement.findMany({ where: { userId: user.id }, orderBy: { unlockedAt: "asc" } }),
-      db.workout.findMany({
-        where: { userId: user.id },
-        orderBy: { loggedAt: "desc" },
-        take: 30,
-        include: { sets: { include: { exercise: true }, orderBy: { order: "asc" } } },
-      }),
-      // Ordered newest-first so the "latest per type" derivation below can
-      // just take the first occurrence of each type.
-      db.bodyMeasurement.findMany({ where: { userId: user.id }, orderBy: { loggedAt: "desc" }, take: 200 }),
-    ]);
+  const [
+    weightLogs,
+    waterLogs,
+    todayMealEntries,
+    unlockedAchievements,
+    workouts,
+    recentMeasurements,
+    progressPhotos,
+  ] = await Promise.all([
+    db.weightLog.findMany({
+      where: { userId: user.id },
+      orderBy: { loggedAt: "asc" },
+      take: 60,
+    }),
+    db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: start, lte: end } } }),
+    db.mealEntry.findMany({
+      where: { userId: user.id, loggedAt: { gte: start, lte: end } },
+      include: { food: true },
+    }),
+    db.unlockedAchievement.findMany({ where: { userId: user.id }, orderBy: { unlockedAt: "asc" } }),
+    db.workout.findMany({
+      where: { userId: user.id },
+      orderBy: { loggedAt: "desc" },
+      take: 30,
+      include: { sets: { include: { exercise: true }, orderBy: { order: "asc" } } },
+    }),
+    // Ordered newest-first so the "latest per type" derivation below can
+    // just take the first occurrence of each type.
+    db.bodyMeasurement.findMany({ where: { userId: user.id }, orderBy: { loggedAt: "desc" }, take: 200 }),
+    db.progressPhoto.findMany({ where: { userId: user.id }, orderBy: { loggedAt: "desc" }, take: 60 }),
+  ]);
 
   const weightPoints: WeightPointRow[] = weightLogs.map((w: (typeof weightLogs)[number]) => ({
     id: w.id,
@@ -104,6 +113,13 @@ export default async function ProgressPage() {
     date: format(m.loggedAt, "d MMM"),
   }));
 
+  const progressPhotoRows: ProgressPhotoRow[] = progressPhotos.map((p: (typeof progressPhotos)[number]) => ({
+    id: p.id,
+    imageUrl: p.imageUrl,
+    note: p.note,
+    date: format(p.loggedAt, "d MMM yyyy"),
+  }));
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
@@ -122,6 +138,7 @@ export default async function ProgressPage() {
         workoutSessions={workoutSessions}
         loggedExercises={loggedExercises}
         latestMeasurements={latestMeasurements}
+        progressPhotos={progressPhotoRows}
       />
     </main>
   );

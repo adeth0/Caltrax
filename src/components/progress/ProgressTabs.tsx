@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { InsightsCard } from "@/components/progress/InsightsCard";
 import { MeasurementsCard, type LatestMeasurement } from "@/components/progress/MeasurementsCard";
+import { ProgressPhotosClient, type ProgressPhotoRow } from "@/components/progress/ProgressPhotosClient";
 import { MicronutrientsCard } from "@/components/progress/MicronutrientsCard";
 import { ProgressClient, type WeightPointRow } from "@/components/progress/ProgressClient";
 import { ReportsClient } from "@/components/progress/ReportsClient";
@@ -28,11 +29,13 @@ interface ProgressTabsProps {
   workoutSessions: WorkoutSessionRow[];
   loggedExercises: LoggedExerciseOption[];
   latestMeasurements: LatestMeasurement[];
+  progressPhotos: ProgressPhotoRow[];
 }
 
 const TABS = [
   { value: "overview", label: "Overview" },
   { value: "workouts", label: "Workouts" },
+  { value: "photos", label: "Photos" },
   { value: "reports", label: "Reports" },
   { value: "achievements", label: "Achievements" },
 ] as const;
@@ -86,6 +89,8 @@ export function ProgressTabs(props: ProgressTabsProps) {
           loggedExercises={props.loggedExercises}
         />
       )}
+
+      {tab === "photos" && <ProgressPhotosClient photos={props.progressPhotos} />}
 
       {tab === "reports" && <ReportsClient />}
 
