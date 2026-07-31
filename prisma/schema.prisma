@@ -119,6 +119,7 @@ model Profile {
   progressPhotos       ProgressPhoto[]
   fastingSessions      FastingSession[]
   mealTemplates        MealTemplate[]
+  recipeCollections    RecipeCollection[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -484,6 +485,7 @@ model Recipe {
   plannedMeals PlannedMeal[]
   ratings      RecipeRating[]
   savedBy      SavedRecipe[]
+  collectionItems RecipeCollectionItem[]
 
   @@index([userId])
   @@index([source, category])
@@ -555,6 +557,36 @@ model SavedRecipe {
 
   @@unique([userId, recipeId])
   @@map("saved_recipes")
+}
+
+/// A custom, named group of recipes (e.g. "Meal Prep Sunday", "Quick
+/// Weeknight") -- purely organisational, doesn't affect whether a
+/// recipe is saved/owned/published. A recipe can belong to any number
+/// of collections, and being in a collection has no bearing on the
+/// existing save/create/publish mechanics.
+model RecipeCollection {
+  id        String                 @id @default(cuid())
+  userId    String
+  user      Profile                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime               @default(now())
+  items     RecipeCollectionItem[]
+
+  @@index([userId])
+  @@map("recipe_collections")
+}
+
+model RecipeCollectionItem {
+  id           String           @id @default(cuid())
+  collectionId String
+  collection   RecipeCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  recipeId     String
+  recipe       Recipe           @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  addedAt      DateTime         @default(now())
+
+  @@unique([collectionId, recipeId])
+  @@index([collectionId])
+  @@map("recipe_collection_items")
 }
 
 /// A persistent, accumulating list -- "add to shopping list" on a recipe
