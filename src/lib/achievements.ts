@@ -62,6 +62,19 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: "Favourited 5 foods",
     icon: "⭐",
   },
+  { key: "first_workout", label: "First Rep", description: "Logged your first workout", icon: "🏋️" },
+  {
+    key: "ten_workouts",
+    label: "Gym Regular",
+    description: "Logged 10 workouts",
+    icon: "💪",
+  },
+  {
+    key: "fifty_workouts",
+    label: "Workout Warrior",
+    description: "Logged 50 workouts",
+    icon: "🦾",
+  },
 ];
 
 /** Length of the longest run of consecutive calendar days present in a set of "yyyy-MM-dd" strings. */
@@ -106,6 +119,7 @@ export async function checkAndUnlockAchievements(userId: string): Promise<Achiev
     wearableCount,
     aiScanCount,
     favouriteCount,
+    workoutCount,
   ] = await Promise.all([
     db.unlockedAchievement.findMany({ where: { userId }, select: { key: true } }),
     db.profile.findUnique({ where: { id: userId }, select: { timezone: true, targetWeightKg: true } }),
@@ -125,6 +139,7 @@ export async function checkAndUnlockAchievements(userId: string): Promise<Achiev
     // both ownerId and imageUrl together.
     db.food.count({ where: { ownerId: userId, imageUrl: { not: null } } }),
     db.favourite.count({ where: { userId } }),
+    db.workout.count({ where: { userId } }),
   ]);
 
   const alreadyUnlocked = new Set(already.map((a: (typeof already)[number]) => a.key));
@@ -169,6 +184,9 @@ export async function checkAndUnlockAchievements(userId: string): Promise<Achiev
     first_wearable: wearableCount >= 1,
     first_ai_scan: aiScanCount >= 1,
     five_favourites: favouriteCount >= 5,
+    first_workout: workoutCount >= 1,
+    ten_workouts: workoutCount >= 10,
+    fifty_workouts: workoutCount >= 50,
   };
 
   const newlyUnlocked = ACHIEVEMENTS.filter((a) => met[a.key] && !alreadyUnlocked.has(a.key));
