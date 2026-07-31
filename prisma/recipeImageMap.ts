@@ -112,4 +112,21 @@ export const RECIPE_IMAGE_MAP: Record<string, string> = {
   "Roasted Chickpeas": "snack-simple",
   "Frozen Yoghurt Bark": "smoothie-bowl",
   "Deviled Eggs": "eggs-plate",
+
+  // Round 5
+  "Acai-Style Berry Bowl": "smoothie-bowl",
+  "Waffles with Berries": "pancakes",
+  "Quiche Lorraine-Style": "eggs-plate",
+  "Smoked Salmon & Scrambled Eggs": "eggs-plate",
+  "Chicken Noodle Soup": "soup-bowl",
+  "Falafel Wrap": "burrito-wrap",
+  "California-Style Sushi Rolls": "rice-bowl",
+  "Homemade Margherita Pizza": "pizza-slice",
+  "Turkey Burgers": "burger",
+  "Shepherd's Pie": "protein-plate",
+  "Baked Fish and Chips": "protein-plate",
+  "Chicken Ramen": "soup-bowl",
+  "Greek-Style Moussaka": "protein-plate",
+  "Energy Bars": "snack-simple",
+  "Greek Yoghurt Berry Parfait": "smoothie-bowl",
 };
