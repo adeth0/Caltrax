@@ -1,6 +1,6 @@
 import { LogClient, type QuickAddFood, type TodayEntryRow } from "@/components/log/LogClient";
 import { LogModeToggle } from "@/components/log/LogModeToggle";
-import type { ExerciseOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
+import type { ExerciseOption, RoutineOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { MEAL_FROM_PRISMA } from "@/lib/enumMap";
@@ -36,7 +36,7 @@ export default async function LogPage() {
       ])
     : [[], [], []];
 
-  const [exercises, todaysWorkout] = await Promise.all([
+  const [exercises, todaysWorkout, routines] = await Promise.all([
     db.exercise.findMany({ orderBy: { name: "asc" } }),
     user
       ? db.workout.findFirst({
@@ -44,6 +44,13 @@ export default async function LogPage() {
           include: { sets: { include: { exercise: true }, orderBy: { order: "asc" } } },
         })
       : Promise.resolve(null),
+    user
+      ? db.workoutRoutine.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+          include: { exercises: { include: { exercise: true }, orderBy: { order: "asc" } } },
+        })
+      : Promise.resolve([]),
   ]);
 
   const todayEntries: TodayEntryRow[] = entries.map((e: (typeof entries)[number]) => {
@@ -111,6 +118,17 @@ export default async function LogPage() {
     })
   );
 
+  const routineOptions: RoutineOption[] = routines.map((r: (typeof routines)[number]) => ({
+    id: r.id,
+    name: r.name,
+    exercises: r.exercises.map((re: (typeof r.exercises)[number]) => ({
+      id: re.exercise.id,
+      name: re.exercise.name,
+      muscleGroup: re.exercise.muscleGroup,
+      equipment: re.exercise.equipment,
+    })),
+  }));
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
@@ -123,6 +141,7 @@ export default async function LogPage() {
         }
         exercises={exerciseOptions}
         todaySets={todayWorkoutSets}
+        routines={routineOptions}
       />
     </main>
   );

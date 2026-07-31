@@ -2,16 +2,22 @@
 
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { WorkoutLogClient, type ExerciseOption, type TodayWorkoutSetRow } from "./WorkoutLogClient";
+import {
+  WorkoutLogClient,
+  type ExerciseOption,
+  type RoutineOption,
+  type TodayWorkoutSetRow,
+} from "./WorkoutLogClient";
 
 interface LogModeToggleProps {
   /** The already-rendered meal-logging UI, passed through rather than re-fetching its data here. */
   mealSlot: ReactNode;
   exercises: ExerciseOption[];
   todaySets: TodayWorkoutSetRow[];
+  routines: RoutineOption[];
 }
 
-export function LogModeToggle({ mealSlot, exercises, todaySets }: LogModeToggleProps) {
+export function LogModeToggle({ mealSlot, exercises, todaySets, routines }: LogModeToggleProps) {
   const [mode, setMode] = useState<"meal" | "workout">("meal");
 
   return (
@@ -39,7 +45,11 @@ export function LogModeToggle({ mealSlot, exercises, todaySets }: LogModeToggleP
         ))}
       </div>
 
-      {mode === "meal" ? mealSlot : <WorkoutLogClient exercises={exercises} todaySets={todaySets} />}
+      {mode === "meal" ? (
+        mealSlot
+      ) : (
+        <WorkoutLogClient exercises={exercises} todaySets={todaySets} routines={routines} />
+      )}
     </div>
   );
 }

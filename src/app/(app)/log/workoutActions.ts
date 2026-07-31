@@ -64,3 +64,45 @@ export async function deleteWorkoutSetAction(setId: string) {
   });
   revalidatePath("/log");
 }
+
+/**
+ * Saves today's distinct exercises (in the order they were first logged)
+ * as a reusable named routine. Deliberately captures exercises only, not
+ * weight or reps -- see the WorkoutRoutine model comment for why.
+ */
+export async function saveRoutineFromTodayAction(name: string) {
+  const userId = await requireUserId();
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Enter a name for this routine");
+
+  const { start, end } = getTodayRange();
+  const todaysWorkout = await db.workout.findFirst({
+    where: { userId, loggedAt: { gte: start, lte: end } },
+    include: { sets: { orderBy: { order: "asc" } } },
+  });
+  if (!todaysWorkout || todaysWorkout.sets.length === 0) {
+    throw new Error("Log at least one set today before saving a routine");
+  }
+
+  const distinctExerciseIds = [
+    ...new Set(todaysWorkout.sets.map((s: (typeof todaysWorkout.sets)[number]) => s.exerciseId)),
+  ];
+
+  await db.workoutRoutine.create({
+    data: {
+      userId,
+      name: trimmedName,
+      exercises: {
+        create: distinctExerciseIds.map((exerciseId, i) => ({ exerciseId, order: i })),
+      },
+    },
+  });
+
+  revalidatePath("/log");
+}
+
+export async function deleteRoutineAction(routineId: string) {
+  const userId = await requireUserId();
+  await db.workoutRoutine.deleteMany({ where: { id: routineId, userId } });
+  revalidatePath("/log");
+}
