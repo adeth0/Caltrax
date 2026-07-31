@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { DeleteAccountCard } from "@/components/settings/DeleteAccountCard";
+import { DataExportCard } from "@/components/settings/DataExportCard";
 import { ProfileEditCard, type ProfileFormValues } from "@/components/settings/ProfileEditCard";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
@@ -119,6 +120,10 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           </Button>
         </form>
       </Card>
+
+      <div className="mt-4">
+        <DataExportCard />
+      </div>
 
       <div className="mt-4">
         <DeleteAccountCard />
