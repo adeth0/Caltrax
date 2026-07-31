@@ -1,6 +1,11 @@
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
+import {
+  FastingTimerCard,
+  type ActiveFast,
+  type CompletedFast,
+} from "@/components/dashboard/FastingTimerCard";
 import { GettingStartedCard } from "@/components/dashboard/GettingStartedCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
@@ -32,24 +37,39 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked, engagement, todaysWorkoutSetCount] =
-    await Promise.all([
-      db.mealEntry.findMany({
-        where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
-        include: { food: true },
-      }),
-      db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } }),
-      db.weightLog.findMany({
-        where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
-        orderBy: { loggedAt: "asc" },
-      }),
-      db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
-      checkAndUnlockAchievements(user.id),
-      getDashboardEngagement(user.id),
-      db.workoutSet.count({
-        where: { workout: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } },
-      }),
-    ]);
+  const [
+    mealEntries,
+    waterLogs,
+    weightLogs,
+    activityLogs,
+    newlyUnlocked,
+    engagement,
+    todaysWorkoutSetCount,
+    openFast,
+    recentCompletedFasts,
+  ] = await Promise.all([
+    db.mealEntry.findMany({
+      where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
+      include: { food: true },
+    }),
+    db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } }),
+    db.weightLog.findMany({
+      where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
+      orderBy: { loggedAt: "asc" },
+    }),
+    db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
+    checkAndUnlockAchievements(user.id),
+    getDashboardEngagement(user.id),
+    db.workoutSet.count({
+      where: { workout: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } },
+    }),
+    db.fastingSession.findFirst({ where: { userId: user.id, endedAt: null } }),
+    db.fastingSession.findMany({
+      where: { userId: user.id, endedAt: { not: null } },
+      orderBy: { startedAt: "desc" },
+      take: 5,
+    }),
+  ]);
 
   const todayIntake = mealEntries.reduce(
     (acc, e: (typeof mealEntries)[number]) => {
@@ -91,6 +111,18 @@ export default async function DashboardPage() {
           weightKg: w.weightKg,
         }))
       : [{ date: format(new Date(), "EEE"), weightKg: profile.weightKg }];
+
+  const activeFast: ActiveFast | null = openFast
+    ? { id: openFast.id, startedAt: openFast.startedAt.toISOString(), targetHours: openFast.targetHours }
+    : null;
+
+  const recentFasts: CompletedFast[] = recentCompletedFasts.map(
+    (f: (typeof recentCompletedFasts)[number]) => ({
+      id: f.id,
+      durationHours: Math.round(((f.endedAt as Date).getTime() - f.startedAt.getTime()) / 3600000),
+      date: format(f.startedAt, "d MMM"),
+    })
+  );
 
   return (
     <main className="p-4 pb-24 sm:p-6 lg:mx-auto lg:max-w-[1400px] lg:pb-6">
@@ -143,6 +175,7 @@ export default async function DashboardPage() {
             targetMl={profile.dailyWaterGoalMl ?? targets.waterMl}
             onAdd={logWaterAction}
           />
+          <FastingTimerCard activeFast={activeFast} recentFasts={recentFasts} />
           <WeightTrendCard points={weightPoints} goalWeightKg={profile.targetWeightKg ?? undefined} />
         </div>
       </div>
