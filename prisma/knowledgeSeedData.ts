@@ -645,4 +645,214 @@ Digestion and practical differences: whey digests slightly faster on average, th
 
 The practical bottom line: once total protein and amino acid completeness are accounted for, both support muscle building and general protein needs effectively -- the choice mostly comes down to dietary preference, digestion, cost, and taste rather than one being objectively superior for typical fitness goals.`,
   },
+
+  // --- Round 3: more topics ---
+  {
+    slug: "rpe-rating-your-effort",
+    title: "RPE: Rating Your Effort",
+    category: "TRAINING",
+    summary:
+      "A simple 1-10 scale that helps you train at the right intensity without always needing exact numbers.",
+    content: `Rate of Perceived Exertion (RPE) is a scale, typically 1-10, describing how hard a set or session felt. In strength training specifically, it's often expressed as "reps in reserve" -- an RPE of 8 means you could have done about 2 more reps before failure.
+
+Why it's useful: RPE lets you adjust a workout to how you're actually feeling that day, rather than rigidly following a percentage of your max regardless of sleep, stress, or recovery. Two people (or the same person on two different days) can lift the exact same weight for the same reps at very different RPEs.
+
+How to use it practically: after a set, ask yourself roughly how many more reps you could have done with good form. If the answer is "none" that's close to RPE 10; "2-3 more" is closer to RPE 7-8. Most productive training happens in the RPE 6-9 range for most sets, reserving RPE 10 (true failure) for occasional, deliberate use as covered in the training-to-failure article.
+
+A skill that improves with practice: accurately estimating your own RPE takes time to calibrate -- new lifters in particular tend to underestimate how much they have left in the tank. Consistency in trying to rate it, even imperfectly, builds this skill over weeks of training.`,
+  },
+  {
+    slug: "compound-vs-isolation-exercises",
+    title: "Compound vs Isolation Exercises",
+    category: "TRAINING",
+    summary: "Multi-joint lifts versus single-muscle movements, and why most programs use both.",
+    content: `Compound exercises (squats, deadlifts, bench press, rows, overhead press) work multiple joints and muscle groups at once. Isolation exercises (bicep curls, leg extensions, lateral raises) target a single muscle across a single joint.
+
+What compounds do well: they allow lifting heavier total loads, train several muscles efficiently in one movement, and closely mirror real-world and athletic movement patterns. For time-limited training, compounds give the most overall stimulus per exercise.
+
+What isolation exercises do well: they let you target a specific muscle that might be lagging or under-worked by compounds alone, with less overall fatigue and technical demand -- useful both for muscle-building focus and for rehabilitating or strengthening a specific weak point.
+
+A practical structure: most well-designed programs build around compound lifts first, when you're freshest, then add isolation work afterward to target specific muscles further. Neither category is inherently superior -- they serve different, complementary purposes within the same program.`,
+  },
+  {
+    slug: "deload-weeks-why-and-when",
+    title: "Deload Weeks: Why and When",
+    category: "TRAINING",
+    summary:
+      "A planned, lighter week -- not a sign of weakness, but part of how long-term progress actually works.",
+    content: `A deload is a planned period, usually about a week, of reduced training volume or intensity, taken periodically rather than training at maximum effort indefinitely.
+
+Why they're built into good programs: consistent hard training accumulates fatigue in joints, connective tissue and the nervous system faster than it accumulates in muscle tissue itself -- meaning you can often keep gaining strength for a while even as underlying fatigue builds up, until it eventually catches up and performance stalls or injury risk rises. A deload lets that accumulated fatigue dissipate before it becomes a real problem.
+
+When to take one: commonly scheduled every 4-8 weeks depending on training intensity and experience level, or reactively when performance stalls, sleep and motivation decline, or minor aches start lingering longer than usual.
+
+What it actually looks like: typically reducing weight (staying at 40-60% of normal working loads), reducing sets, or both, while still moving through the same general exercises -- a deload isn't the same as a complete rest week, though a full rest week can serve a similar purpose occasionally.`,
+  },
+  {
+    slug: "tdee-and-activity-multipliers",
+    title: "TDEE and Activity Multipliers Explained",
+    category: "NUTRITION_BASICS",
+    summary: "How apps estimate the calorie number your whole plan is built around.",
+    content: `Total Daily Energy Expenditure (TDEE) is the total number of calories you burn in a day -- the number a calorie target for weight loss, maintenance, or gain is built around. It's commonly estimated in two steps: calculating Basal Metabolic Rate (BMR, the energy needed just to exist at rest), then multiplying by an activity factor.
+
+Common activity multipliers: sedentary (little to no exercise, ~1.2), lightly active (light exercise 1-3 days/week, ~1.375), moderately active (moderate exercise 3-5 days/week, ~1.55), very active (hard exercise 6-7 days/week, ~1.725), and extremely active (very hard exercise plus a physical job, ~1.9).
+
+Why this is an estimate, not a measurement: BMR formulas (commonly Mifflin-St Jeor or Harris-Benedict) are based on population averages and can be off for any given individual by a meaningful margin, and activity multipliers require honestly categorising your own activity level, which people often over- or under-estimate.
+
+The practical fix: treat a calculated TDEE as a starting point, not gospel -- track actual weight change over 2-3 weeks at a given calorie target, and adjust the number up or down based on what's actually happening, rather than trusting the initial formula-based estimate indefinitely.`,
+  },
+  {
+    slug: "fat-loss-vs-weight-loss",
+    title: "Fat Loss vs Weight Loss: What's the Difference",
+    category: "NUTRITION_BASICS",
+    summary: "The number on the scale and the thing most people actually want to lose aren't quite the same.",
+    content: `Weight loss refers to any decrease in total body mass -- fat, muscle, water, and even the contents of your digestive system all count. Fat loss specifically refers to a reduction in body fat, which is what most people actually mean when they say they want to "lose weight."
+
+Why the distinction matters: a very aggressive calorie deficit, especially combined with little protein intake or no resistance training, can produce rapid weight loss on the scale that's a meaningful mix of fat AND muscle -- not the outcome most people actually want, even though the scale number looks like fast progress.
+
+What protects against this: adequate protein intake and continued resistance training during a calorie deficit both help the body preserve muscle mass while still losing fat, meaning more of the weight lost comes specifically from fat stores rather than lean tissue.
+
+A practical implication: the RATE of weight loss matters, not just the total -- a more moderate, sustainable deficit (commonly recommended around 0.5-1% of bodyweight per week) tends to preserve muscle far better than crash-dieting, even though the scale moves slower.`,
+  },
+  {
+    slug: "flexible-dieting-vs-clean-eating",
+    title: 'Flexible Dieting vs "Clean Eating"',
+    category: "NUTRITION_BASICS",
+    summary: "Two different philosophies for hitting the same nutritional targets.",
+    content: `"Clean eating" generally means prioritising whole, minimally processed foods and avoiding or limiting more processed options. Flexible dieting (sometimes called IIFYM -- "if it fits your macros") means hitting specific calorie and macronutrient targets regardless of the specific foods used to get there, including some processed or less "clean" choices.
+
+What the evidence says about outcomes: for weight change specifically, what matters most is total calories and adequate protein -- research doesn't show a meaningful weight-loss advantage for whole foods over processed ones at matched calories and macros. Whole foods do tend to have advantages for micronutrient density, fibre and satiety though, which matters for health and hunger management even if not for the scale directly.
+
+Where each approach tends to work well: clean eating can simplify decision-making for people who find an "all or nothing" whole-foods approach easier to stick to than counting. Flexible dieting can reduce feelings of restriction and support long-term adherence for people who find rigid food rules harder to maintain, particularly around social eating.
+
+A reasonable middle ground: many people do well building a diet mostly around whole foods for the health and satiety benefits, while allowing genuine flexibility for less "clean" choices within their targets -- rather than treating these as two mutually exclusive camps.`,
+  },
+  {
+    slug: "eating-out-without-losing-progress",
+    title: "Eating Out Without Losing Progress",
+    category: "NUTRITION_BASICS",
+    summary: "Practical strategies for restaurants, takeaways, and social meals.",
+    content: `Eating out doesn't have to derail progress, but restaurant meals are often considerably higher in calories than a similar meal cooked at home -- larger portions, more added oil and butter, and calorie-dense sauces are all common.
+
+Before you go: if the menu is available in advance, deciding roughly what to order ahead of time removes in-the-moment decision fatigue and reduces impulse ordering. Eating a small amount beforehand, rather than arriving very hungry, can also help avoid over-ordering.
+
+At the table: protein-forward mains (grilled meat, fish, or plant proteins) tend to be more filling per calorie than pasta- or bread-heavy dishes. Asking for sauces and dressings on the side lets you control how much you actually use. Sharing a starter or dessert, rather than skipping the social element entirely, is often more sustainable than strict avoidance.
+
+The bigger picture: a single meal, even a large one, has limited impact on weight change in the context of an otherwise consistent week or month -- the goal is a sensible approach most of the time, not perfection at every single meal out.`,
+  },
+  {
+    slug: "cold-exposure-and-recovery",
+    title: "Cold Exposure and Recovery",
+    category: "RECOVERY",
+    summary: "What ice baths and cold showers can and can't do for training recovery.",
+    content: `Cold water immersion (ice baths) and cold showers have become popular recovery tools, with claims ranging from reduced soreness to improved long-term adaptation. The real picture is more nuanced than most marketing suggests.
+
+What the evidence supports: cold exposure shortly after intense exercise can reduce the sensation of muscle soreness (DOMS) in the following day or two, which is genuinely useful before a competition or when back-to-back performance matters more than long-term adaptation.
+
+An important tradeoff: several studies suggest that cold exposure immediately after resistance training may blunt some of the muscle-building adaptations from that session, likely by dampening the inflammatory response that's part of how muscles adapt and grow. For pure hypertrophy or strength goals, doing cold exposure well after training (or on non-training days) may be a better trade-off than immediately post-workout.
+
+Practical guidance: useful selectively -- before a competition, during a demanding multi-day training block, or simply because it feels good and supports a recovery routine -- rather than a default addition to every single strength session if muscle growth is the primary goal.`,
+  },
+  {
+    slug: "foam-rolling-and-active-recovery",
+    title: "Foam Rolling and Active Recovery",
+    category: "RECOVERY",
+    summary: "What foam rolling actually does, and why easy movement matters too.",
+    content: `Foam rolling (self-myofascial release) involves applying pressure to muscles with a foam roller, commonly used before or after training. Active recovery means low-intensity movement (walking, easy cycling, light swimming) on rest days, instead of complete inactivity.
+
+What foam rolling does: primarily improves short-term range of motion and reduces the perception of muscle soreness and stiffness. It doesn't appear to meaningfully change muscle tissue itself the way its "releasing knots" framing sometimes implies -- the benefit is real but more about sensation and short-term mobility than physical tissue change.
+
+What active recovery does: light movement increases blood flow to muscles without adding meaningful additional fatigue, which can support faster clearance of some recovery byproducts and reduce the stiffness that comes from complete inactivity after hard training.
+
+Practical guidance: foam rolling for a few minutes before training can support mobility for that session; using it after training or on rest days can help with comfort and perceived recovery. Neither is essential, but both are low-cost, low-risk additions if you find them genuinely helpful -- worth judging by how you personally respond rather than assuming a mandatory routine.`,
+  },
+  {
+    slug: "creatine-myths-debunked",
+    title: "Creatine Myths, Debunked",
+    category: "SUPPLEMENTS",
+    summary: "Addressing the most common misconceptions about one of the most-studied supplements available.",
+    content: `Despite decades of research supporting its safety and effectiveness, creatine remains subject to persistent myths worth addressing directly.
+
+"Creatine damages your kidneys": this claim originates largely from case reports in people with pre-existing kidney disease, not controlled research in healthy individuals. Multiple long-term studies in healthy people taking standard doses show no evidence of kidney harm. People with existing kidney conditions should still consult a doctor before supplementing, as a reasonable precaution.
+
+"Creatine causes bloating and water retention that ruins your physique": creatine does draw a modest amount of water into muscle cells specifically (not under the skin, which is what causes a "puffy" look), and this is a small, stable increase, not ongoing bloating that worsens over time.
+
+"You need to cycle on and off creatine": there's no strong evidence that cycling provides any benefit over continuous daily use -- muscle creatine stores simply return to baseline within a few weeks if you stop, and refill again within a few weeks of restarting.
+
+"Creatine is only for bodybuilders": the research base includes benefits for general strength, power-based sports, and even some cognitive and clinical applications being studied -- it's relevant to anyone doing resistance or power-based training, not just physique-focused lifters.`,
+  },
+  {
+    slug: "genetics-and-body-composition",
+    title: "The Genetics of Body Composition",
+    category: "NUTRITION_BASICS",
+    summary: "What genetics actually influences, and what remains within your control regardless.",
+    content: `Genetics meaningfully influences body composition -- including where fat tends to be stored, how easily muscle is built in response to training, natural metabolic rate variation, and even food preferences and appetite regulation to some degree.
+
+What this does NOT mean: genetics sets a range of likely outcomes and influences how quickly or easily you respond to diet and training, but it doesn't remove the basic mechanisms of energy balance and progressive overload -- a genetic predisposition toward higher body fat doesn't mean fat loss is impossible, just that it may require more consistent effort than it does for someone with a different genetic starting point.
+
+Where comparisons go wrong: comparing your own progress or natural physique to someone with a very different genetic starting point (a naturally lean friend, or a genetically gifted athlete) is rarely a fair or useful benchmark -- your own consistent progress over time, compared to your own starting point, is the more meaningful measure.
+
+Practical takeaway: genetics explains some of the variation in how people respond to the same diet and training approach, which is worth knowing so you don't blame yourself unfairly for a slower response than someone else -- but it doesn't change what actually works (calorie balance, adequate protein, progressive training, consistency), just how quickly and easily those things pay off for you specifically.`,
+  },
+  {
+    slug: "sleep-hygiene-practical-checklist",
+    title: "Sleep Hygiene: A Practical Checklist",
+    category: "RECOVERY",
+    summary: "Concrete, actionable habits that support better sleep quality, not just quantity.",
+    content: `Building on why sleep matters for recovery and performance, here's a practical checklist of habits with genuine evidence behind them.
+
+Light exposure: get natural light, ideally soon after waking, and dim lights in the hour or two before bed. Light is the primary signal your body uses to regulate its sleep-wake cycle.
+
+Timing consistency: going to bed and waking at similar times daily, including weekends, supports more consistent sleep quality than variable timing, even if total hours are similar.
+
+Substances: limit caffeine in the 6-8 hours before bed given its long half-life, and be aware that while alcohol can help you fall asleep faster, it measurably reduces sleep quality later in the night.
+
+Environment: a cool, dark, quiet room supports deeper sleep for most people -- around 18-19°C (65-67°F) is commonly cited as a comfortable range, though individual preference varies.
+
+Wind-down routine: a consistent pre-sleep routine (dimmed lights, no screens, a calming activity) signals to your body that sleep is coming, similar to how a consistent pre-workout routine primes you for training.
+
+None of these need to be followed perfectly every night -- consistency most of the time matters more than occasional deviations.`,
+  },
+  {
+    slug: "gut-microbiome-and-fibre",
+    title: "Gut Microbiome and Fibre",
+    category: "NUTRITION_BASICS",
+    summary: "How the bacteria living in your gut depend on the fibre you eat, and why variety matters.",
+    content: `Your gut hosts trillions of bacteria collectively called the microbiome, increasingly understood to influence digestion, immune function, and even mood. Fibre is the primary fuel source for many of these beneficial bacteria, since it passes through to the large intestine largely undigested by the body itself.
+
+Why variety matters, not just quantity: different bacterial species prefer different types of fibre, so eating a wide range of plant foods (vegetables, fruits, whole grains, legumes, nuts, seeds) supports a more diverse microbiome than eating the same few fibre sources repeatedly, even at the same total fibre intake.
+
+What a diverse microbiome is linked to: research associates greater microbial diversity with better metabolic health markers and immune function, though this is an active, evolving area of research rather than one with fully settled conclusions about cause and effect.
+
+Practical steps: aiming for a wide variety of plant foods across a week (a reasonable informal target some researchers suggest is 30+ different plant foods weekly, counting herbs and spices) is a more actionable approach than fixating on hitting one single fibre gram target from the same few sources every day.`,
+  },
+  {
+    slug: "hydration-and-exercise-performance",
+    title: "Hydration and Exercise Performance",
+    category: "TRAINING",
+    summary: "How even mild dehydration measurably affects how you train.",
+    content: `Building on the general hydration article, this looks specifically at how fluid status affects exercise performance, since the stakes are higher during training than during an ordinary day.
+
+What dehydration does during exercise: as little as 2% loss of body weight through sweat has been shown to reduce endurance performance, increase perceived effort at a given intensity, and impair temperature regulation -- meaning the same workout feels harder and carries more heat-related risk when underhydrated.
+
+Before training: aiming to start a session well-hydrated (pale yellow urine is a reasonable practical check) matters more than trying to rapidly hydrate right before exercise, which mostly just increases the need to urinate during the session.
+
+During longer sessions: for exercise lasting under an hour, plain water is generally sufficient for most people. Beyond about 60-90 minutes, especially in heat, adding electrolytes (as covered in the dedicated electrolytes article) helps maintain fluid balance more effectively than water alone.
+
+After training: replacing fluid lost through sweat, roughly matched to how much weight was lost during the session if you want to be precise, supports recovery -- though for typical training sessions, simply drinking normally through the rest of the day is usually adequate without needing to calculate anything.`,
+  },
+  {
+    slug: "food-additives-and-preservatives",
+    title: "Understanding Food Additives and Preservatives",
+    category: "NUTRITION_BASICS",
+    summary:
+      "What those unfamiliar ingredient names actually are, and which concerns are supported by evidence.",
+    content: `Food additives serve specific functions: preservatives extend shelf life and prevent spoilage, emulsifiers keep ingredients like oil and water combined, and various compounds adjust colour, texture, or flavour. Many have unfamiliar chemical names but serve genuinely useful, well-studied purposes.
+
+The regulatory reality: additives permitted in food in most developed countries have gone through safety testing and approval processes, and are generally recognised as safe at the levels actually used in food -- "chemical-sounding name" alone isn't a meaningful indicator of risk, since even water has a chemical name.
+
+Where genuine, evidence-based concerns exist: a small number of specific additives (certain artificial food dyes in sensitive individuals, some preservatives in very high doses) have more debated evidence, and emerging research on emulsifiers and gut microbiome effects is an active area worth watching, though not yet conclusive enough for firm guidance.
+
+A practical, proportionate approach: for most people, additives are a minor consideration compared to the bigger-picture factors that actually drive health outcomes -- total calorie intake, protein adequacy, fibre, and overall dietary pattern. Reading labels out of curiosity is reasonable; treating every unfamiliar ingredient name as inherently dangerous isn't well supported by the evidence.`,
+  },
 ];
