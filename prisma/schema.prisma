@@ -116,6 +116,7 @@ model Profile {
   workouts             Workout[]
   bodyMeasurements     BodyMeasurement[]
   workoutRoutines      WorkoutRoutine[]
+  progressPhotos       ProgressPhoto[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -319,6 +320,19 @@ model BodyMeasurement {
 
   @@index([userId, type, loggedAt])
   @@map("body_measurements")
+}
+
+model ProgressPhoto {
+  id       String   @id @default(cuid())
+  userId   String
+  user     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  imageUrl String
+  /// Optional free-text note, e.g. "8 weeks in" or "after a cut" -- purely descriptive.
+  note     String?
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("progress_photos")
 }
 
 model WaterLog {
