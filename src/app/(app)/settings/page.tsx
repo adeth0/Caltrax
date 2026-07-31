@@ -49,6 +49,8 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         activityLevel: ACTIVITY_FROM_PRISMA[profile.activityLevel],
         primaryGoal: GOAL_FROM_PRISMA[profile.primaryGoal],
         dietaryPreference: DIET_FROM_PRISMA[profile.dietaryPreference],
+        weightUnit: profile.weightUnit === "lbs" ? "lbs" : "kg",
+        heightUnit: profile.heightUnit === "ft" ? "ft" : "cm",
       }
     : null;
 

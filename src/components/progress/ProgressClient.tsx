@@ -9,6 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { WeightTrendCard } from "@/components/dashboard/WeightTrendCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
 import { deleteWeightLogAction, logWaterAction, logWeightAction } from "@/app/(app)/progress/actions";
+import { lbsToKg } from "@/lib/units";
 
 export interface WeightPointRow {
   date: string;
@@ -21,6 +22,7 @@ interface ProgressClientProps {
   goalWeightKg?: number;
   waterConsumedMl: number;
   waterTargetMl: number;
+  weightUnit?: "kg" | "lbs";
 }
 
 export function ProgressClient({
@@ -28,6 +30,7 @@ export function ProgressClient({
   goalWeightKg,
   waterConsumedMl,
   waterTargetMl,
+  weightUnit = "kg",
 }: ProgressClientProps) {
   const router = useRouter();
   const [weightInput, setWeightInput] = useState("");
@@ -40,13 +43,14 @@ export function ProgressClient({
   function handleLogWeight() {
     const value = Number(weightInput);
     if (!Number.isFinite(value) || value <= 0) {
-      setError("Enter a valid weight in kg");
+      setError(`Enter a valid weight in ${weightUnit}`);
       return;
     }
+    const valueKg = weightUnit === "lbs" ? lbsToKg(value) : value;
     setError(null);
     startSavingWeight(async () => {
       try {
-        await logWeightAction(value);
+        await logWeightAction(valueKg);
         setWeightInput("");
         router.refresh();
       } catch {
@@ -79,12 +83,12 @@ export function ProgressClient({
             type="number"
             inputMode="decimal"
             step="0.1"
-            placeholder="e.g. 81.4"
+            placeholder={weightUnit === "lbs" ? "e.g. 179.5" : "e.g. 81.4"}
             value={weightInput}
             onChange={(e) => setWeightInput(e.target.value)}
             className="max-w-[140px]"
           />
-          <span className="text-sm text-text-tertiary">kg</span>
+          <span className="text-sm text-text-tertiary">{weightUnit}</span>
           <Button type="button" onClick={handleLogWeight} disabled={isSavingWeight} className="ml-auto">
             {isSavingWeight ? "Saving…" : "Log"}
           </Button>
@@ -96,6 +100,7 @@ export function ProgressClient({
         <WeightTrendCard
           points={weightPoints.map((p) => ({ date: p.date, weightKg: p.weightKg }))}
           goalWeightKg={goalWeightKg}
+          weightUnit={weightUnit}
         />
       ) : (
         <Card>

@@ -176,7 +176,11 @@ export default async function DashboardPage() {
             onAdd={logWaterAction}
           />
           <FastingTimerCard activeFast={activeFast} recentFasts={recentFasts} />
-          <WeightTrendCard points={weightPoints} goalWeightKg={profile.targetWeightKg ?? undefined} />
+          <WeightTrendCard
+            points={weightPoints}
+            goalWeightKg={profile.targetWeightKg ?? undefined}
+            weightUnit={profile.weightUnit === "lbs" ? "lbs" : "kg"}
+          />
         </div>
       </div>
     </main>

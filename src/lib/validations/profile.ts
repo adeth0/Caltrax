@@ -30,6 +30,8 @@ export const onboardingSchema = z.object({
   dietaryPreference: z
     .enum(["none", "vegetarian", "vegan", "keto", "low_carb", "mediterranean"])
     .default("none"),
+  weightUnit: z.enum(["kg", "lbs"]).default("kg"),
+  heightUnit: z.enum(["cm", "ft"]).default("cm"),
 });
 
 export type OnboardingInput = z.infer<typeof onboardingSchema>;
