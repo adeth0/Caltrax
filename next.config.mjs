@@ -15,6 +15,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.openfoodfacts.org" },
       { protocol: "https", hostname: "world.openfoodfacts.org" },
+      // Supabase Storage -- wildcard subdomain rather than a specific
+      // project ref, so this doesn't need updating if the project ref
+      // ever changes (and can't easily read NEXT_PUBLIC_SUPABASE_URL
+      // here reliably across every environment this config runs in).
+      { protocol: "https", hostname: "*.supabase.co" },
     ],
   },
 };

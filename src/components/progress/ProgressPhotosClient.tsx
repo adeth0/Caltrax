@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Camera, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
@@ -131,22 +132,25 @@ export function ProgressPhotosClient({ photos }: { photos: ProgressPhotoRow[] })
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {photos.map((photo) => (
-            <div key={photo.id} className="relative overflow-hidden rounded-control bg-surface-raised">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={photo.imageUrl}
-                alt={photo.note ?? photo.date}
-                className="aspect-square w-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => handleDelete(photo.id)}
-                disabled={isDeleting}
-                aria-label={`Delete photo from ${photo.date}`}
-                className="touch-target focus-ring absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
-              >
-                <X className="h-4 w-4" />
-              </button>
+            <div key={photo.id} className="overflow-hidden rounded-control bg-surface-raised">
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={photo.imageUrl}
+                  alt={photo.note ?? photo.date}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 33vw"
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDelete(photo.id)}
+                  disabled={isDeleting}
+                  aria-label={`Delete photo from ${photo.date}`}
+                  className="touch-target focus-ring absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
               <div className="p-2">
                 <p className="text-xs font-medium text-text-primary">{photo.date}</p>
                 {photo.note && <p className="truncate text-xs text-text-tertiary">{photo.note}</p>}
