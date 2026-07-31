@@ -2160,4 +2160,373 @@ export const CURATED_RECIPES: RecipeSeedDef[] = [
       { content: "Mash the yolks with the yoghurt, season, and spoon back into the egg whites." },
     ],
   },
+
+  // --- Round 5: more breakfast ---
+  {
+    name: "Acai-Style Berry Bowl",
+    description: "A thick, frozen fruit bowl topped with crunchy granola.",
+    category: "BREAKFAST",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "mixed-frozen-berries", grams: 200, displayLabel: "2 cups frozen mixed berries" },
+      { foodSlug: "banana-raw", grams: 100, displayLabel: "1 banana" },
+      { foodSlug: "greek-yogurt-plain-nonfat", grams: 100, displayLabel: "1/2 cup Greek yoghurt" },
+      { foodSlug: "granola", grams: 40, displayLabel: "1/3 cup granola, to top" },
+    ],
+    steps: [
+      { content: "Blend the frozen berries, banana and yoghurt until thick and smooth." },
+      { content: "Pour into a bowl and top with granola." },
+    ],
+  },
+  {
+    name: "Waffles with Berries",
+    description: "A weekend breakfast treat, still built on simple ingredients.",
+    category: "BREAKFAST",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "plain-flour", grams: 150, displayLabel: "1 1/4 cups plain flour" },
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 large eggs" },
+      { foodSlug: "milk-semi-skimmed", grams: 200, displayLabel: "200ml semi-skimmed milk" },
+      { foodSlug: "butter", grams: 20, displayLabel: "4 tsp melted butter" },
+      { foodSlug: "strawberries-raw", grams: 100, displayLabel: "1 cup strawberries, sliced, to serve" },
+      { foodSlug: "maple-syrup", grams: 30, displayLabel: "2 tbsp maple syrup, to serve" },
+    ],
+    steps: [
+      { content: "Whisk the flour, eggs, milk and melted butter into a smooth batter." },
+      { content: "Cook in a waffle iron until golden.", durationSeconds: 480 },
+      { content: "Serve with sliced strawberries and maple syrup." },
+    ],
+  },
+
+  // --- Round 5: more brunch ---
+  {
+    name: "Quiche Lorraine-Style",
+    description: "A savoury baked egg tart with bacon and cheese.",
+    category: "BRUNCH",
+    servings: 4,
+    prepMinutes: 15,
+    cookMinutes: 35,
+    ingredients: [
+      { foodSlug: "plain-flour", grams: 150, displayLabel: "1 1/4 cups plain flour, for the base" },
+      { foodSlug: "butter", grams: 75, displayLabel: "1/3 cup butter" },
+      { foodSlug: "egg-whole-raw", grams: 250, displayLabel: "5 large eggs" },
+      { foodSlug: "milk-semi-skimmed", grams: 150, displayLabel: "150ml milk" },
+      { foodSlug: "bacon", grams: 100, displayLabel: "100g bacon, diced" },
+      { foodSlug: "cheddar-cheese", grams: 60, displayLabel: "a handful of grated cheddar" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 190°C (375°F)." },
+      {
+        content:
+          "Rub the butter into the flour with a little water to form a pastry, and press into a tart tin.",
+      },
+      { content: "Fry the bacon until crisp." },
+      { content: "Whisk the eggs and milk, stir in the bacon and cheese, and pour into the pastry case." },
+      { content: "Bake until set and golden.", durationSeconds: 1800 },
+    ],
+  },
+  {
+    name: "Smoked Salmon & Scrambled Eggs",
+    description: "A classic, elegant brunch pairing.",
+    category: "BRUNCH",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 8,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 150, displayLabel: "3 large eggs" },
+      { foodSlug: "smoked-salmon", grams: 60, displayLabel: "60g smoked salmon" },
+      { foodSlug: "whole-wheat-bread", grams: 30, displayLabel: "1 slice bread, toasted" },
+      { foodSlug: "butter", grams: 8, displayLabel: "a small knob of butter" },
+    ],
+    steps: [
+      {
+        content: "Melt the butter in a pan and scramble the eggs gently over low heat.",
+        durationSeconds: 240,
+      },
+      { content: "Serve over the toast, topped with the smoked salmon." },
+    ],
+  },
+
+  // --- Round 5: more lunch ---
+  {
+    name: "Chicken Noodle Soup",
+    description: "A comforting classic, easy to batch cook.",
+    category: "LUNCH",
+    servings: 3,
+    prepMinutes: 10,
+    cookMinutes: 30,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 300, displayLabel: "300g chicken breast" },
+      { foodSlug: "carrot-raw", grams: 150, displayLabel: "2 carrots, sliced" },
+      { foodSlug: "celery-raw", grams: 100, displayLabel: "2 sticks celery, sliced" },
+      { foodSlug: "onion-raw", grams: 80, displayLabel: "1/2 onion, diced" },
+      { foodSlug: "egg-noodles-cooked", grams: 300, displayLabel: "1 1/2 cups cooked egg noodles" },
+    ],
+    steps: [
+      {
+        content:
+          "Simmer the chicken with the carrot, celery and onion in stock or water until the chicken is cooked through.",
+        durationSeconds: 1200,
+      },
+      { content: "Remove the chicken, shred it, and return to the pot." },
+      { content: "Stir in the cooked noodles and warm through before serving." },
+    ],
+  },
+  {
+    name: "Falafel Wrap",
+    description: "A portable, plant-based lunch built around spiced chickpea patties.",
+    category: "LUNCH",
+    servings: 1,
+    prepMinutes: 12,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "chickpeas-cooked", grams: 200, displayLabel: "1 cup chickpeas, mashed for falafel" },
+      { foodSlug: "garlic-raw", grams: 3, displayLabel: "1 clove garlic, minced" },
+      { foodSlug: "olive-oil", grams: 15, displayLabel: "1 tbsp olive oil, for frying" },
+      { foodSlug: "whole-wheat-tortilla", grams: 70, displayLabel: "1 large wholewheat tortilla" },
+      { foodSlug: "hummus", grams: 40, displayLabel: "2 tbsp hummus" },
+      { foodSlug: "cucumber-raw", grams: 60, displayLabel: "1/4 cucumber, sliced" },
+      { foodSlug: "tomato-raw", grams: 60, displayLabel: "1/2 tomato, sliced" },
+    ],
+    steps: [
+      { content: "Mash the chickpeas with the garlic and shape into small patties." },
+      { content: "Fry in the oil until golden on both sides.", durationSeconds: 420 },
+      { content: "Warm the tortilla and fill with hummus, the falafel, cucumber and tomato." },
+      { content: "Roll tightly and slice in half to serve." },
+    ],
+  },
+  {
+    name: "California-Style Sushi Rolls",
+    description: "A beginner-friendly sushi roll, no raw fish required.",
+    category: "LUNCH",
+    servings: 2,
+    prepMinutes: 25,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups sushi rice" },
+      { foodSlug: "nori-seaweed", grams: 10, displayLabel: "4 sheets nori" },
+      { foodSlug: "avocado-raw", grams: 120, displayLabel: "2/3 avocado, sliced" },
+      { foodSlug: "cucumber-raw", grams: 100, displayLabel: "1/2 cucumber, cut into strips" },
+      { foodSlug: "shrimp-raw", grams: 150, displayLabel: "150g cooked prawns" },
+      { foodSlug: "soy-sauce", grams: 20, displayLabel: "4 tsp soy sauce, to serve" },
+    ],
+    steps: [
+      { content: "Lay the nori on a bamboo mat and spread a thin layer of rice over it." },
+      { content: "Add avocado, cucumber and prawns in a line, then roll tightly using the mat." },
+      { content: "Slice into rounds and serve with soy sauce." },
+    ],
+  },
+
+  // --- Round 5: more tea/dinner ---
+  {
+    name: "Homemade Margherita Pizza",
+    description: "A classic pizza made from scratch, lighter than a takeaway version.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 20,
+    cookMinutes: 15,
+    ingredients: [
+      { foodSlug: "plain-flour", grams: 250, displayLabel: "2 cups plain flour, for the base" },
+      { foodSlug: "tomato-raw", grams: 200, displayLabel: "2 tomatoes, blended for the sauce" },
+      { foodSlug: "mozzarella-fresh", grams: 150, displayLabel: "150g fresh mozzarella, torn" },
+      { foodSlug: "olive-oil", grams: 15, displayLabel: "1 tbsp olive oil" },
+    ],
+    steps: [
+      {
+        content:
+          "Make a simple dough from the flour, a little water, oil and yeast if using, and let it rest.",
+        durationSeconds: 1800,
+      },
+      { content: "Roll out the dough, spread with the blended tomato, and top with mozzarella." },
+      {
+        content: "Bake at the highest oven setting until the crust is golden and cheese is bubbling.",
+        durationSeconds: 600,
+      },
+    ],
+  },
+  {
+    name: "Turkey Burgers",
+    description: "A leaner take on a classic burger night.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "turkey-breast-raw", grams: 350, displayLabel: "350g minced turkey" },
+      { foodSlug: "garlic-raw", grams: 3, displayLabel: "1 clove garlic, minced" },
+      { foodSlug: "burger-bun", grams: 130, displayLabel: "2 burger buns" },
+      { foodSlug: "lettuce-romaine-raw", grams: 30, displayLabel: "a few lettuce leaves" },
+      { foodSlug: "tomato-raw", grams: 100, displayLabel: "1 tomato, sliced" },
+      { foodSlug: "cheddar-cheese", grams: 40, displayLabel: "2 slices cheese" },
+    ],
+    steps: [
+      { content: "Mix the turkey mince with the garlic and shape into patties." },
+      {
+        content: "Grill or pan-fry until cooked through, adding cheese near the end to melt.",
+        durationSeconds: 600,
+      },
+      { content: "Serve in the buns with lettuce and tomato." },
+    ],
+  },
+  {
+    name: "Shepherd's Pie",
+    description: "A comforting, classic bake with a mashed potato topping.",
+    category: "TEA",
+    servings: 4,
+    prepMinutes: 20,
+    cookMinutes: 40,
+    ingredients: [
+      { foodSlug: "lamb-mince-raw", grams: 500, displayLabel: "500g lamb mince" },
+      { foodSlug: "onion-raw", grams: 100, displayLabel: "1 onion, diced" },
+      { foodSlug: "carrot-raw", grams: 150, displayLabel: "2 carrots, diced" },
+      { foodSlug: "peas-cooked", grams: 100, displayLabel: "1/2 cup peas" },
+      { foodSlug: "potato-raw", grams: 600, displayLabel: "4 large potatoes, for mash" },
+      { foodSlug: "butter", grams: 20, displayLabel: "4 tsp butter, for the mash" },
+    ],
+    steps: [
+      { content: "Boil the potatoes until tender, then mash with the butter.", durationSeconds: 1200 },
+      {
+        content: "Brown the lamb mince with the onion and carrot, then stir in the peas.",
+        durationSeconds: 600,
+      },
+      {
+        content: "Spread the mince mixture in a baking dish, top with the mash, and bake until golden.",
+        durationSeconds: 1500,
+      },
+    ],
+  },
+  {
+    name: "Baked Fish and Chips",
+    description: "A lighter, oven-baked take on the takeaway classic.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 30,
+    ingredients: [
+      { foodSlug: "cod-raw", grams: 350, displayLabel: "2 cod fillets" },
+      { foodSlug: "breadcrumbs-whole-wheat", grams: 60, displayLabel: "1/2 cup wholewheat breadcrumbs" },
+      { foodSlug: "egg-whole-raw", grams: 50, displayLabel: "1 egg, for coating" },
+      { foodSlug: "potato-raw", grams: 500, displayLabel: "3 large potatoes, cut into chips" },
+      { foodSlug: "olive-oil", grams: 20, displayLabel: "4 tsp olive oil" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 200°C (400°F)." },
+      {
+        content: "Toss the potato chips in half the oil and roast until golden, turning halfway.",
+        durationSeconds: 1500,
+      },
+      {
+        content: "Dip the fish in egg, then coat in breadcrumbs, and bake until cooked through and crisp.",
+        durationSeconds: 900,
+      },
+    ],
+  },
+  {
+    name: "Chicken Ramen",
+    description: "A warming noodle soup with tender chicken and vegetables.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 20,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 250, displayLabel: "250g chicken breast" },
+      { foodSlug: "egg-noodles-cooked", grams: 300, displayLabel: "1 1/2 cups cooked egg noodles" },
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 eggs, soft-boiled" },
+      { foodSlug: "spinach-raw", grams: 60, displayLabel: "a large handful of spinach" },
+      { foodSlug: "soy-sauce", grams: 30, displayLabel: "2 tbsp soy sauce" },
+      { foodSlug: "ginger-raw", grams: 6, displayLabel: "a small piece of ginger, sliced" },
+    ],
+    steps: [
+      {
+        content: "Simmer the chicken in stock with the ginger until cooked through, then shred.",
+        durationSeconds: 900,
+      },
+      { content: "Soft-boil the eggs separately, then peel and halve.", durationSeconds: 420 },
+      {
+        content:
+          "Divide the noodles between bowls, ladle over the broth and chicken, and top with spinach and egg.",
+      },
+    ],
+  },
+  {
+    name: "Greek-Style Moussaka",
+    description: "A layered, baked dish with lamb, aubergine and a creamy topping.",
+    category: "TEA",
+    servings: 4,
+    prepMinutes: 25,
+    cookMinutes: 45,
+    ingredients: [
+      { foodSlug: "lamb-mince-raw", grams: 500, displayLabel: "500g lamb mince" },
+      { foodSlug: "onion-raw", grams: 100, displayLabel: "1 onion, diced" },
+      { foodSlug: "tomato-raw", grams: 300, displayLabel: "3 tomatoes, chopped" },
+      { foodSlug: "potato-raw", grams: 400, displayLabel: "2 large potatoes, sliced" },
+      {
+        foodSlug: "greek-yogurt-plain-nonfat",
+        grams: 200,
+        displayLabel: "1 cup Greek yoghurt, for the topping",
+      },
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 eggs, for the topping" },
+      { foodSlug: "cheddar-cheese", grams: 60, displayLabel: "a handful of grated cheese" },
+    ],
+    steps: [
+      {
+        content: "Brown the lamb mince with the onion, then add the tomatoes and simmer.",
+        durationSeconds: 900,
+      },
+      { content: "Parboil the potato slices until just tender.", durationSeconds: 600 },
+      { content: "Layer the potato and lamb mixture in a baking dish." },
+      {
+        content:
+          "Whisk the yoghurt and eggs together, pour over the top, sprinkle with cheese, and bake until golden.",
+        durationSeconds: 1800,
+      },
+    ],
+  },
+
+  // --- Round 5: more snacks ---
+  {
+    name: "Energy Bars",
+    description: "A no-bake, portable snack for busy days.",
+    category: "SNACK",
+    servings: 8,
+    prepMinutes: 15,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "oats-dry", grams: 150, displayLabel: "1 1/2 cups rolled oats" },
+      { foodSlug: "dates-dried", grams: 150, displayLabel: "10 dates, pitted" },
+      { foodSlug: "peanut-butter", grams: 80, displayLabel: "1/3 cup peanut butter" },
+      { foodSlug: "honey", grams: 30, displayLabel: "2 tbsp honey" },
+    ],
+    steps: [
+      { content: "Blend the dates, peanut butter and honey together until well combined." },
+      { content: "Mix in the oats until evenly coated." },
+      {
+        content: "Press firmly into a lined tin and refrigerate until firm, then cut into bars.",
+        durationSeconds: 3600,
+      },
+    ],
+  },
+  {
+    name: "Greek Yoghurt Berry Parfait",
+    description: "Layered yoghurt, fruit and granola -- simple and satisfying.",
+    category: "SNACK",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "greek-yogurt-plain-nonfat", grams: 150, displayLabel: "3/4 cup Greek yoghurt" },
+      { foodSlug: "blueberries-raw", grams: 60, displayLabel: "1/3 cup blueberries" },
+      { foodSlug: "granola", grams: 30, displayLabel: "1/4 cup granola" },
+      { foodSlug: "honey", grams: 10, displayLabel: "2 tsp honey" },
+    ],
+    steps: [
+      {
+        content: "Layer the yoghurt, blueberries and granola in a glass, and finish with a drizzle of honey.",
+      },
+    ],
+  },
 ];

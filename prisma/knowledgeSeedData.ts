@@ -1060,4 +1060,206 @@ What reduces satiety: liquid calories (juice, soda, sugary drinks) are consisten
 
 A practical implication for managing hunger in a deficit: prioritising protein, fibre-rich vegetables, and foods with higher volume for their calorie count (rather than just hitting a calorie number with whatever foods) tends to make a given calorie deficit feel considerably less difficult to sustain, even though the total calorie intake is identical either way.`,
   },
+
+  // --- Round 5: more topics ---
+  {
+    slug: "liss-vs-hiit-cardio-explained",
+    title: "LISS vs HIIT Cardio Explained",
+    category: "TRAINING",
+    summary: "Two very different ways to train your cardiovascular system, each with a place.",
+    content: `LISS (Low-Intensity Steady State) means sustained, moderate-effort cardio like a brisk walk, easy cycling, or steady jogging, kept at roughly the same intensity throughout. HIIT (High-Intensity Interval Training) alternates short bursts of near-maximal effort with brief recovery periods.
+
+What LISS does well: easy to recover from, so it can be done frequently without interfering with strength training, low injury risk, and straightforward to sustain for beginners or anyone managing joint issues. It's also easier to hold a conversation during, which some people simply find more enjoyable and sustainable long-term.
+
+What HIIT does well: delivers a significant cardiovascular stimulus in a shorter total time, which suits people with limited schedules. Some research suggests a modestly larger afterburn effect (covered in its own article) compared to steady-state cardio of the same duration, though as noted there, this effect is real but often overstated in size.
+
+Which to choose: neither is objectively superior -- the "best" cardio is the type you'll actually do consistently. HIIT's higher intensity also means it needs more recovery between sessions and carries somewhat higher injury risk if form breaks down under fatigue, so it's not necessarily suited to daily use the way LISS often is.`,
+  },
+  {
+    slug: "resistance-bands-vs-free-weights",
+    title: "Resistance Bands vs Free Weights",
+    category: "TRAINING",
+    summary: "Different resistance curves, different practical advantages.",
+    content: `Free weights (dumbbells, barbells) provide constant resistance determined by gravity, regardless of the angle of the joint. Resistance bands provide variable resistance -- they get harder to stretch the further they're extended, meaning the challenge increases through the range of motion rather than staying constant.
+
+What free weights do well: allow for genuinely heavy, progressive overload over the long term, and their resistance profile matches how most people think about strength (a fixed, known weight). They remain the standard tool for serious, structured strength progression.
+
+What bands do well: highly portable, effective for accessory and rehabilitation work, and their variable resistance can be genuinely useful for movements where the "hardest point" would otherwise be right at the end of a joint's range (like a band-resisted glute bridge, or shoulder external rotation work).
+
+Practical guidance: bands aren't a full replacement for free weights for someone with genuine strength or muscle-building goals, since progressively increasing band resistance in a measurable, trackable way is harder than adding known weight plates. They're most useful as a travel-friendly supplement, a warm-up tool, or for specific rehabilitation and accessory work.`,
+  },
+  {
+    slug: "bodyweight-training-what-it-can-replace",
+    title: "What Bodyweight Training Can and Can't Replace",
+    category: "TRAINING",
+    summary: "A genuinely effective training method, with real limits worth knowing.",
+    content: `Bodyweight training (push-ups, pull-ups, squats, lunges, planks) uses your own body as resistance, requiring no equipment and scaling naturally through exercise variations and volume.
+
+What it does well: builds genuine strength and muscle, particularly for beginners and intermediate trainees, and improves functional movement patterns and body control. It's also the most accessible form of resistance training -- no gym, no equipment, no cost.
+
+Where it has real limits: as you get stronger, bodyweight exercises become harder to progressively overload in the precise, trackable way external weight allows -- you eventually run out of harder push-up variations before you'd run out of ability to add weight to a bench press. For people specifically chasing maximal strength or significant muscle size, this ceiling becomes a genuine limiting factor over time, even with creative variations.
+
+Practical guidance: bodyweight training is a completely legitimate, standalone approach for general fitness, especially starting out, but experienced trainees with specific strength or hypertrophy goals will likely find external weight (even simple, affordable options like resistance bands or a pair of adjustable dumbbells) extends progress further than bodyweight alone eventually allows.`,
+  },
+  {
+    slug: "meal-frequency-how-many-meals",
+    title: "Meal Frequency: How Many Meals a Day is Best?",
+    category: "NUTRITION_BASICS",
+    summary: "Why the number of meals matters far less than what fits your life.",
+    content: `Research comparing different meal frequencies (2 meals vs 3 vs 6 small meals, at matched total calories and protein) consistently shows little to no difference in weight loss, muscle gain, or metabolic rate between them. The old idea that "eating small, frequent meals boosts metabolism" isn't well supported by the evidence.
+
+What actually matters more: total daily calories and protein intake, spread across however many meals genuinely fits your schedule, hunger patterns, and preferences. Some people do better with 2-3 larger meals; others prefer grazing across 5-6 smaller ones -- both can support identical results if the daily totals match.
+
+Where frequency has smaller, secondary effects: very infrequent eating (1 large meal) can make it harder to hit higher protein targets, simply because there's a practical limit to how much protein can be usefully used from any single meal (touched on in the muscle protein synthesis article). Extremely frequent eating can make hunger cues harder to track for some people.
+
+Practical takeaway: choose a meal frequency based on what helps you consistently hit your calorie and protein targets and fits realistically into your day -- there's no universally "optimal" number of meals that outperforms a different frequency at the same total intake.`,
+  },
+  {
+    slug: "carb-cycling-basics",
+    title: "Carb Cycling Basics",
+    category: "NUTRITION_BASICS",
+    summary: "Varying carbohydrate intake around training demands, rather than keeping it flat every day.",
+    content: `Carb cycling means deliberately varying carbohydrate intake day to day -- typically higher on harder training days, lower on rest or light days -- while keeping protein relatively constant and adjusting fat to balance total calories.
+
+The rationale: carbohydrates are the body's primary fuel for higher-intensity training, so having more available on demanding training days can support better performance and glycogen replenishment, while needing less on rest days when that fuel demand is lower.
+
+What the evidence actually shows: for most recreational trainees, carb cycling doesn't produce meaningfully better body composition results than simply eating a consistent, moderate carb intake daily at the same weekly total -- the total calories and protein across the week still drive the primary outcomes. Some more advanced or higher-volume athletes report better session-to-session performance from matching carbs to training demand, though this is more about performance than fat loss or muscle gain specifically.
+
+Practical takeaway: carb cycling is a reasonable, optional refinement for people who enjoy the structure or who train at a high enough volume to notice a performance difference -- not a requirement, and not something with strong evidence of outperforming a simpler, consistent daily approach for typical goals.`,
+  },
+  {
+    slug: "trans-fats-and-saturated-fats",
+    title: "Understanding Trans Fats and Saturated Fats",
+    category: "NUTRITION_BASICS",
+    summary: "Two fat types often lumped together, with meaningfully different evidence behind them.",
+    content: `Saturated fat (found in butter, red meat, cheese, and coconut oil) and trans fat (historically found in partially hydrogenated oils used in some processed and fried foods) are both solid or semi-solid at room temperature, but the evidence behind each is quite different.
+
+Trans fats: strongly and consistently linked to increased cardiovascular disease risk, with no known safe level of intake according to major health bodies. Many countries have banned or heavily restricted artificial trans fats in food production as a result, making them far less common in the food supply than a couple of decades ago -- though worth checking labels for "partially hydrogenated oil" specifically, since that's the source to actually avoid.
+
+Saturated fat: the evidence here is more nuanced and has shifted over recent decades. Current guidance generally still recommends moderating intake, but the relationship with health outcomes appears to depend meaningfully on what saturated fat is replaced with (whole-food sources vs refined carbohydrates matters) and overall dietary pattern, rather than being as uniformly clear-cut as it was once presented.
+
+Practical takeaway: minimising trans fats specifically is well-supported and low-effort given how rare they've become in modern food supply. Moderating saturated fat as part of an overall varied, whole-food-based diet remains sensible, without needing to treat it with the same alarm as trans fats.`,
+  },
+  {
+    slug: "role-of-vegetables-in-balanced-diet",
+    title: "The Role of Vegetables in a Balanced Diet",
+    category: "NUTRITION_BASICS",
+    summary: "Why they're recommended so consistently across virtually every dietary approach.",
+    content: `Vegetables are one of the few things nearly every dietary philosophy -- from keto to vegan to Mediterranean -- agrees is worth prioritising, for good reason: they're high in fibre and micronutrients while being genuinely low in calories, an unusually favourable combination.
+
+What they contribute nutritionally: a wide range of vitamins and minerals, fibre (covered in its own article) that supports digestion and fullness, and various plant compounds (polyphenols, carotenoids) associated with health benefits in population studies, even beyond their vitamin and mineral content specifically.
+
+Why volume matters for weight management: because vegetables are low in calories relative to their volume, they support genuine fullness on a modest calorie budget -- filling half a plate with vegetables (a common, simple guideline covered in the portion-size article) is one of the most reliable, low-effort ways to support a calorie deficit without constant hunger.
+
+Practical guidance: variety matters as much as total amount, since different vegetables provide different micronutrient profiles -- a broad mix of colours and types across a week provides more complete coverage than eating the same one or two vegetables repeatedly, echoing the same variety principle covered in the gut microbiome article.`,
+  },
+  {
+    slug: "food-cravings-and-how-to-manage-them",
+    title: "Understanding Food Cravings and How to Manage Them",
+    category: "NUTRITION_BASICS",
+    summary: "Why cravings happen, and practical, non-restrictive ways to handle them.",
+    content: `Food cravings -- a specific, often strong desire for a particular food -- are influenced by a mix of factors: blood sugar swings, sleep quality, stress, learned habits and associations, and simple exposure (seeing or smelling a food).
+
+What drives them physiologically: inadequate sleep is linked to increased cravings, partly through its effect on ghrelin and leptin (covered in the hunger vs appetite article). Very restrictive dieting can also paradoxically increase cravings for restricted foods -- psychological research on restriction consistently shows that telling yourself a food is completely off-limits often increases its psychological pull.
+
+Practical approaches that tend to help: ensuring adequate sleep and stable blood sugar (regular meals with protein and fibre) reduces the physiological drivers of cravings. Allowing genuinely craved foods in moderate, planned amounts rather than treating them as forbidden is often more sustainable than strict avoidance, consistent with the flexible dieting approach covered elsewhere.
+
+When cravings feel unmanageable: if cravings are frequent, intense, and linked to feeling out of control around food, that's worth discussing with a doctor or a registered dietitian rather than trying to white-knuckle through it alone -- this is a genuinely common experience and support exists specifically for it.`,
+  },
+  {
+    slug: "glycogen-and-carb-loading",
+    title: "Glycogen and Carb Loading Explained",
+    category: "TRAINING",
+    summary: "How your body stores carbohydrate fuel, and when deliberately topping it up matters.",
+    content: `Glycogen is the stored form of carbohydrate in muscles and the liver, used as fuel during exercise. Muscle glycogen stores are limited (roughly enough for 60-90 minutes of continuous moderate-to-hard exercise for most people) and get depleted progressively during longer or harder training.
+
+What "carb loading" actually is: deliberately increasing carbohydrate intake in the day or two before a long endurance event (commonly cited around 90+ minutes of continuous effort, like a marathon) to maximise glycogen stores beyond their normal level, providing more available fuel during the event itself.
+
+Who it's actually relevant for: this is specifically useful for longer endurance events -- it offers little to no benefit for typical resistance training sessions or shorter cardio workouts, where normal daily carbohydrate intake already provides adequate glycogen for the session. Loading up on carbs before a 45-minute gym session isn't providing the performance benefit it does before a marathon.
+
+Practical guidance for typical training: consistently eating adequate carbohydrate as part of your normal daily intake (rather than any special loading protocol) is enough to keep glycogen stores adequately topped up for most training -- deliberate carb loading is a specific tool for specific, longer endurance events, not a general recommendation for regular gym-goers.`,
+  },
+  {
+    slug: "electrolyte-drinks-vs-sports-drinks",
+    title: "Electrolyte Drinks vs Sports Drinks",
+    category: "SUPPLEMENTS",
+    summary: "Similar-sounding products with a genuinely different purpose and composition.",
+    content: `Electrolyte drinks and sports drinks overlap but aren't identical -- the difference matters for choosing the right one for what you're actually doing.
+
+Electrolyte drinks/tablets: focus specifically on replacing sodium, potassium and other minerals lost through sweat, generally with little to no sugar. Best suited to situations where fluid and mineral balance is the priority without needing extra carbohydrate fuel -- shorter, lower-intensity sessions in heat, or general hydration support.
+
+Sports drinks: typically combine electrolytes with a meaningful amount of carbohydrate (commonly 6-8% concentration), designed to provide fuel during longer, higher-intensity endurance efforts where glycogen depletion (covered in its own article) is a genuine concern, not just fluid loss.
+
+Choosing between them: for most gym sessions under an hour, plain water is usually sufficient (as covered in the general hydration article). For longer or hotter sessions where sweat losses are significant but you don't need extra carbohydrate fuel, an electrolyte-only product makes sense. For genuinely long endurance efforts (90+ minutes), a proper sports drink providing both electrolytes and carbohydrate is the more appropriate choice.`,
+  },
+  {
+    slug: "cooking-methods-and-nutrient-retention",
+    title: "Cooking Methods and Nutrient Retention",
+    category: "NUTRITION_BASICS",
+    summary: "How you cook a vegetable can meaningfully change how many nutrients survive the process.",
+    content: `Cooking method genuinely affects nutrient content, particularly for water-soluble vitamins (vitamin C, several B vitamins) which can leach into cooking water or break down with heat exposure.
+
+Boiling: tends to cause the greatest nutrient loss for water-soluble vitamins, since they leach directly into the water, which is typically discarded. Losses of 30-50% for some vitamins are commonly reported compared to raw.
+
+Steaming: generally preserves more nutrients than boiling, since the food doesn't sit directly in water, while still using moist heat.
+
+Roasting and stir-frying: tend to preserve water-soluble vitamins reasonably well since there's no water for them to leach into, though prolonged high heat can still degrade some nutrients over time.
+
+Raw: preserves heat-sensitive nutrients most completely, though cooking also has genuine benefits -- it can improve the digestibility and absorption of certain nutrients (like lycopene in tomatoes, which becomes more bioavailable when cooked) and makes some foods safer or more palatable.
+
+Practical takeaway: no single method is universally "best" -- varying cooking methods across different vegetables, and not overcooking things, is a reasonable, low-effort way to support decent nutrient retention without needing to eat everything raw or track this precisely.`,
+  },
+  {
+    slug: "mobility-work-why-worth-the-time",
+    title: "Mobility Work: Why It's Worth the Time",
+    category: "RECOVERY",
+    summary: "The difference between flexibility and mobility, and why the latter matters more for training.",
+    content: `Flexibility refers to a joint's passive range of motion (how far it can be stretched by an external force). Mobility refers to a joint's active, controlled range of motion -- how far you can move it yourself, under control, which is what actually matters for most training and daily movement.
+
+Why it matters for training: limited mobility in a joint (commonly ankles, hips, thoracic spine, and shoulders) can restrict how well you can perform key exercises with good form -- a squat limited by ankle mobility, for instance, often gets compensated for elsewhere in the body, increasing strain on other joints.
+
+What actually improves it: controlled movement through a joint's available range, done consistently, tends to improve mobility more than passive static stretching alone. Exercises performed through a full, controlled range of motion during normal training already provide a meaningful mobility stimulus, on top of any dedicated mobility work.
+
+Practical guidance: a few minutes of targeted mobility work for your specific limitations (rather than a generic, one-size-fits-all routine) before training tends to give the most practical benefit -- identifying which specific movements feel restricted, and addressing those specifically, is more useful than mobility work for its own sake.`,
+  },
+  {
+    slug: "caffeine-tolerance-and-cycling",
+    title: "Caffeine Tolerance and Cycling",
+    category: "SUPPLEMENTS",
+    summary: "Why the same cup of coffee stops giving the same lift over time, and what to do about it.",
+    content: `Regular caffeine use leads to tolerance -- your body adapts to its regular presence, requiring more to achieve the same stimulant and alertness effect, and blunting some of the performance benefits covered in the main caffeine article over time.
+
+Why cycling is sometimes recommended: taking a break from caffeine (commonly 1-2 weeks) allows sensitivity to reset, meaning a standard dose becomes noticeably more effective again afterward -- useful for people who want to preserve caffeine's performance benefit for genuinely important training sessions or competitions rather than blunting it through daily habitual use.
+
+What actually happens during a break: the first few days commonly involve withdrawal symptoms (headaches, fatigue, irritability) as the body readjusts, which is a normal, temporary part of the process rather than a sign of doing something wrong.
+
+Practical guidance: cycling isn't necessary for everyone -- many people are happy with caffeine simply as a daily habit without needing to preserve a specific performance edge. For those specifically wanting caffeine's ergogenic (performance) benefit to stay meaningful, periodic breaks, or reserving higher doses for specifically important sessions while keeping daily intake modest, both help manage tolerance.`,
+  },
+  {
+    slug: "eating-for-shift-work",
+    title: "Eating for Shift Work and Irregular Schedules",
+    category: "NUTRITION_BASICS",
+    summary: "Practical nutrition strategies when your schedule doesn't follow a normal daily pattern.",
+    content: `Shift work and irregular schedules disrupt the body's natural circadian rhythm, which affects hunger hormones, digestion, and metabolism in ways that can make consistent nutrition genuinely harder than it is on a standard schedule.
+
+Common challenges: eating at unusual times can affect blood sugar regulation differently than the same meal eaten during typical daytime hours, and irregular schedules often lead to relying more heavily on convenient, less nutritious food options simply due to time and access constraints during a night shift.
+
+Practical strategies: preparing meals in advance (batch cooking, covered in the meal prep article) removes the dependency on whatever's available during odd hours. Keeping meal timing as consistent as possible relative to your own "day" -- even if that day starts at 10pm -- supports more stable digestion and energy than eating at random, unpredictable times. Prioritising protein and fibre at the start of a shift can help sustain energy and fullness better than relying on quick-hit sugary or highly processed snacks.
+
+On sleep specifically: since shift work already disrupts sleep (covered in its own dedicated articles), being deliberate about caffeine timing -- avoiding it too close to when you actually need to sleep, whatever time of day that is for your schedule -- matters even more than for someone on a standard daytime routine.`,
+  },
+  {
+    slug: "understanding-cholesterol-dietary-vs-blood",
+    title: "Understanding Cholesterol: Dietary vs Blood",
+    category: "NUTRITION_BASICS",
+    summary:
+      "Why eating cholesterol and having high blood cholesterol turned out to be more loosely connected than once thought.",
+    content: `Dietary cholesterol (found in eggs, shellfish, and organ meats) and blood cholesterol (the LDL, HDL, and triglyceride levels measured in a blood test) were historically treated as tightly linked, but the science has evolved meaningfully on this point.
+
+What changed: for most people, dietary cholesterol has a smaller effect on blood cholesterol levels than once believed -- the body regulates its own cholesterol production and tends to produce less internally when more is consumed in food, partially offsetting the dietary intake. This is part of why major dietary guidelines in many countries have removed or relaxed specific dietary cholesterol limits in recent years.
+
+What still matters more for blood cholesterol: overall dietary pattern has a bigger impact than cholesterol content specifically -- saturated and trans fat intake, fibre intake, body weight, physical activity, and genetics all play larger roles in blood cholesterol levels than eating cholesterol-containing foods like eggs.
+
+A practical note on individual variation: a subset of people (sometimes called "hyper-responders") do show a more significant blood cholesterol response to dietary cholesterol than average. If you have a personal or family history of high cholesterol, discussing your specific situation with a doctor is more useful than applying general population guidance, since individual response genuinely does vary.`,
+  },
 ];
