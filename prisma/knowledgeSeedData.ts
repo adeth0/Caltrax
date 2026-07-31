@@ -855,4 +855,209 @@ Where genuine, evidence-based concerns exist: a small number of specific additiv
 
 A practical, proportionate approach: for most people, additives are a minor consideration compared to the bigger-picture factors that actually drive health outcomes -- total calorie intake, protein adequacy, fibre, and overall dietary pattern. Reading labels out of curiosity is reasonable; treating every unfamiliar ingredient name as inherently dangerous isn't well supported by the evidence.`,
   },
+
+  // --- Round 4: more topics ---
+  {
+    slug: "macros-for-muscle-gain-vs-fat-loss",
+    title: "Macros for Muscle Gain vs Fat Loss",
+    category: "NUTRITION_BASICS",
+    summary: "How the same three macronutrients get prioritised differently depending on your goal.",
+    content: `Protein, carbohydrate, and fat all matter regardless of goal, but their relative priority shifts depending on whether you're building muscle or losing fat.
+
+For muscle gain: protein needs stay high (commonly 1.6-2.2g per kg bodyweight) to support muscle repair and growth, and carbohydrate intake is often kept relatively generous to fuel harder training sessions and support recovery, since a calorie surplus makes room for both without needing to restrict fat heavily.
+
+For fat loss: protein is, if anything, even more of a priority relative to total calories -- it's the macronutrient most linked to preserving muscle and maintaining fullness during a deficit, so it's often kept high or even slightly increased as a percentage of intake even as total calories drop. Carbohydrate and fat typically flex around whatever's left of the calorie budget after protein is set, based on personal preference and training demands.
+
+What stays constant either way: protein is the one macro worth prioritising as a hard target regardless of whether you're gaining or losing, since it plays a direct role in preserving or building the muscle you're trying to protect or grow -- carbohydrate and fat have more flexibility in how they're split against each other.`,
+  },
+  {
+    slug: "epoc-afterburn-effect-explained",
+    title: 'EPOC: The "Afterburn Effect" Explained',
+    category: "TRAINING",
+    summary: "What actually happens to your metabolism after a hard workout ends.",
+    content: `Excess Post-exercise Oxygen Consumption (EPOC) -- often marketed as the "afterburn effect" -- refers to the elevated calorie burn that continues after a workout ends, as the body works to restore itself to its resting state.
+
+What's actually happening: your body uses extra oxygen after exercise to replenish energy stores, clear metabolic byproducts, repair tissue, and return body temperature and hormone levels to baseline. All of this costs energy beyond what you burned during the workout itself.
+
+The size of the effect, honestly stated: EPOC is real but its marketed size is usually overstated. For most workouts, it amounts to a relatively modest number of extra calories over several hours -- meaningfully smaller than the calories burned during the workout itself, not a dramatic multiplier on your results. High-intensity interval training and heavier resistance training tend to produce a larger EPOC effect than steady, low-intensity cardio.
+
+Practical takeaway: EPOC is a genuine bonus, not a reason to deprioritise the training session itself or to expect it to meaningfully change your calorie math -- the workout's direct calorie burn and its role in building or preserving muscle matter far more than chasing afterburn specifically.`,
+  },
+  {
+    slug: "periodization-structuring-training-over-time",
+    title: "Periodization: Structuring Training Over Time",
+    category: "TRAINING",
+    summary: "Why the same workout every week eventually stops producing progress.",
+    content: `Periodization means deliberately varying training variables (volume, intensity, exercise selection) over weeks and months, rather than repeating an identical program indefinitely.
+
+Why it matters: your body adapts specifically to the exact stimulus you give it repeatedly. Progressive overload (covered in its own article) handles short-term progress, but over longer stretches, deliberately varying the training stimulus -- higher volume for a few weeks, then higher intensity, then a deload -- tends to produce better long-term results than an unchanging routine, and helps manage the fatigue accumulation covered in the deload article.
+
+Common structures: linear periodization gradually increases intensity while decreasing volume over a training block (common in strength-focused programs). Undulating periodization varies intensity and volume within the same week (e.g., a heavy day, a moderate day, and a lighter day for the same lift).
+
+For most recreational lifters: this doesn't need to be complicated -- simply changing rep ranges, exercise variations, or overall training volume every several weeks, alongside periodic deloads, captures most of the practical benefit without needing an elaborate, rigidly planned system.`,
+  },
+  {
+    slug: "vegetarian-and-vegan-iron-sources",
+    title: "Vegetarian and Vegan Iron Sources",
+    category: "NUTRITION_BASICS",
+    summary: "Getting enough iron without meat, and why absorption matters as much as intake.",
+    content: `Iron in plant foods (called "non-haem" iron) is absorbed considerably less efficiently by the body than the "haem" iron found in meat, making it a genuine point of attention for vegetarians and vegans, not just a theoretical concern.
+
+Good plant sources: lentils, chickpeas and other legumes, tofu and tempeh, spinach and other leafy greens, and fortified cereals all contain meaningful iron, though in the less-absorbable non-haem form.
+
+The single most useful trick: eating vitamin C-rich foods (citrus fruit, peppers, tomatoes) alongside iron-containing meals significantly improves non-haem iron absorption -- pairing lentils with a squeeze of lemon or a side of peppers does more for iron status than the lentils alone.
+
+What works against absorption: tea, coffee, and calcium-rich foods eaten at the same time as an iron-rich meal can meaningfully reduce how much iron is absorbed -- worth having these separately from your main iron sources rather than at the same sitting, particularly if you're specifically managing borderline iron levels.
+
+When to get a blood test: if you're vegetarian or vegan and experiencing persistent fatigue, a ferritin (iron stores) blood test is the reliable way to know whether supplementation is genuinely warranted, rather than guessing.`,
+  },
+  {
+    slug: "injury-prevention-basics",
+    title: "Injury Prevention Basics",
+    category: "TRAINING",
+    summary: "The handful of habits with the strongest evidence for keeping you training consistently.",
+    content: `No approach eliminates injury risk entirely, but several well-supported habits meaningfully reduce it, and they're mostly things already covered elsewhere in this app applied together.
+
+Progressive overload done gradually: the single biggest risk factor for many training injuries is too much, too soon -- a sudden large jump in weight, volume, or intensity, rather than gradual, planned increases over weeks.
+
+Proper warm-ups: as covered in the dedicated warm-up article, gradually preparing the specific muscles and movement patterns you're about to use reduces injury risk beyond the general "loosening up" framing it often gets.
+
+Technique over ego: maintaining good form as weight increases, rather than sacrificing it to hit a number, protects joints and connective tissue that adapt more slowly than muscle does.
+
+Recovery and deloads: adequate sleep, sensible training frequency per muscle group, and periodic deloads (both covered in their own articles) all reduce the accumulated fatigue that makes injury more likely.
+
+Listening to genuine warning signs: sharp, localized pain (different from normal muscle fatigue or DOMS) that doesn't improve with a day's rest is worth backing off from and, if it persists, getting properly assessed rather than pushing through.`,
+  },
+  {
+    slug: "training-around-your-menstrual-cycle",
+    title: "Training Around Your Menstrual Cycle",
+    category: "TRAINING",
+    summary: "How hormonal fluctuations across the cycle can affect training and recovery.",
+    content: `The menstrual cycle involves fluctuating levels of oestrogen and progesterone across roughly four weeks, and emerging research suggests these fluctuations may meaningfully affect energy, strength, and recovery for some individuals -- though responses vary considerably from person to person.
+
+The follicular phase (roughly the first two weeks, ending at ovulation): oestrogen rises through this phase, and many people report feeling stronger and more energetic, with better recovery between sessions -- some research suggests this may be a favourable window for pushing harder or attempting personal bests.
+
+The luteal phase (the two weeks after ovulation, before the next period): progesterone rises and body temperature increases slightly, which some people experience as feeling more fatigued, with a higher perceived effort at the same training intensity. This is also when water retention (covered in its own article) is most commonly noticed.
+
+Practical guidance: tracking your own energy, performance, and recovery across a few cycles can reveal a personal pattern worth planning around -- there's no universal rule that applies identically to everyone, and many people notice little to no difference at all. Adjusting training intensity around genuinely low-energy days, rather than forcing a fixed program regardless of how you feel, is a reasonable, flexible approach either way.`,
+  },
+  {
+    slug: "detox-diets-and-cleanses",
+    title: "Detox Diets and Cleanses: What the Evidence Says",
+    category: "NUTRITION_BASICS",
+    summary: "Why your body doesn't need a special diet to do what it's already doing.",
+    content: `"Detox" diets and cleanses are marketed as removing toxins from the body, typically through juice fasts, restrictive eating, or specific supplement combinations over a short period.
+
+The core issue: the body already has a highly effective, continuously-running detoxification system -- primarily the liver and kidneys -- that processes and removes waste products and foreign substances without needing a special diet to "activate" it. No published research demonstrates that commercial detox products or diets improve this process beyond what a healthy liver and kidneys already do on their own.
+
+What people actually experience: short-term weight loss on a juice cleanse or similar restrictive plan is almost entirely water weight and reduced food volume in the digestive system, not fat loss, and typically reverses quickly once normal eating resumes. Some people report feeling "lighter" or more energetic, which may reflect reduced bloating or simply the placebo-like effect of taking deliberate action, rather than any actual toxin removal.
+
+A genuinely useful alternative: if the goal is feeling and functioning better, a period of eating more vegetables, adequate water, and less alcohol and highly processed food accomplishes the goals people usually want from a "detox" -- without the restrictive framing or unsupported toxin-removal claims.`,
+  },
+  {
+    slug: "science-of-building-a-sustainable-habit",
+    title: "The Science of Building a Sustainable Habit",
+    category: "NUTRITION_BASICS",
+    summary: "Why willpower alone rarely sustains a new health habit, and what actually does.",
+    content: `Behaviour change research consistently shows that relying on willpower and motivation alone is a poor long-term strategy -- both naturally fluctuate day to day, while a sustainable habit needs to survive the low-motivation days too.
+
+What actually helps habits stick: pairing a new behaviour with an existing routine ("habit stacking" -- e.g., always taking a supplement right after brushing your teeth) reduces the mental effort needed to remember and follow through. Starting smaller than feels necessary (a 10-minute walk rather than an hour-long workout) makes early consistency far more achievable, and consistency itself is what builds the habit, more than the size of any single instance of it.
+
+The role of environment: making a desired behaviour easier (keeping running shoes by the door, pre-portioning snacks) and an undesired one harder (not keeping trigger foods in the house) tends to outperform relying on in-the-moment discipline, since it reduces the number of decisions willpower needs to win.
+
+Realistic expectations: research suggests new habits typically take anywhere from a few weeks to a few months to feel automatic, varying widely by person and behaviour -- occasional missed days don't erase progress, and the research on habit formation suggests getting back on track quickly matters more than never missing at all.`,
+  },
+  {
+    slug: "portion-sizes-vs-serving-sizes",
+    title: "Portion Sizes vs Serving Sizes",
+    category: "NUTRITION_BASICS",
+    summary: "Two different numbers that are easy to confuse, with real consequences for tracking accuracy.",
+    content: `A "serving size" is a standardised measurement used on nutrition labels for comparison purposes -- it's not a recommendation for how much to eat. A "portion size" is however much you actually choose to eat in one sitting, which is often different from the labelled serving.
+
+Where this causes real tracking errors: a bag of crisps might list a serving size of 30g, but the bag itself might contain 150g -- eating the whole bag without checking means consuming five servings' worth of calories and macros, not one, a common and easy source of under-logging.
+
+Why serving sizes aren't always realistic: some products use serving sizes that don't reflect how people actually eat the food (an unrealistically small serving keeps the per-serving calorie number looking lower), which is worth being aware of specifically when a serving size looks surprisingly small compared to the whole package.
+
+Practical fix: checking the total package size against the stated serving size before logging (or weighing your actual portion against the serving size in grams) avoids this specific, common tracking error -- it's one of the more frequent reasons a food diary can under-report actual intake without the person doing anything else wrong.`,
+  },
+  {
+    slug: "grip-strength-and-why-it-matters",
+    title: "Grip Strength and Why It Matters",
+    category: "TRAINING",
+    summary: "An overlooked limiting factor in many lifts, and a genuinely useful long-term health marker.",
+    content: `Grip strength is exactly what it sounds like -- the strength of the muscles controlling your hand and forearm -- and it plays a bigger role in training than many people realise.
+
+Why it matters for lifting: in exercises like deadlifts, rows, and pull-ups, a weak grip can become the limiting factor before the target muscles (back, legs) are actually fully challenged -- meaning grip strength can hold back progress in exercises it isn't even the main focus of.
+
+Beyond the gym: grip strength is also studied as a broader marker of overall health and longevity in research on ageing populations, correlating with overall muscle mass and functional independence later in life -- it's a simple, measurable proxy for general strength that researchers use precisely because it's so easy to test.
+
+How to improve it: simply training the compound lifts that already demand grip (deadlifts, rows, pull-ups) builds grip strength as a byproduct. Dedicated grip work -- farmer's carries, dead hangs, or specific grip tools -- can be added if grip specifically becomes a limiting factor in your other lifts, or if you're interested in it as a standalone marker of health.`,
+  },
+  {
+    slug: "antioxidants-what-they-do",
+    title: "Antioxidants: What They Do and What the Hype Gets Wrong",
+    category: "NUTRITION_BASICS",
+    summary: "A genuinely useful biological concept, oversold by supplement marketing.",
+    content: `Antioxidants are compounds that neutralise free radicals -- unstable molecules produced naturally during normal metabolism and exercise, which can damage cells if left unchecked in excess. Vitamins C and E, and various plant compounds called polyphenols, are common dietary antioxidants.
+
+Where the science is solid: a diet rich in fruits, vegetables, and other whole plant foods -- naturally high in a wide variety of antioxidant compounds -- is consistently associated with better health outcomes across large population studies.
+
+Where the marketing overreaches: "antioxidant-rich" superfood and supplement marketing often implies that more antioxidants are always better, but some research on high-dose antioxidant supplements (as opposed to food sources) has shown neutral or even negative effects in specific contexts -- including some evidence that high-dose antioxidant supplementation around intense exercise may blunt some of the training adaptations that free radicals, in moderate amounts, actually help trigger.
+
+Practical takeaway: getting antioxidants from a varied diet of whole plant foods is well-supported and low-risk. Relying on concentrated antioxidant supplements specifically for their antioxidant content, especially around training, isn't well supported by the evidence and may not be the "more is better" story it's often sold as.`,
+  },
+  {
+    slug: "difference-between-sore-and-injured",
+    title: "The Difference Between Sore and Injured",
+    category: "RECOVERY",
+    summary: "Learning to tell normal training discomfort from something that needs attention.",
+    content: `Distinguishing ordinary muscle soreness from a genuine injury is a skill that takes some experience to develop, but there are useful patterns to go by.
+
+Normal soreness (DOMS, covered in its own article): typically appears 24-48 hours after training, feels like a dull, diffuse ache across the whole muscle, worsens with stretching or the first movement of the day but eases as you warm up, and generally improves day by day without any specific treatment.
+
+Signs suggesting an actual injury: sharp or localized pain (a specific point rather than a whole muscle), pain that occurs suddenly during a lift rather than building up afterward, pain that worsens rather than improves over the following days, noticeable swelling, bruising, or joint instability, or pain that specifically affects a joint rather than the muscle belly.
+
+A reasonable practical rule: if something is a dull, general ache that improves within a few days and doesn't affect a joint, it's very likely normal training soreness. If something is sharp, sudden, localized, or getting worse rather than better, that's worth stopping, resting, and getting properly assessed rather than continuing to train through it.
+
+Why this matters: training through a genuine injury, mistaking it for normal soreness, is one of the more common ways a minor issue becomes a much longer-term setback.`,
+  },
+  {
+    slug: "omega-3-to-omega-6-ratio",
+    title: "Omega-3 to Omega-6 Ratio Explained",
+    category: "SUPPLEMENTS",
+    summary: "Why the balance between these two fat types gets discussed as much as the amounts themselves.",
+    content: `Omega-3 and omega-6 are both essential polyunsaturated fats -- the body can't produce them itself -- but they're generally understood to have somewhat different effects, with omega-3s more associated with anti-inflammatory processes and omega-6s, in excess, more associated with pro-inflammatory ones.
+
+Why the ratio gets discussed: modern diets, particularly those high in processed foods and certain vegetable oils (soybean, corn, sunflower), tend to be much higher in omega-6 than omega-3, a shift compared to more traditional dietary patterns. Some researchers suggest this imbalance may contribute to low-grade inflammation, though this remains an active and somewhat debated area of nutrition science rather than a fully settled conclusion.
+
+A practical way to think about it: rather than trying to precisely calculate a ratio, the more actionable approach is increasing omega-3 sources directly (oily fish, or the fish oil/algae oil supplements covered elsewhere) while not needing to eliminate omega-6 entirely, since it's still an essential nutrient in its own right.
+
+Practical steps: eating oily fish regularly, using olive oil rather than heavily refined seed oils as a primary cooking fat, and limiting highly processed foods (a major source of excess omega-6 in a typical modern diet) collectively shift the balance in a more favourable direction without requiring precise tracking.`,
+  },
+  {
+    slug: "salt-and-sodium-for-athletes",
+    title: "Salt and Sodium for Athletes",
+    category: "TRAINING",
+    summary: "Why sodium needs for active people don't always match general population health advice.",
+    content: `General public health advice often recommends limiting sodium intake, primarily aimed at reducing blood pressure risk in the broader population. For genuinely active people who sweat heavily and regularly, this advice needs some nuance.
+
+Why athletes may need more, not less: sodium is lost through sweat, and people training intensely or in heat can lose meaningful amounts across a session. Someone training hard multiple times a week has different practical sodium needs than someone with a sedentary lifestyle, for whom the standard public health guidance was primarily designed.
+
+Signs sodium intake might be too low for your activity level: muscle cramping during or after exercise, feeling unusually fatigued or lightheaded during longer sessions, or a strong salt craving after heavy sweating are all worth paying attention to.
+
+Practical guidance: this isn't a licence to eat unlimited processed, high-sodium food -- it's more that genuinely active people, particularly those training in heat or sweating heavily, shouldn't necessarily aim for the lower end of general public sodium guidance without considering their actual activity level and sweat losses. Adding a pinch of salt to water or using an electrolyte product (as covered in the dedicated electrolytes article) around longer or hotter sessions is a reasonable, practical approach.`,
+  },
+  {
+    slug: "understanding-satiety",
+    title: "Understanding Satiety: Why Some Foods Fill You Up More",
+    category: "NUTRITION_BASICS",
+    summary: "The factors that make one meal more filling than another meal with the same calories.",
+    content: `Satiety refers to how full and satisfied a food makes you feel, and it varies considerably even between foods with identical calorie content -- a genuinely useful thing to understand for anyone managing hunger during a calorie deficit.
+
+What increases satiety: protein is the most filling macronutrient per calorie, followed by fibre. Foods with higher water and fibre content (vegetables, fruits, soups, oats) tend to be more filling for their calorie count than energy-dense, low-volume foods (oils, sugary snacks, some processed foods). Whole foods generally outperform their processed, refined counterparts at the same calorie count.
+
+What reduces satiety: liquid calories (juice, soda, sugary drinks) are consistently among the least filling per calorie, since liquids don't trigger the same stomach-stretch and digestion signals as solid food, making it easy to consume a lot of calories without feeling satisfied.
+
+A practical implication for managing hunger in a deficit: prioritising protein, fibre-rich vegetables, and foods with higher volume for their calorie count (rather than just hitting a calorie number with whatever foods) tends to make a given calorie deficit feel considerably less difficult to sustain, even though the total calorie intake is identical either way.`,
+  },
 ];
