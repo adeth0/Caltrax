@@ -15,6 +15,7 @@ import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getLastNDaysRange, getTodayRange } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
+import { estimateWorkoutCalories } from "@/lib/workoutCalories";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -31,20 +32,24 @@ export default async function DashboardPage() {
   const { start: todayStart, end: todayEnd } = getTodayRange();
   const { start: weekStart } = getLastNDaysRange(7);
 
-  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked, engagement] = await Promise.all([
-    db.mealEntry.findMany({
-      where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
-      include: { food: true },
-    }),
-    db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } }),
-    db.weightLog.findMany({
-      where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
-      orderBy: { loggedAt: "asc" },
-    }),
-    db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
-    checkAndUnlockAchievements(user.id),
-    getDashboardEngagement(user.id),
-  ]);
+  const [mealEntries, waterLogs, weightLogs, activityLogs, newlyUnlocked, engagement, todaysWorkoutSetCount] =
+    await Promise.all([
+      db.mealEntry.findMany({
+        where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
+        include: { food: true },
+      }),
+      db.waterLog.findMany({ where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } }),
+      db.weightLog.findMany({
+        where: { userId: user.id, loggedAt: { gte: weekStart, lte: todayEnd } },
+        orderBy: { loggedAt: "asc" },
+      }),
+      db.activityLog.findMany({ where: { userId: user.id, date: todayStart } }),
+      checkAndUnlockAchievements(user.id),
+      getDashboardEngagement(user.id),
+      db.workoutSet.count({
+        where: { workout: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } } },
+      }),
+    ]);
 
   const todayIntake = mealEntries.reduce(
     (acc, e: (typeof mealEntries)[number]) => {
@@ -64,10 +69,20 @@ export default async function DashboardPage() {
   // Summed across any connected sources — if someone has two trackers
   // reporting the same activity this double-counts, but that's a rare
   // edge case versus the common one (exactly one device) working correctly.
-  const earnedCalories = activityLogs.reduce(
+  const wearableCalories = activityLogs.reduce(
     (sum: number, a: (typeof activityLogs)[number]) => sum + (a.activeCalories ?? 0),
     0
   );
+  // A rough estimate from manually-logged strength-training sets, since
+  // those previously contributed nothing at all to today's calorie
+  // picture unless the person also had a connected wearable -- see
+  // estimateWorkoutCalories for the (deliberately approximate) method.
+  // If BOTH a wearable and manually-logged sets exist for the same
+  // session, this double-counts -- an accepted tradeoff for now, same
+  // as the existing multi-wearable case above, rather than trying to
+  // reconcile two independent, differently-sourced estimates.
+  const manualWorkoutCalories = estimateWorkoutCalories(todaysWorkoutSetCount, profile.weightKg);
+  const earnedCalories = wearableCalories + manualWorkoutCalories;
 
   const weightPoints =
     weightLogs.length > 0
