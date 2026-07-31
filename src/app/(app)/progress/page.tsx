@@ -139,6 +139,7 @@ export default async function ProgressPage() {
         loggedExercises={loggedExercises}
         latestMeasurements={latestMeasurements}
         progressPhotos={progressPhotoRows}
+        weightUnit={profile.weightUnit === "lbs" ? "lbs" : "kg"}
       />
     </main>
   );

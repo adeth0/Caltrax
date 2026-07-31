@@ -30,6 +30,7 @@ interface ProgressTabsProps {
   loggedExercises: LoggedExerciseOption[];
   latestMeasurements: LatestMeasurement[];
   progressPhotos: ProgressPhotoRow[];
+  weightUnit?: "kg" | "lbs";
 }
 
 const TABS = [
@@ -73,6 +74,7 @@ export function ProgressTabs(props: ProgressTabsProps) {
             goalWeightKg={props.goalWeightKg}
             waterConsumedMl={props.waterConsumedMl}
             waterTargetMl={props.waterTargetMl}
+            weightUnit={props.weightUnit}
           />
           <MicronutrientsCard
             intake={props.micronutrientIntake}

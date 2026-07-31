@@ -164,6 +164,8 @@ export async function updateProfileAction(
       age: input.age,
       heightCm: input.heightCm,
       weightKg: input.weightKg,
+      weightUnit: input.weightUnit,
+      heightUnit: input.heightUnit,
       targetWeightKg: input.targetWeightKg ?? null,
       activityLevel: ACTIVITY_TO_PRISMA[input.activityLevel],
       primaryGoal: GOAL_TO_PRISMA[input.primaryGoal] as never,
