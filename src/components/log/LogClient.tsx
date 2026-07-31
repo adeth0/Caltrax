@@ -441,7 +441,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
           <FoodSearchBox onSelect={handleSelect} searchAction={searchFoodsAction} />
         </div>
 
-        <div className="mt-3 flex gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <Button
             type="button"
             variant="secondary"

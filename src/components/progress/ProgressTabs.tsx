@@ -47,14 +47,14 @@ export function ProgressTabs(props: ProgressTabsProps) {
 
   return (
     <div>
-      <div className="mb-4 flex gap-2 rounded-control bg-surface-raised p-1">
+      <div className="mb-4 flex gap-2 overflow-x-auto rounded-control bg-surface-raised p-1">
         {TABS.map((t) => (
           <button
             key={t.value}
             type="button"
             onClick={() => setTab(t.value)}
             className={cn(
-              "control focus-ring touch-target flex-1 px-3 py-2 text-sm font-medium transition-colors",
+              "control focus-ring touch-target shrink-0 whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors",
               tab === t.value
                 ? "bg-accent-info/20 text-accent-info"
                 : "text-text-tertiary hover:text-text-secondary"

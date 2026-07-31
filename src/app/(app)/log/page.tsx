@@ -5,6 +5,7 @@ import {
   type TodayEntryRow,
 } from "@/components/log/LogClient";
 import { LogModeToggle } from "@/components/log/LogModeToggle";
+import { DiagnosticErrorBoundary } from "@/components/ErrorBoundary";
 import type { ExerciseOption, RoutineOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
@@ -159,19 +160,21 @@ export default async function LogPage() {
         <h1 className="font-display text-2xl font-bold text-text-primary">Log</h1>
         <p className="text-sm text-text-tertiary">Track a meal, or log today&apos;s workout.</p>
       </header>
-      <LogModeToggle
-        mealSlot={
-          <LogClient
-            todayEntries={todayEntries}
-            favouriteFoods={favouriteFoods}
-            recentFoods={recentFoods}
-            mealTemplates={mealTemplateOptions}
-          />
-        }
-        exercises={exerciseOptions}
-        todaySets={todayWorkoutSets}
-        routines={routineOptions}
-      />
+      <DiagnosticErrorBoundary label="log-page">
+        <LogModeToggle
+          mealSlot={
+            <LogClient
+              todayEntries={todayEntries}
+              favouriteFoods={favouriteFoods}
+              recentFoods={recentFoods}
+              mealTemplates={mealTemplateOptions}
+            />
+          }
+          exercises={exerciseOptions}
+          todaySets={todayWorkoutSets}
+          routines={routineOptions}
+        />
+      </DiagnosticErrorBoundary>
     </main>
   );
 }

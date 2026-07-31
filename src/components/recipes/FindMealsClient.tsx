@@ -85,7 +85,7 @@ export function FindMealsClient({
         ))}
       </div>
 
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         {(
           [
             { value: "recommended", label: "Recommended" },
