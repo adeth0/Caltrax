@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bookmark, BookmarkCheck, Clock, ShoppingCart, Star } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
+import { BackButton } from "@/components/ui/BackButton";
 import { cn } from "@/lib/utils";
 import { logRecipeAction, rateRecipeAction, toggleSaveRecipeAction } from "@/app/(app)/foods/actions";
 import { addRecipeToShoppingListAction } from "@/app/(app)/shopping-list/actions";
@@ -105,7 +105,6 @@ function StepTimer({ seconds }: { seconds: number }) {
 }
 
 export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
-  const router = useRouter();
   const [mealType, setMealType] = useState<MealType>(
     recipe.category ? CATEGORY_TO_LOG_DEFAULT[recipe.category] : "lunch"
   );
@@ -169,13 +168,7 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
 
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
-      <button
-        type="button"
-        onClick={() => router.back()}
-        className="touch-target focus-ring mb-3 text-sm text-text-tertiary hover:text-text-secondary"
-      >
-        ← Back
-      </button>
+      <BackButton className="mb-3" />
 
       {recipe.imageUrl ? (
         <Image
