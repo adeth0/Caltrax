@@ -1751,4 +1751,413 @@ export const CURATED_RECIPES: RecipeSeedDef[] = [
     ingredients: [{ foodSlug: "popcorn-air-popped", grams: 30, displayLabel: "3 cups air-popped popcorn" }],
     steps: [{ content: "Air-pop the popcorn and season lightly with salt, if you like." }],
   },
+
+  // --- Round 4: more breakfast ---
+  {
+    name: "Chia Pudding",
+    description: "A make-ahead breakfast with a distinctive texture and plenty of fibre.",
+    category: "BREAKFAST",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "chia-seeds", grams: 30, displayLabel: "3 tbsp chia seeds" },
+      { foodSlug: "milk-semi-skimmed", grams: 200, displayLabel: "200ml semi-skimmed milk" },
+      { foodSlug: "honey", grams: 10, displayLabel: "2 tsp honey" },
+      { foodSlug: "blueberries-raw", grams: 60, displayLabel: "1/3 cup blueberries" },
+    ],
+    steps: [
+      { content: "Stir the chia seeds into the milk with the honey until well combined." },
+      { content: "Cover and refrigerate until thickened to a pudding-like texture.", durationSeconds: 14400 },
+      { content: "Top with blueberries before serving." },
+    ],
+  },
+  {
+    name: "Savoury Oatmeal with Egg",
+    description: "A savoury take on porridge, topped with a fried egg.",
+    category: "BREAKFAST",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "oats-dry", grams: 50, displayLabel: "1/2 cup rolled oats" },
+      { foodSlug: "egg-whole-raw", grams: 50, displayLabel: "1 egg" },
+      { foodSlug: "spinach-raw", grams: 40, displayLabel: "a handful of spinach" },
+      { foodSlug: "cheddar-cheese", grams: 20, displayLabel: "a small handful of grated cheddar" },
+    ],
+    steps: [
+      { content: "Cook the oats in water or stock until thick and creamy.", durationSeconds: 300 },
+      { content: "Stir the spinach through until wilted, then top with the cheese." },
+      { content: "Fry the egg and place on top to serve.", durationSeconds: 180 },
+    ],
+  },
+
+  // --- Round 4: more brunch ---
+  {
+    name: "Vegetable Frittata",
+    description: "A baked egg dish packed with vegetables -- great hot or cold.",
+    category: "BRUNCH",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 20,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 200, displayLabel: "4 large eggs" },
+      { foodSlug: "bell-pepper-red-raw", grams: 100, displayLabel: "1 red pepper, diced" },
+      { foodSlug: "spinach-raw", grams: 60, displayLabel: "a large handful of spinach" },
+      { foodSlug: "feta-cheese", grams: 50, displayLabel: "a handful of crumbled feta" },
+      { foodSlug: "olive-oil", grams: 10, displayLabel: "2 tsp olive oil" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 180°C (350°F)." },
+      { content: "Sauté the pepper and spinach in the oil until softened.", durationSeconds: 300 },
+      {
+        content:
+          "Whisk the eggs and pour over the vegetables in an oven-safe pan, scatter the feta on top, and bake until set.",
+        durationSeconds: 900,
+      },
+    ],
+  },
+  {
+    name: "Breakfast Tacos",
+    description: "A Tex-Mex-inspired way to start the day.",
+    category: "BRUNCH",
+    servings: 1,
+    prepMinutes: 8,
+    cookMinutes: 10,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 large eggs" },
+      { foodSlug: "black-beans-cooked", grams: 100, displayLabel: "1/2 cup black beans" },
+      { foodSlug: "corn-tortilla", grams: 60, displayLabel: "2 small corn tortillas" },
+      { foodSlug: "avocado-raw", grams: 60, displayLabel: "1/3 avocado, sliced" },
+      { foodSlug: "salsa", grams: 40, displayLabel: "a spoonful of salsa" },
+    ],
+    steps: [
+      { content: "Scramble the eggs in a non-stick pan.", durationSeconds: 180 },
+      { content: "Warm the beans and tortillas." },
+      { content: "Fill the tortillas with eggs, beans, avocado and salsa." },
+    ],
+  },
+
+  // --- Round 4: more lunch ---
+  {
+    name: "Buddha Bowl",
+    description: "A colourful, plant-forward bowl with a bit of everything.",
+    category: "LUNCH",
+    servings: 1,
+    prepMinutes: 10,
+    cookMinutes: 15,
+    ingredients: [
+      { foodSlug: "chickpeas-cooked", grams: 150, displayLabel: "3/4 cup chickpeas" },
+      { foodSlug: "sweet-potato-raw", grams: 150, displayLabel: "1 small sweet potato, cubed" },
+      { foodSlug: "spinach-raw", grams: 60, displayLabel: "a large handful of spinach" },
+      { foodSlug: "avocado-raw", grams: 60, displayLabel: "1/3 avocado, sliced" },
+      { foodSlug: "tahini", grams: 20, displayLabel: "4 tsp tahini" },
+      { foodSlug: "lemon-raw", grams: 10, displayLabel: "a squeeze of lemon juice" },
+    ],
+    steps: [
+      {
+        content: "Roast the sweet potato and chickpeas together until tender and lightly golden.",
+        durationSeconds: 1200,
+      },
+      { content: "Arrange over the spinach with the avocado." },
+      { content: "Mix the tahini with lemon juice and a splash of water for a dressing, and drizzle over." },
+    ],
+  },
+  {
+    name: "Egg Salad Sandwich",
+    description: "A classic, protein-rich sandwich filling.",
+    category: "LUNCH",
+    servings: 1,
+    prepMinutes: 10,
+    cookMinutes: 10,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 150, displayLabel: "3 large eggs" },
+      {
+        foodSlug: "greek-yogurt-plain-nonfat",
+        grams: 40,
+        displayLabel: "2 tbsp Greek yoghurt (in place of mayo)",
+      },
+      { foodSlug: "whole-wheat-bread", grams: 60, displayLabel: "2 slices bread" },
+      { foodSlug: "lettuce-romaine-raw", grams: 20, displayLabel: "a few lettuce leaves" },
+    ],
+    steps: [
+      { content: "Hard-boil the eggs, then cool and peel.", durationSeconds: 600 },
+      { content: "Chop the eggs and mix with the yoghurt." },
+      { content: "Spread over the bread with lettuce and serve." },
+    ],
+  },
+  {
+    name: "Thai-Style Peanut Noodle Salad",
+    description: "A cold noodle salad with a rich, nutty dressing.",
+    category: "LUNCH",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "rice-noodles-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice noodles, cooled" },
+      { foodSlug: "peanut-butter", grams: 40, displayLabel: "2 tbsp peanut butter" },
+      { foodSlug: "soy-sauce", grams: 20, displayLabel: "4 tsp soy sauce" },
+      { foodSlug: "lime-raw", grams: 15, displayLabel: "1 lime, juiced" },
+      { foodSlug: "carrot-raw", grams: 80, displayLabel: "1 carrot, julienned" },
+      { foodSlug: "bell-pepper-red-raw", grams: 100, displayLabel: "1 red pepper, sliced" },
+    ],
+    steps: [
+      {
+        content:
+          "Whisk the peanut butter, soy sauce and lime juice with a splash of water into a smooth dressing.",
+      },
+      { content: "Toss the noodles with the carrot and pepper." },
+      { content: "Pour over the dressing and mix well before serving." },
+    ],
+  },
+  {
+    name: "Caprese Sandwich",
+    description: "A simple, fresh sandwich built on classic Italian flavours.",
+    category: "LUNCH",
+    servings: 1,
+    prepMinutes: 8,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "whole-wheat-bread", grams: 60, displayLabel: "2 slices bread" },
+      { foodSlug: "mozzarella-fresh", grams: 80, displayLabel: "80g fresh mozzarella, sliced" },
+      { foodSlug: "tomato-raw", grams: 150, displayLabel: "1 large tomato, sliced" },
+      { foodSlug: "olive-oil", grams: 10, displayLabel: "2 tsp olive oil" },
+    ],
+    steps: [
+      { content: "Layer the mozzarella and tomato on one slice of bread." },
+      { content: "Drizzle with olive oil, season, and top with the second slice." },
+    ],
+  },
+
+  // --- Round 4: more tea/dinner ---
+  {
+    name: "Vegetable Chili",
+    description: "A hearty, plant-based chili loaded with beans.",
+    category: "TEA",
+    servings: 3,
+    prepMinutes: 10,
+    cookMinutes: 30,
+    ingredients: [
+      { foodSlug: "kidney-beans-cooked", grams: 300, displayLabel: "1 1/2 cups kidney beans" },
+      { foodSlug: "black-beans-cooked", grams: 200, displayLabel: "1 cup black beans" },
+      { foodSlug: "onion-raw", grams: 100, displayLabel: "1 onion, diced" },
+      { foodSlug: "bell-pepper-red-raw", grams: 150, displayLabel: "1 red pepper, diced" },
+      { foodSlug: "tomato-raw", grams: 400, displayLabel: "4 tomatoes, chopped (or 1 tin)" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "olive-oil", grams: 12, displayLabel: "1 tbsp olive oil" },
+    ],
+    steps: [
+      { content: "Sauté the onion, pepper and garlic in the oil until softened.", durationSeconds: 480 },
+      {
+        content: "Add the tomatoes and both types of beans, and simmer until thickened.",
+        durationSeconds: 1200,
+      },
+    ],
+  },
+  {
+    name: "Stuffed Bell Peppers",
+    description: "Peppers filled with a savoury rice and beef mixture, baked until tender.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 35,
+    ingredients: [
+      { foodSlug: "bell-pepper-red-raw", grams: 300, displayLabel: "3 large bell peppers" },
+      { foodSlug: "beef-mince-5pct-raw", grams: 250, displayLabel: "250g lean beef mince" },
+      { foodSlug: "white-rice-cooked", grams: 200, displayLabel: "1 cup cooked rice" },
+      { foodSlug: "tomato-raw", grams: 150, displayLabel: "1 1/2 tomatoes, chopped" },
+      { foodSlug: "cheddar-cheese", grams: 40, displayLabel: "a handful of grated cheddar" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 190°C (375°F)." },
+      { content: "Halve and deseed the peppers." },
+      { content: "Brown the beef mince, then mix with the rice and tomato." },
+      {
+        content:
+          "Fill the pepper halves with the mixture, top with cheese, and bake until the peppers are tender.",
+        durationSeconds: 1500,
+      },
+    ],
+  },
+  {
+    name: "Baked Ziti",
+    description: "A comforting, cheesy baked pasta dish.",
+    category: "TEA",
+    servings: 3,
+    prepMinutes: 10,
+    cookMinutes: 30,
+    ingredients: [
+      { foodSlug: "pasta-cooked", grams: 450, displayLabel: "3 cups cooked pasta" },
+      { foodSlug: "tomato-raw", grams: 300, displayLabel: "3 tomatoes, chopped (or 1 tin)" },
+      { foodSlug: "mozzarella-fresh", grams: 120, displayLabel: "120g mozzarella, sliced" },
+      { foodSlug: "cottage-cheese-low-fat", grams: 150, displayLabel: "3/4 cup cottage cheese" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 190°C (375°F)." },
+      { content: "Mix the pasta with the tomato, garlic and cottage cheese." },
+      {
+        content: "Transfer to a baking dish, top with mozzarella, and bake until bubbling and golden.",
+        durationSeconds: 1200,
+      },
+    ],
+  },
+  {
+    name: "Chicken Shawarma",
+    description: "Warmly spiced chicken with a bright, tangy yoghurt sauce.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 15,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 350, displayLabel: "2 chicken breasts, sliced" },
+      { foodSlug: "greek-yogurt-plain-nonfat", grams: 100, displayLabel: "1/2 cup Greek yoghurt" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "pita-bread", grams: 130, displayLabel: "2 pita breads" },
+      { foodSlug: "cucumber-raw", grams: 80, displayLabel: "1/3 cucumber, sliced" },
+      { foodSlug: "tomato-raw", grams: 100, displayLabel: "1 tomato, sliced" },
+    ],
+    steps: [
+      { content: "Season the chicken generously and pan-fry until cooked through.", durationSeconds: 600 },
+      { content: "Mix the yoghurt with half the garlic for a quick sauce." },
+      { content: "Warm the pitas and fill with the chicken, cucumber, tomato and yoghurt sauce." },
+    ],
+  },
+  {
+    name: "Korean-Style Beef Bowl",
+    description: "A sweet and savoury beef dish over rice, ready in well under 20 minutes.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 10,
+    ingredients: [
+      { foodSlug: "beef-mince-5pct-raw", grams: 350, displayLabel: "350g lean beef mince" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "ginger-raw", grams: 6, displayLabel: "a small piece of ginger, minced" },
+      { foodSlug: "soy-sauce", grams: 30, displayLabel: "2 tbsp soy sauce" },
+      { foodSlug: "honey", grams: 15, displayLabel: "1 tbsp honey" },
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice, to serve" },
+      { foodSlug: "carrot-raw", grams: 80, displayLabel: "1 carrot, julienned, to serve" },
+    ],
+    steps: [
+      { content: "Brown the beef mince with the garlic and ginger.", durationSeconds: 360 },
+      {
+        content: "Stir in the soy sauce and honey, and cook for another couple of minutes.",
+        durationSeconds: 120,
+      },
+      { content: "Serve over the rice with the carrot." },
+    ],
+  },
+  {
+    name: "Mushroom Risotto",
+    description: "A creamy, comforting rice dish built on slow-cooked mushrooms.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 30,
+    ingredients: [
+      { foodSlug: "white-rice-cooked", grams: 400, displayLabel: "2 cups rice (cooked risotto-style)" },
+      {
+        foodSlug: "mushroom-portobello-raw",
+        grams: 200,
+        displayLabel: "2 large portobello mushrooms, sliced",
+      },
+      { foodSlug: "onion-raw", grams: 80, displayLabel: "1/2 onion, diced" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "olive-oil", grams: 15, displayLabel: "1 tbsp olive oil" },
+      { foodSlug: "cheddar-cheese", grams: 40, displayLabel: "a handful of grated cheese, to finish" },
+    ],
+    steps: [
+      {
+        content: "Sauté the mushrooms, onion and garlic in the oil until softened and golden.",
+        durationSeconds: 600,
+      },
+      {
+        content:
+          "Add the rice with stock, ladling in gradually and stirring, until creamy and the rice is tender.",
+        durationSeconds: 1200,
+      },
+      { content: "Stir in the cheese to finish." },
+    ],
+  },
+  {
+    name: "Grilled Fish with Salsa Verde",
+    description: "Light, flaky fish topped with a bright, herby sauce.",
+    category: "TEA",
+    servings: 1,
+    prepMinutes: 10,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "cod-raw", grams: 180, displayLabel: "1 cod fillet" },
+      { foodSlug: "olive-oil", grams: 20, displayLabel: "4 tsp olive oil" },
+      { foodSlug: "lemon-raw", grams: 15, displayLabel: "a squeeze of lemon juice" },
+      { foodSlug: "garlic-raw", grams: 3, displayLabel: "1 clove garlic, minced" },
+      { foodSlug: "green-beans-raw", grams: 100, displayLabel: "a handful of green beans, to serve" },
+    ],
+    steps: [
+      { content: "Season the fish and grill or pan-fry until it flakes easily.", durationSeconds: 600 },
+      { content: "Mix the olive oil, lemon juice and garlic for a simple salsa verde-style dressing." },
+      { content: "Steam the green beans until tender.", durationSeconds: 240 },
+      { content: "Serve the fish drizzled with the dressing, alongside the green beans." },
+    ],
+  },
+
+  // --- Round 4: more snacks ---
+  {
+    name: "Roasted Chickpeas",
+    description: "A crunchy, high-fibre snack with a satisfying crunch.",
+    category: "SNACK",
+    servings: 2,
+    prepMinutes: 5,
+    cookMinutes: 25,
+    ingredients: [
+      { foodSlug: "chickpeas-cooked", grams: 300, displayLabel: "1 1/2 cups chickpeas" },
+      { foodSlug: "olive-oil", grams: 12, displayLabel: "1 tbsp olive oil" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 200°C (400°F)." },
+      { content: "Toss the chickpeas in the oil and a little salt, then spread on a tray." },
+      { content: "Roast until golden and crunchy, shaking the tray halfway through.", durationSeconds: 1500 },
+    ],
+  },
+  {
+    name: "Frozen Yoghurt Bark",
+    description: "A frozen, fruity treat that's easy to portion ahead.",
+    category: "SNACK",
+    servings: 4,
+    prepMinutes: 10,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "greek-yogurt-plain-nonfat", grams: 300, displayLabel: "1 1/2 cups Greek yoghurt" },
+      { foodSlug: "honey", grams: 20, displayLabel: "4 tsp honey" },
+      { foodSlug: "strawberries-raw", grams: 100, displayLabel: "1 cup strawberries, sliced" },
+      { foodSlug: "blueberries-raw", grams: 60, displayLabel: "1/3 cup blueberries" },
+    ],
+    steps: [
+      { content: "Mix the yoghurt with the honey and spread evenly on a lined tray." },
+      { content: "Scatter the berries over the top." },
+      { content: "Freeze until solid, then break into pieces.", durationSeconds: 10800 },
+    ],
+  },
+  {
+    name: "Deviled Eggs",
+    description: "A classic party snack that also works well as a high-protein bite any day.",
+    category: "SNACK",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 10,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 200, displayLabel: "4 large eggs" },
+      {
+        foodSlug: "greek-yogurt-plain-nonfat",
+        grams: 40,
+        displayLabel: "2 tbsp Greek yoghurt (in place of mayo)",
+      },
+    ],
+    steps: [
+      { content: "Hard-boil the eggs, then cool and peel.", durationSeconds: 600 },
+      { content: "Halve the eggs and scoop out the yolks." },
+      { content: "Mash the yolks with the yoghurt, season, and spoon back into the egg whites." },
+    ],
+  },
 ];

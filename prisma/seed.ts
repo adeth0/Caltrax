@@ -1162,6 +1162,38 @@ const FOODS: SeedFood[] = [
     carbsPer100g: 2.2,
     fatPer100g: 22.0,
   },
+
+  // --- Round 4 staples ---
+  {
+    slug: "chia-seeds",
+    name: "Chia seeds",
+    category: "nuts",
+    caloriesPer100g: 486,
+    proteinPer100g: 16.5,
+    carbsPer100g: 42.1,
+    fatPer100g: 30.7,
+    fibrePer100g: 34.4,
+  },
+  {
+    slug: "tahini",
+    name: "Tahini",
+    category: "pantry",
+    caloriesPer100g: 595,
+    proteinPer100g: 17.0,
+    carbsPer100g: 21.2,
+    fatPer100g: 53.8,
+    fibrePer100g: 9.3,
+  },
+  {
+    slug: "kidney-beans-cooked",
+    name: "Kidney beans, cooked",
+    category: "grain",
+    caloriesPer100g: 127,
+    proteinPer100g: 8.7,
+    carbsPer100g: 22.8,
+    fatPer100g: 0.5,
+    fibrePer100g: 6.4,
+  },
 ];
 
 async function main() {
