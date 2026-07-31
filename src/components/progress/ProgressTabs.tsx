@@ -7,6 +7,11 @@ import { MicronutrientsCard } from "@/components/progress/MicronutrientsCard";
 import { ProgressClient, type WeightPointRow } from "@/components/progress/ProgressClient";
 import { ReportsClient } from "@/components/progress/ReportsClient";
 import { AchievementsGrid, type UnlockedInfo } from "@/components/progress/AchievementsGrid";
+import {
+  WorkoutHistoryClient,
+  type LoggedExerciseOption,
+  type WorkoutSessionRow,
+} from "@/components/progress/WorkoutHistoryClient";
 import type { MicronutrientIntake } from "@/lib/micronutrients";
 import type { Sex } from "@/types";
 
@@ -19,10 +24,13 @@ interface ProgressTabsProps {
   sex: Sex;
   hasLoggedToday: boolean;
   unlockedAchievements: UnlockedInfo[];
+  workoutSessions: WorkoutSessionRow[];
+  loggedExercises: LoggedExerciseOption[];
 }
 
 const TABS = [
   { value: "overview", label: "Overview" },
+  { value: "workouts", label: "Workouts" },
   { value: "reports", label: "Reports" },
   { value: "achievements", label: "Achievements" },
 ] as const;
@@ -67,6 +75,13 @@ export function ProgressTabs(props: ProgressTabsProps) {
             hasLoggedToday={props.hasLoggedToday}
           />
         </div>
+      )}
+
+      {tab === "workouts" && (
+        <WorkoutHistoryClient
+          workoutSessions={props.workoutSessions}
+          loggedExercises={props.loggedExercises}
+        />
       )}
 
       {tab === "reports" && <ReportsClient />}

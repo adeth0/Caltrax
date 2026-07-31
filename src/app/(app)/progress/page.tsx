@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ProgressTabs } from "@/components/progress/ProgressTabs";
 import type { WeightPointRow } from "@/components/progress/ProgressClient";
 import type { UnlockedInfo } from "@/components/progress/AchievementsGrid";
+import type { LoggedExerciseOption, WorkoutSessionRow } from "@/components/progress/WorkoutHistoryClient";
 import { db, withPreparedStatementRetry } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { profileToGoalInput, SEX_FROM_PRISMA } from "@/lib/enumMap";
@@ -22,7 +23,7 @@ export default async function ProgressPage() {
 
   const { start, end } = getTodayRange();
 
-  const [weightLogs, waterLogs, todayMealEntries, unlockedAchievements] = await Promise.all([
+  const [weightLogs, waterLogs, todayMealEntries, unlockedAchievements, workouts] = await Promise.all([
     db.weightLog.findMany({
       where: { userId: user.id },
       orderBy: { loggedAt: "asc" },
@@ -34,6 +35,12 @@ export default async function ProgressPage() {
       include: { food: true },
     }),
     db.unlockedAchievement.findMany({ where: { userId: user.id }, orderBy: { unlockedAt: "asc" } }),
+    db.workout.findMany({
+      where: { userId: user.id },
+      orderBy: { loggedAt: "desc" },
+      take: 30,
+      include: { sets: { include: { exercise: true }, orderBy: { order: "asc" } } },
+    }),
   ]);
 
   const weightPoints: WeightPointRow[] = weightLogs.map((w: (typeof weightLogs)[number]) => ({
@@ -58,6 +65,32 @@ export default async function ProgressPage() {
     })
   );
 
+  const workoutSessions: WorkoutSessionRow[] = workouts.map((w: (typeof workouts)[number]) => ({
+    id: w.id,
+    date: format(w.loggedAt, "EEE, d MMM"),
+    exercises: [
+      ...new Map(w.sets.map((s: (typeof w.sets)[number]) => [s.exerciseId, s.exercise.name])).entries(),
+    ].map(([exerciseId, exerciseName]) => ({
+      exerciseId,
+      exerciseName,
+      sets: w.sets
+        .filter((s: (typeof w.sets)[number]) => s.exerciseId === exerciseId)
+        .map((s: (typeof w.sets)[number]) => ({
+          setNumber: s.setNumber,
+          reps: s.reps,
+          weightKg: s.weightKg,
+        })),
+    })),
+  }));
+
+  const loggedExercises: LoggedExerciseOption[] = [
+    ...new Map<string, string>(
+      workouts.flatMap((w: (typeof workouts)[number]) =>
+        w.sets.map((s: (typeof w.sets)[number]) => [s.exerciseId, s.exercise.name] as [string, string])
+      )
+    ).entries(),
+  ].map(([id, name]: [string, string]) => ({ id, name }));
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6 lg:max-w-4xl">
       <header className="mb-4">
@@ -73,6 +106,8 @@ export default async function ProgressPage() {
         sex={SEX_FROM_PRISMA[profile.sex]}
         hasLoggedToday={todayMealEntries.length > 0}
         unlockedAchievements={unlockedInfo}
+        workoutSessions={workoutSessions}
+        loggedExercises={loggedExercises}
       />
     </main>
   );
