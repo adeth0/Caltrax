@@ -23,7 +23,19 @@ import {
   searchFoodsAction,
   toggleFavouriteAction,
 } from "@/app/(app)/log/actions";
+import {
+  deleteMealTemplateAction,
+  logMealTemplateAction,
+  saveMealTemplateAction,
+} from "@/app/(app)/log/mealTemplateActions";
 import type { FoodItem, MealType } from "@/types";
+
+export interface MealTemplateOption {
+  id: string;
+  name: string;
+  foodNames: string[];
+  totalCalories: number;
+}
 
 const MEAL_TABS: { value: MealType; label: string }[] = [
   { value: "breakfast", label: "Breakfast" },
@@ -68,9 +80,10 @@ interface LogClientProps {
   todayEntries: TodayEntryRow[];
   favouriteFoods: QuickAddFood[];
   recentFoods: QuickAddFood[];
+  mealTemplates: MealTemplateOption[];
 }
 
-export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClientProps) {
+export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTemplates }: LogClientProps) {
   const router = useRouter();
   const [mealType, setMealType] = useState<MealType>(() => defaultMealForHour(new Date().getHours()));
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
@@ -91,6 +104,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
   const [scannerOpen, setScannerOpen] = useState(false);
   const [isLookingUp, startLookingUp] = useTransition();
   const [showCustomForm, setShowCustomForm] = useState(false);
+<<<<<<< HEAD
   const [showQuickAddCalories, setShowQuickAddCalories] = useState(false);
   const [quickAddCalories, setQuickAddCalories] = useState({
     label: "",
@@ -100,6 +114,13 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
     fat: "",
   });
   const [isSavingQuickAdd, startSavingQuickAdd] = useTransition();
+=======
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateError, setTemplateError] = useState<string | null>(null);
+  const [isSavingTemplate, startSavingTemplate] = useTransition();
+  const [isLoggingTemplate, startLoggingTemplate] = useTransition();
+>>>>>>> origin/meal-templates
   const [customFood, setCustomFood] = useState({
     name: "",
     calories: "",
@@ -202,6 +223,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
     });
   }
 
+<<<<<<< HEAD
   /**
    * Reuses logCustomFoodAction under the hood -- the only difference
    * from "Add manually" is the UX: the person enters the total calories
@@ -239,10 +261,43 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         router.refresh();
       } catch {
         setError("Couldn't save that entry — try again.");
+=======
+  function handleSaveTemplate() {
+    if (!templateName.trim()) {
+      setTemplateError("Enter a name for this template");
+      return;
+    }
+    setTemplateError(null);
+    startSavingTemplate(async () => {
+      try {
+        await saveMealTemplateAction(templateName, mealType);
+        setShowSaveTemplate(false);
+        setTemplateName("");
+        router.refresh();
+      } catch (err) {
+        setTemplateError(err instanceof Error ? err.message : "Couldn't save that template — try again.");
+>>>>>>> origin/meal-templates
       }
     });
   }
 
+<<<<<<< HEAD
+=======
+  function handleLogTemplate(templateId: string) {
+    startLoggingTemplate(async () => {
+      await logMealTemplateAction(templateId, mealType);
+      router.refresh();
+    });
+  }
+
+  function handleDeleteTemplate(templateId: string) {
+    startLoggingTemplate(async () => {
+      await deleteMealTemplateAction(templateId);
+      router.refresh();
+    });
+  }
+
+>>>>>>> origin/meal-templates
   function handleAdd() {
     if (!selectedFood) return;
     const servingGrams = Number(grams);
@@ -307,6 +362,44 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
 
   return (
     <div className="flex flex-col gap-4">
+      {mealTemplates.length > 0 && (
+        <Card>
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">My templates</p>
+          <div className="mt-2 flex flex-col gap-1.5">
+            {mealTemplates.map((template) => (
+              <div
+                key={template.id}
+                className="flex items-center justify-between gap-2 rounded-control bg-surface-raised px-3 py-2.5"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-text-primary">{template.name}</p>
+                  <p className="truncate text-xs text-text-tertiary">
+                    {template.foodNames.join(", ")} · {template.totalCalories} kcal
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => handleLogTemplate(template.id)}
+                  disabled={isLoggingTemplate}
+                >
+                  Log
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteTemplate(template.id)}
+                  disabled={isLoggingTemplate}
+                  aria-label={`Delete ${template.name}`}
+                  className="touch-target focus-ring text-text-tertiary hover:text-accent-danger"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <Card>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {MEAL_TABS.map((tab) => (
@@ -379,6 +472,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
           <button
             type="button"
             onClick={() => {
+<<<<<<< HEAD
               setSelectedFood(null);
               setQuickFood(null);
               setShowQuickAddCalories((v) => !v);
@@ -387,8 +481,31 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
             className="touch-target focus-ring control px-3 text-xs text-text-tertiary hover:text-text-secondary"
           >
             Quick add calories
+=======
+              setShowSaveTemplate((v) => !v);
+              setTemplateError(null);
+            }}
+            className="touch-target focus-ring control px-3 text-xs text-text-tertiary hover:text-text-secondary"
+          >
+            Save {mealType} as a template
+>>>>>>> origin/meal-templates
           </button>
         </div>
+
+        {showSaveTemplate && (
+          <div className="mt-3 flex items-center gap-2 rounded-control bg-surface-raised p-2.5">
+            <Input
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              placeholder="e.g. My usual breakfast"
+              className="flex-1"
+            />
+            <Button type="button" size="sm" onClick={handleSaveTemplate} disabled={isSavingTemplate}>
+              {isSavingTemplate ? "Saving…" : "Save"}
+            </Button>
+          </div>
+        )}
+        {templateError && <p className="mt-1.5 text-xs text-accent-danger">{templateError}</p>}
 
         <div className="mt-3">
           <MealPhotoCapture mealType={mealType} onDone={() => router.refresh()} />
