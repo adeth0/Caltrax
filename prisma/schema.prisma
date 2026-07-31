@@ -114,6 +114,7 @@ model Profile {
   savedRecipes         SavedRecipe[]
   shoppingListItems    ShoppingListItem[]
   workouts             Workout[]
+  bodyMeasurements     BodyMeasurement[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -287,6 +288,36 @@ model WeightLog {
 
   @@index([userId, loggedAt])
   @@map("weight_logs")
+}
+
+enum MeasurementType {
+  WAIST
+  CHEST
+  HIPS
+  NECK
+  SHOULDERS
+  LEFT_ARM
+  RIGHT_ARM
+  LEFT_THIGH
+  RIGHT_THIGH
+  LEFT_CALF
+  RIGHT_CALF
+}
+
+/// Non-scale progress -- body circumference measurements, tracked
+/// separately from WeightLog since a person can log any subset of these
+/// on a given day (e.g. just waist, not a full set), unlike weight which
+/// is always a single value per entry.
+model BodyMeasurement {
+  id       String          @id @default(cuid())
+  userId   String
+  user     Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type     MeasurementType
+  valueCm  Float
+  loggedAt DateTime        @default(now())
+
+  @@index([userId, type, loggedAt])
+  @@map("body_measurements")
 }
 
 model WaterLog {
