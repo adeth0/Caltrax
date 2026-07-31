@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
+import { BackButton } from "@/components/ui/BackButton";
 import { CATEGORY_META, type KnowledgeCategoryValue } from "@/components/knowledge/LearnClient";
 
 interface RelatedSupplement {
@@ -20,7 +20,6 @@ interface ArticleDetailData {
 }
 
 export function ArticleDetailClient({ article }: { article: ArticleDetailData }) {
-  const router = useRouter();
   const meta = CATEGORY_META[article.category];
   const Icon = meta.icon;
 
@@ -31,13 +30,7 @@ export function ArticleDetailClient({ article }: { article: ArticleDetailData })
 
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
-      <button
-        type="button"
-        onClick={() => router.back()}
-        className="touch-target focus-ring mb-3 text-sm text-text-tertiary hover:text-text-secondary"
-      >
-        ← Back
-      </button>
+      <BackButton className="mb-3" />
 
       <div className="flex items-center gap-2">
         <div
