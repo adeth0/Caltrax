@@ -118,6 +118,7 @@ model Profile {
   workoutRoutines      WorkoutRoutine[]
   progressPhotos       ProgressPhoto[]
   fastingSessions      FastingSession[]
+  mealTemplates        MealTemplate[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -166,6 +167,7 @@ model Food {
   recipeItems         RecipeItem[]
   favouritedBy        Favourite[]
   plannedMeals        PlannedMeal[]
+  mealTemplateItems   MealTemplateItem[]
 
   @@unique([source, sourceId])
   @@index([barcode])
@@ -274,6 +276,36 @@ model MealEntry {
 
   @@index([userId, loggedAt])
   @@map("meal_entries")
+}
+
+/// A saved, reusable combination of foods (e.g. "My usual breakfast") --
+/// direct parallel to WorkoutRoutine. Stores actual gram amounts (unlike
+/// a workout routine, which deliberately omits weight/reps since those
+/// vary session to session) since a meal genuinely is the same
+/// combination of foods and portions each time someone eats it that way,
+/// not something that needs re-deciding per use.
+model MealTemplate {
+  id        String             @id @default(cuid())
+  userId    String
+  user      Profile            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime           @default(now())
+  items     MealTemplateItem[]
+
+  @@index([userId])
+  @@map("meal_templates")
+}
+
+model MealTemplateItem {
+  id           String       @id @default(cuid())
+  templateId   String
+  template     MealTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  foodId       String
+  food         Food         @relation(fields: [foodId], references: [id])
+  servingGrams Float
+
+  @@index([templateId])
+  @@map("meal_template_items")
 }
 
 model WeightLog {

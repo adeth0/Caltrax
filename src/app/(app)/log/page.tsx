@@ -1,4 +1,9 @@
-import { LogClient, type QuickAddFood, type TodayEntryRow } from "@/components/log/LogClient";
+import {
+  LogClient,
+  type MealTemplateOption,
+  type QuickAddFood,
+  type TodayEntryRow,
+} from "@/components/log/LogClient";
 import { LogModeToggle } from "@/components/log/LogModeToggle";
 import type { ExerciseOption, RoutineOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
@@ -14,7 +19,7 @@ export default async function LogPage() {
 
   const { start, end } = getTodayRange();
 
-  const [entries, favourites, recentEntries] = user
+  const [entries, favourites, recentEntries, mealTemplates] = user
     ? await Promise.all([
         db.mealEntry.findMany({
           where: { userId: user.id, loggedAt: { gte: start, lte: end } },
@@ -33,8 +38,13 @@ export default async function LogPage() {
           take: 8,
           include: { food: true },
         }),
+        db.mealTemplate.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+          include: { items: { include: { food: true } } },
+        }),
       ])
-    : [[], [], []];
+    : [[], [], [], []];
 
   const [exercises, todaysWorkout, routines] = await Promise.all([
     db.exercise.findMany({ orderBy: { name: "asc" } }),
@@ -100,6 +110,20 @@ export default async function LogPage() {
     .map((e: (typeof recentEntries)[number]) => toQuickAdd(e.food))
     .filter((f: QuickAddFood) => !favouritedFoodIds.has(f.foodId));
 
+  const mealTemplateOptions: MealTemplateOption[] = mealTemplates.map((t: (typeof mealTemplates)[number]) => {
+    const totalCalories = t.items.reduce(
+      (sum: number, item: (typeof t.items)[number]) =>
+        sum + item.food.caloriesPer100g * (item.servingGrams / 100),
+      0
+    );
+    return {
+      id: t.id,
+      name: t.name,
+      foodNames: t.items.map((item: (typeof t.items)[number]) => item.food.name),
+      totalCalories: Math.round(totalCalories),
+    };
+  });
+
   const exerciseOptions: ExerciseOption[] = exercises.map((e: (typeof exercises)[number]) => ({
     id: e.id,
     name: e.name,
@@ -137,7 +161,12 @@ export default async function LogPage() {
       </header>
       <LogModeToggle
         mealSlot={
-          <LogClient todayEntries={todayEntries} favouriteFoods={favouriteFoods} recentFoods={recentFoods} />
+          <LogClient
+            todayEntries={todayEntries}
+            favouriteFoods={favouriteFoods}
+            recentFoods={recentFoods}
+            mealTemplates={mealTemplateOptions}
+          />
         }
         exercises={exerciseOptions}
         todaySets={todayWorkoutSets}
