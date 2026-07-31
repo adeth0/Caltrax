@@ -13,6 +13,30 @@ import { MEAL_FROM_PRISMA } from "@/lib/enumMap";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function LogPage() {
+  try {
+    return await renderLogPage();
+  } catch (err) {
+    // The client-side DiagnosticErrorBoundary further down this tree
+    // can't catch errors thrown during this Server Component's own data
+    // fetching -- that already escaped once, straight to the app's root
+    // error.tsx, which redacts the real message in production. Render
+    // the actual error inline instead, specifically to find out what's
+    // really failing here.
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : undefined;
+    return (
+      <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
+        <div className="border-accent-danger/30 bg-accent-danger/10 rounded-control border p-4 text-sm text-accent-danger">
+          <p className="font-semibold">Log page failed to load.</p>
+          <p className="mt-2 font-mono text-xs opacity-80">{message}</p>
+          {stack && <pre className="mt-2 overflow-x-auto text-xs opacity-60">{stack}</pre>}
+        </div>
+      </main>
+    );
+  }
+}
+
+async function renderLogPage() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
