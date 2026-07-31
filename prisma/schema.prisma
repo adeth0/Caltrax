@@ -117,6 +117,7 @@ model Profile {
   bodyMeasurements     BodyMeasurement[]
   workoutRoutines      WorkoutRoutine[]
   progressPhotos       ProgressPhoto[]
+  fastingSessions      FastingSession[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -344,6 +345,26 @@ model WaterLog {
 
   @@index([userId, loggedAt])
   @@map("water_logs")
+}
+
+/// A single fast, start to (optionally still-open) end. Only one session
+/// per user should be open (endedAt null) at a time -- enforced in the
+/// action layer rather than the schema, since Prisma doesn't support a
+/// partial unique constraint here without raw SQL.
+model FastingSession {
+  id          String    @id @default(cuid())
+  userId      String
+  user        Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt   DateTime  @default(now())
+  /// Null while the fast is still in progress.
+  endedAt     DateTime?
+  /// The person's target, e.g. 16 for a 16:8 approach -- purely a
+  /// display goal shown against actual elapsed time, doesn't
+  /// automatically end anything.
+  targetHours Int?
+
+  @@index([userId, startedAt])
+  @@map("fasting_sessions")
 }
 
 model Reminder {
