@@ -11,6 +11,7 @@ import { BackButton } from "@/components/ui/BackButton";
 import { cn } from "@/lib/utils";
 import { logRecipeAction, rateRecipeAction, toggleSaveRecipeAction } from "@/app/(app)/foods/actions";
 import { addRecipeToShoppingListAction } from "@/app/(app)/shopping-list/actions";
+import { toggleRecipeInCollectionAction } from "@/app/(app)/foods/collectionActions";
 import { CATEGORY_META, type MealCategoryValue } from "@/components/recipes/recipeCategoryMeta";
 import type { MealType } from "@/types";
 
@@ -104,7 +105,19 @@ function StepTimer({ seconds }: { seconds: number }) {
   );
 }
 
-export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
+export interface CollectionOption {
+  id: string;
+  name: string;
+  containsThisRecipe: boolean;
+}
+
+export function RecipeDetailClient({
+  recipe,
+  collections,
+}: {
+  recipe: RecipeDetailData;
+  collections: CollectionOption[];
+}) {
   const [mealType, setMealType] = useState<MealType>(
     recipe.category ? CATEGORY_TO_LOG_DEFAULT[recipe.category] : "lunch"
   );
@@ -117,6 +130,10 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
   const [shoppingListAdded, setShoppingListAdded] = useState(false);
   const [isAddingToList, startAddingToList] = useTransition();
   const [logSuccess, setLogSuccess] = useState(false);
+  const [collectionMembership, setCollectionMembership] = useState(
+    () => new Map(collections.map((c) => [c.id, c.containsThisRecipe]))
+  );
+  const [isTogglingCollection, startTogglingCollection] = useTransition();
 
   const meta = recipe.category ? CATEGORY_META[recipe.category] : null;
   const totalMinutes = (recipe.prepMinutes ?? 0) + (recipe.cookMinutes ?? 0);
@@ -156,6 +173,20 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
     startAddingToList(async () => {
       await addRecipeToShoppingListAction(recipe.id);
       setShoppingListAdded(true);
+    });
+  }
+
+  function handleToggleCollection(collectionId: string) {
+    // Optimistic -- flip immediately, since this is a low-stakes toggle
+    // and waiting for the round-trip would make the UI feel sluggish for
+    // something this simple.
+    setCollectionMembership((prev) => {
+      const next = new Map(prev);
+      next.set(collectionId, !prev.get(collectionId));
+      return next;
+    });
+    startTogglingCollection(async () => {
+      await toggleRecipeInCollectionAction(collectionId, recipe.id);
     });
   }
 
@@ -292,6 +323,41 @@ export function RecipeDetailClient({ recipe }: { recipe: RecipeDetailData }) {
           ))}
         </ul>
       </Card>
+
+      {collections.length > 0 ? (
+        <Card className="mt-4">
+          <p className="text-sm font-semibold text-text-primary">Collections</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {collections.map((c) => {
+              const inCollection = collectionMembership.get(c.id) ?? false;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => handleToggleCollection(c.id)}
+                  disabled={isTogglingCollection}
+                  className={cn(
+                    "control focus-ring touch-target rounded-full px-3 py-1.5 text-xs font-medium",
+                    inCollection
+                      ? "bg-brand text-brand-foreground"
+                      : "bg-surface-raised text-text-secondary hover:bg-border-strong"
+                  )}
+                >
+                  {inCollection ? "✓ " : "+ "}
+                  {c.name}
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+      ) : (
+        <Card className="mt-4">
+          <p className="text-sm font-semibold text-text-primary">Collections</p>
+          <p className="mt-1 text-xs text-text-tertiary">
+            Create a collection from My Recipes to start grouping recipes like this one together.
+          </p>
+        </Card>
+      )}
 
       {recipe.steps.length > 0 && (
         <Card className="mt-4">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { FoodsTabs } from "@/components/food/FoodsTabs";
+import type { RecipeCollectionSummary } from "@/components/recipes/RecipeCollectionsSection";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import type { CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
 import type {
@@ -61,6 +62,7 @@ export default async function FoodsPage() {
     curatedRecipes,
     communityRecipes,
     savedRecipeLinks,
+    recipeCollections,
     allSupplements,
     todaySupplementLogs,
     profile,
@@ -87,6 +89,18 @@ export default async function FoodsPage() {
           where: { userId: user.id },
           orderBy: { createdAt: "desc" },
           include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
+        })
+      : Promise.resolve([]),
+    user
+      ? db.recipeCollection.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+          include: {
+            items: {
+              include: { recipe: { include: { items: { include: { food: true } }, ratings: true } } },
+              orderBy: { addedAt: "desc" },
+            },
+          },
         })
       : Promise.resolve([]),
     db.supplement.findMany({ orderBy: { name: "asc" } }),
@@ -129,6 +143,14 @@ export default async function FoodsPage() {
 
   const savedSummaries: CuratedRecipeSummary[] = savedRecipeLinks.map(
     (s: (typeof savedRecipeLinks)[number]) => toCuratedSummary(s.recipe)
+  );
+
+  const collectionSummaries: RecipeCollectionSummary[] = recipeCollections.map(
+    (c: (typeof recipeCollections)[number]) => ({
+      id: c.id,
+      name: c.name,
+      recipes: c.items.map((item: (typeof c.items)[number]) => toCuratedSummary(item.recipe)),
+    })
   );
 
   const supplementSummaries: SupplementSummary[] = allSupplements.map(
@@ -186,6 +208,7 @@ export default async function FoodsPage() {
         curatedRecipes={curatedSummaries}
         communityRecipes={communitySummaries}
         savedRecipes={savedSummaries}
+        collections={collectionSummaries}
         supplements={supplementSummaries}
         suggestedSupplements={suggestedSupplements}
         todaySupplementLogs={todayLoggedSupplements}

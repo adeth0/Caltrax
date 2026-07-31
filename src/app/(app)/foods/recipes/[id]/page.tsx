@@ -35,6 +35,17 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
     select: { id: true },
   });
 
+  const collections = await db.recipeCollection.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    include: { items: { where: { recipeId: recipe.id }, select: { id: true } } },
+  });
+  const collectionOptions = collections.map((c: (typeof collections)[number]) => ({
+    id: c.id,
+    name: c.name,
+    containsThisRecipe: c.items.length > 0,
+  }));
+
   return (
     <RecipeDetailClient
       recipe={{
@@ -67,6 +78,7 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
         myRating,
         isSaved: saved !== null,
       }}
+      collections={collectionOptions}
     />
   );
 }

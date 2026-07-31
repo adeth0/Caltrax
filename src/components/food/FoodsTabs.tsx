@@ -7,6 +7,7 @@ import { FoodSearchTab } from "@/components/food/FoodSearchTab";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import { FindMealsClient, type CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
 import { MyRecipesClient } from "@/components/recipes/MyRecipesClient";
+import type { RecipeCollectionSummary } from "@/components/recipes/RecipeCollectionsSection";
 import {
   SupplementsClient,
   type LoggedSupplement,
@@ -19,6 +20,7 @@ interface FoodsTabsProps {
   curatedRecipes: CuratedRecipeSummary[];
   communityRecipes: CuratedRecipeSummary[];
   savedRecipes: CuratedRecipeSummary[];
+  collections: RecipeCollectionSummary[];
   supplements: SupplementSummary[];
   suggestedSupplements: SuggestedSupplement[];
   todaySupplementLogs: LoggedSupplement[];
@@ -31,6 +33,7 @@ export function FoodsTabs({
   curatedRecipes,
   communityRecipes,
   savedRecipes,
+  collections,
   supplements,
   suggestedSupplements,
   todaySupplementLogs,
@@ -95,7 +98,7 @@ export function FoodsTabs({
       )}
       {tab === "recipes" && (
         <DiagnosticErrorBoundary label="recipes">
-          <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} />
+          <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} collections={collections} />
         </DiagnosticErrorBoundary>
       )}
     </div>
