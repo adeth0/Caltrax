@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { InsightsCard } from "@/components/progress/InsightsCard";
+import { MeasurementsCard, type LatestMeasurement } from "@/components/progress/MeasurementsCard";
 import { MicronutrientsCard } from "@/components/progress/MicronutrientsCard";
 import { ProgressClient, type WeightPointRow } from "@/components/progress/ProgressClient";
 import { ReportsClient } from "@/components/progress/ReportsClient";
@@ -26,6 +27,7 @@ interface ProgressTabsProps {
   unlockedAchievements: UnlockedInfo[];
   workoutSessions: WorkoutSessionRow[];
   loggedExercises: LoggedExerciseOption[];
+  latestMeasurements: LatestMeasurement[];
 }
 
 const TABS = [
@@ -74,6 +76,7 @@ export function ProgressTabs(props: ProgressTabsProps) {
             sex={props.sex}
             hasLoggedToday={props.hasLoggedToday}
           />
+          <MeasurementsCard latestMeasurements={props.latestMeasurements} />
         </div>
       )}
 
