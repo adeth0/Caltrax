@@ -91,6 +91,15 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
   const [scannerOpen, setScannerOpen] = useState(false);
   const [isLookingUp, startLookingUp] = useTransition();
   const [showCustomForm, setShowCustomForm] = useState(false);
+  const [showQuickAddCalories, setShowQuickAddCalories] = useState(false);
+  const [quickAddCalories, setQuickAddCalories] = useState({
+    label: "",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fat: "",
+  });
+  const [isSavingQuickAdd, startSavingQuickAdd] = useTransition();
   const [customFood, setCustomFood] = useState({
     name: "",
     calories: "",
@@ -186,6 +195,47 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
         });
         setShowCustomForm(false);
         setCustomFood({ name: "", calories: "", protein: "", carbs: "", fat: "", grams: "100" });
+        router.refresh();
+      } catch {
+        setError("Couldn't save that entry — try again.");
+      }
+    });
+  }
+
+  /**
+   * Reuses logCustomFoodAction under the hood -- the only difference
+   * from "Add manually" is the UX: the person enters the total calories
+   * (and optionally macros) for this one eating occasion directly, with
+   * no per-100g math and no required food name or serving size. Fixing
+   * servingGrams at a notional 100 makes caloriesPer100g == the calories
+   * actually entered, so the log shows the right number with none of
+   * that internal mechanics visible to the person using it.
+   */
+  function handleSaveQuickAdd() {
+    const calories = Number(quickAddCalories.calories);
+    const protein = Number(quickAddCalories.protein) || 0;
+    const carbs = Number(quickAddCalories.carbs) || 0;
+    const fat = Number(quickAddCalories.fat) || 0;
+
+    if (!Number.isFinite(calories) || calories <= 0) {
+      setError("Enter a calorie amount");
+      return;
+    }
+
+    setError(null);
+    startSavingQuickAdd(async () => {
+      try {
+        await logCustomFoodAction({
+          name: quickAddCalories.label.trim() || "Quick add",
+          caloriesPer100g: calories,
+          proteinPer100g: protein,
+          carbsPer100g: carbs,
+          fatPer100g: fat,
+          servingGrams: 100,
+          mealType,
+        });
+        setShowQuickAddCalories(false);
+        setQuickAddCalories({ label: "", calories: "", protein: "", carbs: "", fat: "" });
         router.refresh();
       } catch {
         setError("Couldn't save that entry — try again.");
@@ -326,6 +376,18 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
           >
             Can&apos;t find it? Add manually
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedFood(null);
+              setQuickFood(null);
+              setShowQuickAddCalories((v) => !v);
+              setError(null);
+            }}
+            className="touch-target focus-ring control px-3 text-xs text-text-tertiary hover:text-text-secondary"
+          >
+            Quick add calories
+          </button>
         </div>
 
         <div className="mt-3">
@@ -386,6 +448,56 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods }: LogClie
             </div>
             <Button type="button" onClick={handleSaveCustomFood} disabled={isSavingCustom} className="w-full">
               {isSavingCustom ? "Adding…" : `Add to ${mealType}`}
+            </Button>
+          </div>
+        )}
+
+        {showQuickAddCalories && (
+          <div className="mt-4 flex flex-col gap-3 rounded-control border border-border bg-surface-raised p-4">
+            <p className="text-sm font-medium text-text-primary">Quick add calories</p>
+            <p className="text-xs text-text-tertiary">
+              For when you don&apos;t have exact nutrition info -- just enter what you know.
+            </p>
+            <Input
+              placeholder='Label (optional, e.g. "Restaurant lunch")'
+              value={quickAddCalories.label}
+              onChange={(e) => setQuickAddCalories((c) => ({ ...c, label: e.target.value }))}
+            />
+            <Input
+              type="number"
+              inputMode="decimal"
+              placeholder="Calories"
+              value={quickAddCalories.calories}
+              onChange={(e) => setQuickAddCalories((c) => ({ ...c, calories: e.target.value }))}
+            />
+            <div className="grid grid-cols-3 gap-2">
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Protein g"
+                value={quickAddCalories.protein}
+                onChange={(e) => setQuickAddCalories((c) => ({ ...c, protein: e.target.value }))}
+              />
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Carbs g"
+                value={quickAddCalories.carbs}
+                onChange={(e) => setQuickAddCalories((c) => ({ ...c, carbs: e.target.value }))}
+              />
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Fat g"
+                value={quickAddCalories.fat}
+                onChange={(e) => setQuickAddCalories((c) => ({ ...c, fat: e.target.value }))}
+              />
+            </div>
+            <p className="text-xs text-text-tertiary">
+              Protein, carbs and fat are optional -- leave blank if unknown.
+            </p>
+            <Button type="button" onClick={handleSaveQuickAdd} disabled={isSavingQuickAdd} className="w-full">
+              {isSavingQuickAdd ? "Adding…" : `Add to ${mealType}`}
             </Button>
           </div>
         )}
