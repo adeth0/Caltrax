@@ -115,6 +115,7 @@ model Profile {
   shoppingListItems    ShoppingListItem[]
   workouts             Workout[]
   bodyMeasurements     BodyMeasurement[]
+  workoutRoutines      WorkoutRoutine[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -531,8 +532,9 @@ model Exercise {
   muscleGroup MuscleGroup
   /// e.g. "Barbell", "Dumbbell", "Bodyweight", "Machine", "Cable" -- free text, purely descriptive.
   equipment   String?
-  createdAt   DateTime      @default(now())
+  createdAt   DateTime        @default(now())
   sets        WorkoutSet[]
+  routineUses RoutineExercise[]
 
   @@index([muscleGroup])
   @@map("exercises")
@@ -571,6 +573,37 @@ model WorkoutSet {
 
   @@index([workoutId])
   @@map("workout_sets")
+}
+
+/// A saved, reusable list of exercises (e.g. "Push Day") -- deliberately
+/// does NOT store target weight, since that varies session to session
+/// and would go stale immediately. Starting a workout "from" a routine
+/// just pre-populates the exercise picker with this list in order,
+/// speeding up exercise selection; every set is still logged fresh with
+/// its own real reps/weight, same as any other set.
+model WorkoutRoutine {
+  id        String             @id @default(cuid())
+  userId    String
+  user      Profile            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime           @default(now())
+  exercises RoutineExercise[]
+
+  @@index([userId])
+  @@map("workout_routines")
+}
+
+model RoutineExercise {
+  id         String         @id @default(cuid())
+  routineId  String
+  routine    WorkoutRoutine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise       @relation(fields: [exerciseId], references: [id])
+  /// Position within the routine, so exercises display and get picked in a consistent, intentional order.
+  order      Int
+
+  @@index([routineId])
+  @@map("routine_exercises")
 }
 
 model Favourite {

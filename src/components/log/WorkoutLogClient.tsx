@@ -7,7 +7,12 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { addWorkoutSetAction, deleteWorkoutSetAction } from "@/app/(app)/log/workoutActions";
+import {
+  addWorkoutSetAction,
+  deleteRoutineAction,
+  deleteWorkoutSetAction,
+  saveRoutineFromTodayAction,
+} from "@/app/(app)/log/workoutActions";
 
 export type MuscleGroupValue =
   "CHEST" | "BACK" | "LEGS" | "SHOULDERS" | "ARMS" | "CORE" | "FULL_BODY" | "CARDIO";
@@ -17,6 +22,12 @@ export interface ExerciseOption {
   name: string;
   muscleGroup: MuscleGroupValue;
   equipment: string | null;
+}
+
+export interface RoutineOption {
+  id: string;
+  name: string;
+  exercises: ExerciseOption[];
 }
 
 export interface TodayWorkoutSetRow {
@@ -54,9 +65,10 @@ const FILTERS: { value: MuscleGroupValue | "all"; label: string }[] = [
 interface WorkoutLogClientProps {
   exercises: ExerciseOption[];
   todaySets: TodayWorkoutSetRow[];
+  routines: RoutineOption[];
 }
 
-export function WorkoutLogClient({ exercises, todaySets }: WorkoutLogClientProps) {
+export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroupValue | "all">("all");
@@ -66,6 +78,10 @@ export function WorkoutLogClient({ exercises, todaySets }: WorkoutLogClientProps
   const [error, setError] = useState<string | null>(null);
   const [isSaving, startSaving] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  const [routineName, setRoutineName] = useState("");
+  const [isSavingRoutine, startSavingRoutine] = useTransition();
+  const [routineError, setRoutineError] = useState<string | null>(null);
+  const [showSaveRoutine, setShowSaveRoutine] = useState(false);
 
   const filtered = useMemo(() => {
     let list = exercises;
@@ -117,8 +133,76 @@ export function WorkoutLogClient({ exercises, todaySets }: WorkoutLogClientProps
     });
   }
 
+  function handleSaveRoutine() {
+    if (!routineName.trim()) {
+      setRoutineError("Enter a name for this routine");
+      return;
+    }
+    setRoutineError(null);
+    startSavingRoutine(async () => {
+      try {
+        await saveRoutineFromTodayAction(routineName);
+        setRoutineName("");
+        setShowSaveRoutine(false);
+        router.refresh();
+      } catch (err) {
+        setRoutineError(err instanceof Error ? err.message : "Couldn't save that routine — try again.");
+      }
+    });
+  }
+
+  function handleDeleteRoutine(routineId: string) {
+    startSavingRoutine(async () => {
+      await deleteRoutineAction(routineId);
+      router.refresh();
+    });
+  }
+
   return (
     <div>
+      {routines.length > 0 && (
+        <Card className="mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">My routines</p>
+          <div className="mt-2 flex flex-col gap-2">
+            {routines.map((routine) => (
+              <div key={routine.id} className="rounded-control bg-surface-raised p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-text-primary">{routine.name}</p>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteRoutine(routine.id)}
+                    aria-label={`Delete ${routine.name}`}
+                    className="touch-target focus-ring text-text-tertiary hover:text-accent-danger"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {routine.exercises.map((ex) => (
+                    <button
+                      key={ex.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedExercise(ex);
+                        setError(null);
+                      }}
+                      className={cn(
+                        "control focus-ring touch-target rounded-full px-3 py-1 text-xs font-medium",
+                        selectedExercise?.id === ex.id
+                          ? "bg-brand text-brand-foreground"
+                          : "bg-surface text-text-secondary hover:bg-border-strong"
+                      )}
+                    >
+                      {ex.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <Card>
         <Input
           value={query}
@@ -209,7 +293,32 @@ export function WorkoutLogClient({ exercises, todaySets }: WorkoutLogClientProps
       </Card>
 
       <Card className="mt-4">
-        <p className="text-sm font-semibold text-text-primary">Today&apos;s workout</p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-text-primary">Today&apos;s workout</p>
+          {todaySets.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowSaveRoutine((s) => !s)}
+              className="control focus-ring touch-target text-xs font-medium text-accent-info hover:underline"
+            >
+              Save as routine
+            </button>
+          )}
+        </div>
+        {showSaveRoutine && (
+          <div className="mt-2 flex items-center gap-2 rounded-control bg-surface-raised p-2.5">
+            <Input
+              value={routineName}
+              onChange={(e) => setRoutineName(e.target.value)}
+              placeholder="e.g. Push Day"
+              className="flex-1"
+            />
+            <Button type="button" size="sm" onClick={handleSaveRoutine} disabled={isSavingRoutine}>
+              {isSavingRoutine ? "Saving…" : "Save"}
+            </Button>
+          </div>
+        )}
+        {routineError && <p className="mt-1.5 text-xs text-accent-danger">{routineError}</p>}
         {groupedSets.length === 0 ? (
           <p className="mt-2 text-sm text-text-tertiary">Nothing logged yet — pick an exercise above.</p>
         ) : (
