@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PillSelect } from "@/components/ui/PillSelect";
+import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import {
   createReminderAction,
   deleteReminderAction,
@@ -125,16 +126,12 @@ export function RemindersCard({ reminders }: RemindersCardProps) {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
+                <ToggleSwitch
+                  checked={r.active}
+                  onChange={() => handleToggle(r.id, !r.active)}
                   disabled={isBusy && busyId === r.id}
-                  onClick={() => handleToggle(r.id, !r.active)}
-                  className={`touch-target focus-ring control px-2 text-xs ${
-                    r.active ? "text-accent-info" : "text-text-tertiary"
-                  }`}
-                >
-                  {r.active ? "On" : "Off"}
-                </button>
+                  label={r.active ? `Turn off ${r.label}` : `Turn on ${r.label}`}
+                />
                 <button
                   type="button"
                   disabled={isBusy && busyId === r.id}
