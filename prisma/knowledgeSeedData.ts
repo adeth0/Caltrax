@@ -1262,4 +1262,203 @@ What still matters more for blood cholesterol: overall dietary pattern has a big
 
 A practical note on individual variation: a subset of people (sometimes called "hyper-responders") do show a more significant blood cholesterol response to dietary cholesterol than average. If you have a personal or family history of high cholesterol, discussing your specific situation with a doctor is more useful than applying general population guidance, since individual response genuinely does vary.`,
   },
+
+  // --- Round 6: more topics ---
+  {
+    slug: "zone-2-training-explained",
+    title: "Zone 2 Training Explained",
+    category: "TRAINING",
+    summary: "A specific, measurable intensity that builds your aerobic base.",
+    content: `Zone 2 refers to a specific heart-rate range -- roughly 60-70% of maximum heart rate for most people, though individual variation is real -- at which the body relies heavily on fat as fuel and can sustain effort for a long time without significant fatigue accumulation.
+
+Why it's discussed so much: training consistently in this zone is associated with improved mitochondrial density and aerobic efficiency, building a foundation that supports harder training later. It's a more precise, measurable version of the "LISS" concept covered in the LISS vs HIIT article -- Zone 2 specifically anchors intensity to heart rate rather than just "easy effort".
+
+A practical way to check you're in it: you should be able to hold a full conversation without gasping for breath -- if you can't comfortably talk, you're likely working harder than Zone 2. A heart rate monitor makes this precise, but the "conversational pace" check is a reasonable substitute if you don't have one.
+
+Practical guidance: this isn't meant to replace harder training -- most evidence-based approaches use Zone 2 as a base layer alongside, not instead of, higher-intensity work, particularly for people whose current routine is either "very hard" or "not at all" with little in between.`,
+  },
+  {
+    slug: "rest-pause-training",
+    title: "Rest-Pause Training",
+    category: "TRAINING",
+    summary: "Squeezing more effective reps out of a set with brief built-in pauses.",
+    content: `Rest-pause training means performing a set close to failure, resting briefly (commonly 10-20 seconds), then continuing with a few more reps at the same weight, sometimes repeated for another short round after that.
+
+Why it can work: it allows lifting a genuinely heavy weight for more total reps than a single continuous set would allow, since the brief rest lets just enough fatigue clear to squeeze out a few additional reps -- effectively extending a working set's total volume without reducing the weight.
+
+Where it fits: this is an intensity technique, similar in spirit to training to failure (covered in its own article) -- useful periodically to add variety and push past a plateau, not something to build an entire program around given the higher fatigue cost per set.
+
+Practical guidance: works well on isolation exercises or machines where the brief pause and re-engagement is straightforward and lower-risk; less suited to complex, technical compound lifts where fatigue-induced form breakdown during the "continuing" reps carries more risk. A few sets per session, not every set, keeps this sustainable.`,
+  },
+  {
+    slug: "supersets-and-circuits-explained",
+    title: "Supersets and Circuits Explained",
+    category: "TRAINING",
+    summary: "Two ways to combine exercises back-to-back, with different goals.",
+    content: `A superset pairs two exercises performed back-to-back with no rest between them, then a rest before repeating. A circuit extends this further -- three or more exercises performed in sequence with minimal rest, often repeated for multiple rounds.
+
+Why use a superset: commonly pairs opposing muscle groups (e.g. biceps and triceps) so one muscle rests while the other works, making more efficient use of limited time without necessarily increasing overall fatigue as much as it might seem. Some people also pair the same muscle group deliberately for an added intensity challenge.
+
+Why use a circuit: primarily a time-efficiency and cardiovascular-conditioning tool -- keeping heart rate elevated throughout a session by minimising rest, which suits general fitness and fat-loss-focused training more than pure maximal-strength goals, where adequate rest between sets matters more for lifting genuinely heavy weight.
+
+Practical guidance: both are legitimate tools for specific goals (time efficiency, conditioning, variety) rather than universally "better" than standard sets with full rest -- for pure strength or hypertrophy focus, adequate rest between sets generally outperforms rushing through supersets and circuits.`,
+  },
+  {
+    slug: "plyometric-training-basics",
+    title: "Plyometric Training Basics",
+    category: "TRAINING",
+    summary: "Explosive, jump-based training -- genuinely useful, with real technique demands.",
+    content: `Plyometric training involves explosive, jump-based movements (box jumps, jump squats, bounding) that train the muscles to produce maximum force in minimum time, relying on the stretch-shortening cycle -- a rapid muscle lengthening immediately followed by a powerful contraction.
+
+What it builds: power and explosiveness beyond what standard strength training alone typically develops, which is why it's a staple in athletic and sports-performance programs where speed and jumping ability matter directly.
+
+Why technique and progression matter more here than in most training: plyometric movements involve high-impact forces landing through joints and connective tissue, meaning poor landing mechanics carry a genuinely higher injury risk than most other training. Building a reasonable strength base before adding plyometrics, and prioritising quality landings over reps, both matter more here than in most other training styles.
+
+Practical guidance: not essential for general fitness or fat-loss goals, but a valuable, specific addition for anyone with sport-performance or explosive-power goals -- start with lower-impact variations (e.g. a controlled box step-down before a full box jump) and prioritise correct landing mechanics before increasing volume or difficulty.`,
+  },
+  {
+    slug: "creatine-and-cognitive-function",
+    title: "Creatine and Cognitive Function",
+    category: "SUPPLEMENTS",
+    summary: "Emerging research into a use for creatine beyond the gym.",
+    content: `Beyond its well-established role in muscle performance (covered in the main creatine article), a growing body of research has looked at creatine's effects on brain function, since the brain -- like muscle -- relies on creatine phosphate for rapid energy production.
+
+What the research suggests: some studies show modest improvements in short-term memory and mental fatigue resistance, particularly in situations of sleep deprivation, stress, or mentally demanding tasks, and particularly in vegetarians and vegans, who typically have lower baseline creatine stores since dietary creatine comes mainly from meat and fish.
+
+An important honesty check: this research base is smaller and less consistent than the muscle-performance evidence, which is genuinely one of the most robust bodies of research in all of sports nutrition. Cognitive effects, where present, also appear more modest than the well-established strength and power benefits.
+
+Practical takeaway: not a reason to take creatine specifically for cognitive benefits if you weren't already considering it for training purposes, but a reasonable secondary consideration for someone already taking it for training who's curious about additional benefits -- particularly if vegetarian or vegan, where baseline creatine stores are more likely to be genuinely low.`,
+  },
+  {
+    slug: "soluble-vs-insoluble-fibre",
+    title: "Soluble vs Insoluble Fibre",
+    category: "NUTRITION_BASICS",
+    summary: "Two distinct types of fibre with different jobs in the body.",
+    content: `Building on the general case for fibre covered elsewhere, fibre actually comes in two distinct types with different mechanisms and benefits, and most whole plant foods contain a mix of both.
+
+Soluble fibre: dissolves in water to form a gel-like substance, found in oats, beans, apples, and citrus fruit. It's specifically linked to slowing digestion (supporting the satiety benefits covered in its own article), helping stabilise blood sugar response, and modestly lowering LDL cholesterol.
+
+Insoluble fibre: doesn't dissolve in water, found in whole grains, nuts, and vegetable skins. Its primary role is adding bulk to stool and supporting regular bowel movements -- the type most people picture when they think of fibre and digestive health.
+
+Why the distinction is practically useful: someone dealing with irregular digestion might benefit from deliberately increasing insoluble fibre sources, while someone focused on blood sugar stability or cholesterol might prioritise soluble sources -- though in practice, eating a wide variety of whole plant foods (echoing the variety principle from the gut microbiome article) naturally provides a reasonable mix of both without needing to track the distinction precisely.`,
+  },
+  {
+    slug: "vitamin-k-overlooked-vitamin",
+    title: "Vitamin K: The Overlooked Vitamin",
+    category: "SUPPLEMENTS",
+    summary: "A fat-soluble vitamin with an underrated role in bone and cardiovascular health.",
+    content: `Vitamin K gets far less attention than vitamin D or the B vitamins, but plays a genuinely important role -- most notably in blood clotting (its best-known function) and, less widely known, in directing calcium to bones rather than soft tissue and arteries.
+
+Good sources: leafy green vegetables (kale, spinach, broccoli) are the primary source of vitamin K1. Vitamin K2, a related form increasingly studied for cardiovascular and bone benefits specifically, comes mainly from fermented foods and some animal products, and is generally much lower in a typical diet than K1.
+
+Who's more likely to fall short: since vitamin K is fat-soluble, absorption depends on eating some fat alongside vitamin K-rich foods (a salad with olive oil dressing, rather than dry greens alone, meaningfully improves absorption). People on blood-thinning medication should be particularly consistent about vitamin K intake specifically, since sudden large swings can interact with how those medications work -- this is a genuine case where discussing dietary changes with a doctor matters more than for most nutrients.
+
+Practical guidance: regularly eating leafy greens with a source of fat covers most people's vitamin K needs without needing to track it specifically or supplement, outside of the blood-thinning-medication situation above.`,
+  },
+  {
+    slug: "food-allergies-vs-intolerances",
+    title: "Food Allergies vs Intolerances",
+    category: "NUTRITION_BASICS",
+    summary: "Two genuinely different conditions that get conflated constantly.",
+    content: `Food allergies and food intolerances are often used interchangeably in casual conversation, but they're mechanistically distinct conditions with different risks and different appropriate responses.
+
+Food allergies: involve the immune system mistakenly identifying a food protein as a threat, triggering a response that ranges from mild (hives, itching) to severe and life-threatening (anaphylaxis). Allergic reactions can occur from even trace amounts and typically appear rapidly. Common allergens include peanuts, tree nuts, shellfish, and dairy.
+
+Food intolerances: don't involve the immune system at all -- they're typically a digestive issue, such as lactose intolerance (insufficient lactase enzyme to break down milk sugar) or sensitivity to certain fermentable carbohydrates. Symptoms are usually digestive discomfort (bloating, gas, diarrhoea) rather than the immune-system reactions of a true allergy, are generally dose-dependent (a small amount may be fine, a large amount causes symptoms), and are not life-threatening in the way a severe allergy can be.
+
+Why the distinction matters practically: a true allergy requires strict avoidance and, in some cases, carrying emergency medication, since the risk profile is genuinely different. An intolerance often allows some flexibility with quantity. If you suspect either, proper testing with a doctor or allergist gives a much more reliable answer than self-diagnosis through elimination alone, particularly given how often the two get confused.`,
+  },
+  {
+    slug: "isometric-training-explained",
+    title: "Isometric Training Explained",
+    category: "TRAINING",
+    summary: "Building strength and stability without the joint actually moving.",
+    content: `Isometric exercises involve holding a muscle under tension at a fixed position, without the joint moving through a range of motion -- planks, wall sits, and static holds at a specific point in a lift are all isometric.
+
+What they're genuinely good for: building stability and strength at a specific joint angle, which makes them a useful rehabilitation tool when a full range of motion is painful or not yet appropriate, and useful for addressing a specific "sticking point" in a lift by holding at that exact position under load.
+
+An important limitation: strength gained from isometric training is fairly specific to the joint angle trained -- holding a squat at 90 degrees builds strength mainly around that position, not necessarily throughout the whole range of the movement, unlike training through a full range of motion, which tends to build strength more broadly across the range.
+
+Practical guidance: isometrics work well as a supplement to full-range training -- useful for rehab, addressing a specific weak point, or as a low-equipment option -- rather than as a wholesale replacement for training through a complete range of motion for general strength goals.`,
+  },
+  {
+    slug: "role-of-choline",
+    title: "The Role of Choline",
+    category: "SUPPLEMENTS",
+    summary: "An essential nutrient many people don't realise they might be under-consuming.",
+    content: `Choline is an essential nutrient involved in cell membrane structure, nerve signalling, and liver function, technically not a vitamin but often grouped alongside them given how essential it is.
+
+Why it's worth knowing about: population surveys in several countries suggest a meaningful share of people don't meet recommended choline intake, since it's concentrated in a fairly narrow set of foods -- eggs (particularly the yolk) and liver are the richest sources, with smaller amounts in meat, fish, and some cruciferous vegetables.
+
+Who's more likely to fall short: people who avoid eggs specifically (whether for allergy, preference, or a vegan diet) are at higher risk of low choline intake, since plant sources provide meaningfully less than eggs and organ meats.
+
+A relevant note for pregnancy: choline is particularly important for fetal brain development, and several health bodies have specifically flagged that typical intake during pregnancy often falls short of recommendations -- worth a specific conversation with a doctor or midwife for anyone pregnant or planning to be, rather than general population guidance.
+
+Practical guidance: regularly including eggs, meat, or fish covers most people's choline needs without extra effort; those avoiding all of these should be aware this is a genuine gap worth considering, rather than an obscure nutrient not worth thinking about.`,
+  },
+  {
+    slug: "understanding-fasted-cardio",
+    title: "Understanding Fasted Cardio",
+    category: "TRAINING",
+    summary: "Does exercising before breakfast actually burn more fat? The honest answer.",
+    content: `Fasted cardio means exercising (typically in the morning) before eating anything, based on the idea that with lower available blood sugar, the body will rely more heavily on fat stores for fuel during that specific session.
+
+What's actually true: fasted exercise does shift the fuel mix used DURING that specific session toward a higher proportion of fat -- this part is genuinely accurate. Where the popular claim breaks down is the leap to "therefore it causes more fat loss overall" -- multiple controlled studies comparing fasted vs fed exercise at matched total calories and training show no significant difference in actual fat loss over weeks, since total daily energy balance is what ultimately drives fat loss, not which specific fuel source got used during one hour of cardio.
+
+What might genuinely matter: some people report feeling more nauseous or lightheaded exercising fasted, particularly at higher intensities, which could reduce workout quality or intensity -- a real, practical downside worth weighing against the (essentially non-existent) fat-loss advantage.
+
+Practical guidance: choose based on personal preference, convenience, and how your body feels rather than any belief that fasted cardio provides a meaningful fat-loss edge -- the research doesn't support that specific claim, though there's also no harm in it if you personally feel fine and prefer training before eating.`,
+  },
+  {
+    slug: "tapering-before-a-competition",
+    title: "Tapering Before a Competition",
+    category: "TRAINING",
+    summary: "Deliberately backing off before a big event, and why it works.",
+    content: `A taper is a planned reduction in training volume in the days to weeks before a competition or important event, while keeping intensity relatively high -- distinct from the deload weeks covered in their own article, which are a routine, periodic recovery tool rather than something timed to a specific event.
+
+Why it works: training creates fatigue that accumulates faster than the underlying fitness adaptations fade -- reducing volume while keeping some higher-intensity work allows accumulated fatigue to dissipate while genuine fitness gains remain largely intact, meaning you show up to the event fresher without having lost the fitness you built.
+
+How long a taper typically lasts: this varies by sport and event demands -- endurance events (marathons, triathlons) often use a taper lasting 1-3 weeks, while strength/power sports might taper for a shorter period, closer to a week. The exact right length varies by individual and how much accumulated fatigue exists going in.
+
+A common mistake: cutting training volume too abruptly or too much can actually leave you feeling flat or sluggish rather than fresh -- a taper that's gradual (progressively reducing volume rather than stopping training almost entirely) tends to work better than an all-or-nothing approach in the final days.`,
+  },
+  {
+    slug: "micronutrient-deficiency-symptoms",
+    title: "Understanding Micronutrient Deficiency Symptoms",
+    category: "NUTRITION_BASICS",
+    summary: "Why vague fatigue and low mood are rarely enough to self-diagnose a specific deficiency.",
+    content: `It's tempting, when feeling generally run-down, to search online and land on a specific vitamin or mineral deficiency as the explanation -- but most early or mild micronutrient deficiencies actually produce fairly non-specific symptoms (fatigue, low mood, poor concentration) that overlap heavily across dozens of different possible causes, nutritional and otherwise.
+
+Why symptom-matching alone isn't reliable: iron deficiency, B12 deficiency, vitamin D deficiency, poor sleep, high stress, an underlying medical condition, and simple overtraining can all produce a very similar cluster of "just feeling off" symptoms. Confidently attributing this to one specific nutrient based on symptoms alone, without testing, is more guesswork than diagnosis.
+
+What actually distinguishes deficiencies, eventually: several deficiencies do have more specific signs at a more advanced stage (e.g. the tongue changes and specific nerve symptoms of B12 deficiency covered in the B vitamins article, or the bone pain of significant vitamin D deficiency) -- but relying on symptoms alone means waiting until a deficiency has become more significant before addressing it.
+
+Practical guidance: if you're experiencing persistent, unexplained symptoms, a blood test is the reliable way to identify an actual deficiency (or rule nutritional causes out entirely) rather than guessing from a symptom list and supplementing blind, which can waste money and, for a few nutrients like iron and vitamin D at high doses, cause its own problems if taken without an actual deficiency.`,
+  },
+  {
+    slug: "insulin-sensitivity-and-exercise",
+    title: "Insulin Sensitivity and Exercise",
+    category: "TRAINING",
+    summary: "How movement directly improves how well your body responds to insulin.",
+    content: `Insulin sensitivity refers to how effectively your cells respond to insulin's signal to take up glucose from the blood. Higher sensitivity is generally favourable -- it means less insulin is needed to manage blood sugar effectively, which is relevant both for general metabolic health and for anyone managing or trying to prevent type 2 diabetes.
+
+How exercise improves it, mechanically: muscle contraction itself triggers glucose uptake into muscle cells through a pathway that's partly independent of insulin, and this effect can persist for hours after a single session ends. Regular training also increases the number of glucose transporters in muscle cells over time, compounding the benefit.
+
+Which types of exercise help: both resistance training and cardiovascular exercise improve insulin sensitivity, through somewhat different mechanisms -- resistance training builds more muscle mass (a larger "reservoir" for glucose disposal), while cardio has a more immediate acute effect on glucose uptake during and after a session. Combining both appears to offer complementary benefits rather than one clearly outperforming the other.
+
+Practical takeaway: this is one of the more direct, well-established mechanisms by which regular exercise supports metabolic health, distinct from and in addition to any effect on body weight -- meaningful improvements in insulin sensitivity happen even without significant weight change, from exercise alone.`,
+  },
+  {
+    slug: "exercise-induced-muscle-damage",
+    title: "Understanding Exercise-Induced Muscle Damage",
+    category: "RECOVERY",
+    summary: "What's actually happening at the tissue level when a hard workout leaves you sore.",
+    content: `Exercise-induced muscle damage refers to microscopic damage to muscle fibres from unfamiliar or intense exercise -- particularly movements emphasising the eccentric (lengthening) phase of a lift, like the lowering portion of a squat or bicep curl.
+
+How this relates to soreness: this microscopic damage is a significant contributor to the delayed-onset muscle soreness (DOMS) covered in its own article, though DOMS and the underlying damage aren't perfectly correlated -- some damage occurs without much perceived soreness, and vice versa.
+
+Why this damage isn't simply "bad": it's part of the normal adaptive process -- the repair process that follows this damage is a meaningful part of how muscles become larger and more resilient over time. This is also why the "repeated bout effect" exists: doing the same exercise again within a couple of weeks produces markedly less damage and soreness than the first time, as the muscle adapts protective mechanisms.
+
+Practical implications: this is part of why introducing a new exercise or dramatically increasing volume gradually (rather than an aggressive jump) tends to work better than diving in at full intensity -- allowing the adaptive process to build some protective effect before pushing hard, rather than courting a level of damage and soreness severe enough to disrupt training consistency for the following week.`,
+  },
 ];

@@ -1247,6 +1247,57 @@ const FOODS: SeedFood[] = [
     fibrePer100g: 3.5,
     sugarPer100g: 7.5,
   },
+
+  // --- Round 6 staples ---
+  {
+    slug: "cinnamon",
+    name: "Cinnamon, ground",
+    category: "pantry",
+    caloriesPer100g: 247,
+    proteinPer100g: 4.0,
+    carbsPer100g: 81.0,
+    fatPer100g: 1.2,
+    fibrePer100g: 53.0,
+  },
+  {
+    slug: "red-lentils-cooked",
+    name: "Red lentils, cooked",
+    category: "grain",
+    caloriesPer100g: 116,
+    proteinPer100g: 9.0,
+    carbsPer100g: 20.1,
+    fatPer100g: 0.4,
+    fibrePer100g: 7.9,
+  },
+  {
+    slug: "pineapple-raw",
+    name: "Pineapple, raw",
+    category: "fruit",
+    caloriesPer100g: 50,
+    proteinPer100g: 0.5,
+    carbsPer100g: 13.1,
+    fatPer100g: 0.1,
+    fibrePer100g: 1.4,
+    sugarPer100g: 10.0,
+  },
+  {
+    slug: "protein-powder-whey",
+    name: "Whey protein powder",
+    category: "pantry",
+    caloriesPer100g: 380,
+    proteinPer100g: 78.0,
+    carbsPer100g: 8.0,
+    fatPer100g: 5.0,
+  },
+  {
+    slug: "beef-steak-raw",
+    name: "Beef steak, lean, raw",
+    category: "meat",
+    caloriesPer100g: 172,
+    proteinPer100g: 21.0,
+    carbsPer100g: 0,
+    fatPer100g: 9.0,
+  },
 ];
 
 async function main() {
