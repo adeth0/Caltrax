@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { getYesterdayRange } from "@/lib/dates";
 import { FOOD_SOURCE_TO_PRISMA, MEAL_TO_PRISMA } from "@/lib/enumMap";
 import { lookupBarcode, searchLocalFoods, searchOpenFoodFacts, upsertFoodItem } from "@/lib/foodSearch";
 import { uploadBase64Image } from "@/lib/storage";
@@ -257,4 +258,39 @@ export async function addFavouriteByFoodIdAction(foodId: string) {
     update: {},
   });
   revalidatePath("/log");
+}
+
+/**
+ * Copies every meal entry from yesterday to today, keeping the same
+ * food, meal type, and serving size but logging each at the current
+ * time -- a well-known convenience for the common case of eating
+ * roughly the same thing two days running. Distinct from meal
+ * templates, which are deliberately saved by name for reuse; this is
+ * a one-off "just repeat yesterday" action with no setup required.
+ */
+export async function copyYesterdayAction(): Promise<{ copiedCount: number }> {
+  const userId = await requireUserId();
+
+  const { start: yStart, end: yEnd } = getYesterdayRange();
+  const yesterdayEntries = await db.mealEntry.findMany({
+    where: { userId, loggedAt: { gte: yStart, lte: yEnd } },
+  });
+
+  if (yesterdayEntries.length === 0) {
+    return { copiedCount: 0 };
+  }
+
+  await db.mealEntry.createMany({
+    data: yesterdayEntries.map((e: (typeof yesterdayEntries)[number]) => ({
+      userId,
+      foodId: e.foodId,
+      mealType: e.mealType,
+      servingQuantity: e.servingQuantity,
+      servingUnitG: e.servingUnitG,
+    })),
+  });
+
+  revalidatePath("/log");
+  revalidatePath("/dashboard");
+  return { copiedCount: yesterdayEntries.length };
 }
