@@ -122,6 +122,7 @@ model Profile {
   recipeCollections    RecipeCollection[]
   dayNotes             DayNote[]
   customExercises      Exercise[]
+  goalPresets          GoalPreset[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -395,6 +396,28 @@ model DayNote {
 
   @@unique([userId, date])
   @@map("day_notes")
+}
+
+/// A named, saveable snapshot of the goal-related profile fields --
+/// lets someone switch between e.g. "Cutting" and "Bulking" with one
+/// tap instead of manually re-editing several profile fields every
+/// time their approach changes. Activating a preset overwrites these
+/// same fields on Profile directly (recalculating goals immediately
+/// through the existing goalEngine) -- a preset is a saved snapshot to
+/// restore FROM, not a live, continuously-synced alternate profile.
+model GoalPreset {
+  id                String            @id @default(cuid())
+  userId            String
+  user              Profile           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name              String
+  primaryGoal       PrimaryGoal
+  activityLevel     ActivityLevel
+  dietaryPreference DietaryPreference
+  targetWeightKg    Float?
+  createdAt         DateTime          @default(now())
+
+  @@unique([userId, name])
+  @@map("goal_presets")
 }
 
 /// A single fast, start to (optionally still-open) end. Only one session

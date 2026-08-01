@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { DeleteAccountCard } from "@/components/settings/DeleteAccountCard";
 import { DataExportCard } from "@/components/settings/DataExportCard";
 import { ProfileEditCard, type ProfileFormValues } from "@/components/settings/ProfileEditCard";
+import { GoalPresetsCard, type GoalPresetSummary } from "@/components/settings/GoalPresetsCard";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
 import {
@@ -28,7 +29,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [reminders, wearableConnections, profile] = await Promise.all([
+  const [reminders, wearableConnections, profile, goalPresets] = await Promise.all([
     user
       ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
       : Promise.resolve([]),
@@ -36,6 +37,9 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     user
       ? withPreparedStatementRetry(() => db.profile.findUnique({ where: { id: user.id } }))
       : Promise.resolve(null),
+    user
+      ? db.goalPreset.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" } })
+      : Promise.resolve([]),
   ]);
 
   const profileFormValues: ProfileFormValues | null = profile
@@ -51,6 +55,21 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
         dietaryPreference: DIET_FROM_PRISMA[profile.dietaryPreference],
         weightUnit: profile.weightUnit === "lbs" ? "lbs" : "kg",
         heightUnit: profile.heightUnit === "ft" ? "ft" : "cm",
+      }
+    : null;
+
+  const goalPresetSummaries: GoalPresetSummary[] = goalPresets.map((p: (typeof goalPresets)[number]) => ({
+    id: p.id,
+    name: p.name,
+  }));
+
+  const currentGoalSettings = profile
+    ? {
+        name: "",
+        primaryGoal: GOAL_FROM_PRISMA[profile.primaryGoal],
+        activityLevel: ACTIVITY_FROM_PRISMA[profile.activityLevel],
+        dietaryPreference: DIET_FROM_PRISMA[profile.dietaryPreference],
+        targetWeightKg: profile.targetWeightKg,
       }
     : null;
 
@@ -109,6 +128,12 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
       {profileFormValues && (
         <div className="mt-4">
           <ProfileEditCard initial={profileFormValues} />
+        </div>
+      )}
+
+      {currentGoalSettings && (
+        <div className="mt-4">
+          <GoalPresetsCard presets={goalPresetSummaries} currentSettings={currentGoalSettings} />
         </div>
       )}
 
