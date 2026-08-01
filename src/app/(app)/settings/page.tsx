@@ -6,6 +6,7 @@ import { DeleteAccountCard } from "@/components/settings/DeleteAccountCard";
 import { DataExportCard } from "@/components/settings/DataExportCard";
 import { ProfileEditCard, type ProfileFormValues } from "@/components/settings/ProfileEditCard";
 import { GoalPresetsCard, type GoalPresetSummary } from "@/components/settings/GoalPresetsCard";
+import { DiaryShareCard } from "@/components/settings/DiaryShareCard";
 import { PushSubscribeCard } from "@/components/settings/PushSubscribeCard";
 import { RemindersCard, type ReminderRow } from "@/components/settings/RemindersCard";
 import {
@@ -29,7 +30,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [reminders, wearableConnections, profile, goalPresets] = await Promise.all([
+  const [reminders, wearableConnections, profile, goalPresets, diaryShare] = await Promise.all([
     user
       ? db.reminder.findMany({ where: { userId: user.id }, orderBy: { time: "asc" } })
       : Promise.resolve([]),
@@ -40,6 +41,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
     user
       ? db.goalPreset.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" } })
       : Promise.resolve([]),
+    user ? db.diaryShare.findUnique({ where: { userId: user.id } }) : Promise.resolve(null),
   ]);
 
   const profileFormValues: ProfileFormValues | null = profile
@@ -136,6 +138,10 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           <GoalPresetsCard presets={goalPresetSummaries} currentSettings={currentGoalSettings} />
         </div>
       )}
+
+      <div className="mt-4">
+        <DiaryShareCard initialToken={diaryShare?.token ?? null} />
+      </div>
 
       <Card className="mt-4">
         <p className="mb-3 text-sm font-medium text-text-primary">Account</p>

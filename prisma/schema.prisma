@@ -123,6 +123,7 @@ model Profile {
   dayNotes             DayNote[]
   customExercises      Exercise[]
   goalPresets          GoalPreset[]
+  diaryShare           DiaryShare?
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -418,6 +419,24 @@ model GoalPreset {
 
   @@unique([userId, name])
   @@map("goal_presets")
+}
+
+/// A read-only, unauthenticated share link for today's diary -- one
+/// per user (a new token replaces the old one rather than
+/// accumulating multiple links, keeping "how many links exist and are
+/// they still valid" simple to reason about for both the person
+/// sharing and this app). token is long and random specifically
+/// because it's the only thing standing between "public" and
+/// "private" for whoever holds the link -- treat it as a secret, not
+/// an identifier.
+model DiaryShare {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("diary_shares")
 }
 
 /// A single fast, start to (optionally still-open) end. Only one session
