@@ -4,7 +4,9 @@ import {
   type QuickAddFood,
   type TodayEntryRow,
 } from "@/components/log/LogClient";
+import { startOfDay } from "date-fns";
 import { LogModeToggle } from "@/components/log/LogModeToggle";
+import { DayNoteCard } from "@/components/log/DayNoteCard";
 import { DiagnosticErrorBoundary } from "@/components/ErrorBoundary";
 import type { ExerciseOption, RoutineOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
@@ -44,7 +46,7 @@ async function renderLogPage() {
 
   const { start, end } = getTodayRange();
 
-  const [entries, favourites, recentEntries, mealTemplates] = user
+  const [entries, favourites, recentEntries, mealTemplates, dayNote] = user
     ? await Promise.all([
         db.mealEntry.findMany({
           where: { userId: user.id, loggedAt: { gte: start, lte: end } },
@@ -68,8 +70,11 @@ async function renderLogPage() {
           orderBy: { createdAt: "desc" },
           include: { items: { include: { food: true } } },
         }),
+        db.dayNote.findUnique({
+          where: { userId_date: { userId: user.id, date: startOfDay(new Date()) } },
+        }),
       ])
-    : [[], [], [], []];
+    : [[], [], [], [], null];
 
   const [exercises, todaysWorkout, routines] = await Promise.all([
     db.exercise.findMany({ orderBy: { name: "asc" } }),
@@ -184,6 +189,9 @@ async function renderLogPage() {
         <h1 className="font-display text-2xl font-bold text-text-primary">Log</h1>
         <p className="text-sm text-text-tertiary">Track a meal, or log today&apos;s workout.</p>
       </header>
+      <div className="mb-4">
+        <DayNoteCard initialNote={dayNote?.note ?? null} />
+      </div>
       <DiagnosticErrorBoundary label="log-page">
         <LogModeToggle
           mealSlot={

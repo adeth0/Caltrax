@@ -120,6 +120,7 @@ model Profile {
   fastingSessions      FastingSession[]
   mealTemplates        MealTemplate[]
   recipeCollections    RecipeCollection[]
+  dayNotes             DayNote[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -378,6 +379,21 @@ model WaterLog {
 
   @@index([userId, loggedAt])
   @@map("water_logs")
+}
+
+/// One free-text note per calendar day -- "date" is always normalised
+/// to midnight (start of day) so there's exactly one note per day,
+/// enforced by the unique constraint, regardless of what time the note
+/// was actually written.
+model DayNote {
+  id     String   @id @default(cuid())
+  userId String
+  user   Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   DateTime
+  note   String
+
+  @@unique([userId, date])
+  @@map("day_notes")
 }
 
 /// A single fast, start to (optionally still-open) end. Only one session
