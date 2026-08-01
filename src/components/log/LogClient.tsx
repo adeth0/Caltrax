@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
-import { FoodSearchBox } from "@/components/food/FoodSearchBox";
+import { FoodSearchBox, type QuickPickFood } from "@/components/food/FoodSearchBox";
 import { BarcodeScannerModal } from "@/components/scan/BarcodeScannerModal";
 import { MealPhotoCapture } from "@/components/log/MealPhotoCapture";
 import {
@@ -374,6 +374,24 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
 
   const showQuickRows = favouriteFoods.length > 0 || recentFoods.length > 0;
 
+  // Favourites first, then recents, deduplicated by foodId -- feeds the
+  // search picker's immediate "Recent & favourites" row so it opens
+  // onto something populated and tappable rather than a blank prompt.
+  const quickPickFoods = [...favouriteFoods, ...recentFoods].filter(
+    (food, index, all) => all.findIndex((f) => f.foodId === food.foodId) === index
+  );
+  const searchQuickPicks: QuickPickFood[] = quickPickFoods.map((food) => ({
+    id: food.foodId,
+    name: food.name,
+    caloriesPer100g: food.caloriesPer100g,
+    isFavourite: food.isFavourite,
+  }));
+
+  function handleSelectQuickPickFromSearch(foodId: string) {
+    const food = quickPickFoods.find((f) => f.foodId === foodId);
+    if (food) handleSelectQuick(food);
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {mealTemplates.length > 0 && (
@@ -457,7 +475,12 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
         )}
 
         <div className="mt-4">
-          <FoodSearchBox onSelect={handleSelect} searchAction={searchFoodsAction} />
+          <FoodSearchBox
+            onSelect={handleSelect}
+            searchAction={searchFoodsAction}
+            quickPicks={searchQuickPicks}
+            onSelectQuickPick={handleSelectQuickPickFromSearch}
+          />
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">

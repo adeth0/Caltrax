@@ -2,14 +2,33 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { ChevronLeft, Search, X } from "lucide-react";
+import { ChevronLeft, Search, Star, X } from "lucide-react";
 import { getFoodCategoryVisual } from "@/lib/foodCategoryVisuals";
 import type { FoodItem } from "@/types";
+
+export interface QuickPickFood {
+  id: string;
+  name: string;
+  caloriesPer100g: number;
+  isFavourite?: boolean;
+}
 
 interface FoodSearchBoxProps {
   onSelect: (food: FoodItem) => void;
   searchAction: (query: string) => Promise<FoodItem[]>;
   placeholder?: string;
+  /**
+   * Recent/favourite foods shown as an immediate, horizontally-scrolling
+   * row the moment the picker opens, before any typing -- so it opens
+   * onto something populated and tap-ready rather than a blank "start
+   * typing" prompt, which read as too form-like/empty on first open.
+   * Optional since not every caller of this component has this data
+   * (e.g. a recipe-ingredient search has no "recent meals eaten"
+   * concept) -- decoupled from any specific caller's own data shape on
+   * purpose, so this stays reusable.
+   */
+  quickPicks?: QuickPickFood[];
+  onSelectQuickPick?: (id: string) => void;
 }
 
 /**
@@ -22,7 +41,13 @@ interface FoodSearchBoxProps {
  * when a result is tapped is entirely up to the caller, so /log and
  * /foods can each wire it to a different next step.
  */
-export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearchBoxProps) {
+export function FoodSearchBox({
+  onSelect,
+  searchAction,
+  placeholder,
+  quickPicks,
+  onSelectQuickPick,
+}: FoodSearchBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FoodItem[]>([]);
@@ -135,7 +160,41 @@ export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearc
             )}
 
             {!isPending && !hasSearched && (
-              <p className="p-3 text-sm text-text-tertiary">Start typing to search foods.</p>
+              <div>
+                {quickPicks && quickPicks.length > 0 ? (
+                  <>
+                    <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      Recent &amp; favourites
+                    </p>
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {quickPicks.map((food) => (
+                        <button
+                          key={food.id}
+                          type="button"
+                          onClick={() => onSelectQuickPick?.(food.id)}
+                          className="control focus-ring flex shrink-0 flex-col items-center gap-1.5 rounded-control bg-surface-raised px-3 py-2.5"
+                        >
+                          <div className="bg-brand/15 flex h-11 w-11 items-center justify-center rounded-full text-brand">
+                            {food.isFavourite ? (
+                              <Star className="h-5 w-5 fill-current" />
+                            ) : (
+                              <Search className="h-5 w-5" />
+                            )}
+                          </div>
+                          <span className="max-w-[80px] truncate text-xs font-medium text-text-primary">
+                            {food.name}
+                          </span>
+                          <span className="text-[11px] text-text-tertiary">
+                            {Math.round(food.caloriesPer100g)} kcal
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="p-3 text-sm text-text-tertiary">Start typing to search foods.</p>
+                )}
+              </div>
             )}
 
             {!isPending && results.length > 0 && (
