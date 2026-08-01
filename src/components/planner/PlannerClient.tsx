@@ -182,13 +182,20 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                 className={cn(
                   "control focus-ring touch-target flex shrink-0 flex-col items-center px-3 py-2 transition-colors",
                   isSelected
-                    ? "bg-accent-info/20 text-accent-info"
+                    ? "bg-brand text-brand-foreground"
                     : "bg-surface-raised text-text-secondary hover:bg-border-strong"
                 )}
               >
                 <span className="text-[10px] uppercase tracking-wide">{format(date, "EEE")}</span>
                 <span className="text-sm font-medium">{format(date, "d")}</span>
-                {day === todayStr && <span className="mt-0.5 h-1 w-1 rounded-full bg-accent-info" />}
+                {day === todayStr && (
+                  <span
+                    className={cn(
+                      "mt-0.5 h-1 w-1 rounded-full",
+                      isSelected ? "bg-brand-foreground" : "bg-brand"
+                    )}
+                  />
+                )}
               </button>
             );
           })}
@@ -255,7 +262,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                     onClick={() => setMode("food")}
                     className={cn(
                       "control focus-ring px-3 py-1 text-xs font-medium",
-                      mode === "food" ? "bg-accent-info/20 text-accent-info" : "text-text-tertiary"
+                      mode === "food" ? "bg-brand text-brand-foreground" : "text-text-tertiary"
                     )}
                   >
                     Search food
@@ -266,7 +273,7 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
                       onClick={() => setMode("recipe")}
                       className={cn(
                         "control focus-ring px-3 py-1 text-xs font-medium",
-                        mode === "recipe" ? "bg-accent-info/20 text-accent-info" : "text-text-tertiary"
+                        mode === "recipe" ? "bg-brand text-brand-foreground" : "text-text-tertiary"
                       )}
                     >
                       Choose recipe
