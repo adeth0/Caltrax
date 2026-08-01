@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
+import { DateNavigator } from "@/components/dashboard/DateNavigator";
 import {
   FastingTimerCard,
   type ActiveFast,
@@ -8,7 +9,6 @@ import {
 } from "@/components/dashboard/FastingTimerCard";
 import { GettingStartedCard } from "@/components/dashboard/GettingStartedCard";
 import { HydrationCard } from "@/components/dashboard/HydrationCard";
-import { MacroRingsCard } from "@/components/dashboard/MacroRingsCard";
 import { MacroSplitChart } from "@/components/dashboard/MacroSplitChart";
 import { NewAchievementBanner } from "@/components/dashboard/NewAchievementBanner";
 import { PendingWearableRedirect } from "@/components/dashboard/PendingWearableRedirect";
@@ -17,13 +17,13 @@ import { logWaterAction } from "@/app/(app)/progress/actions";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { getDashboardEngagement } from "@/lib/dashboardTips";
 import { db, withPreparedStatementRetry } from "@/lib/db";
-import { getLastNDaysRange, getTodayRange } from "@/lib/dates";
+import { getDateRange, getLastNDaysRange, getTodayDateString } from "@/lib/dates";
 import { profileToGoalInput } from "@/lib/enumMap";
 import { calculateGoals } from "@/lib/goalEngine";
 import { estimateWorkoutCalories } from "@/lib/workoutCalories";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -34,7 +34,18 @@ export default async function DashboardPage() {
   if (!profile) redirect("/onboarding");
 
   const { targets } = calculateGoals(profileToGoalInput(profile));
-  const { start: todayStart, end: todayEnd } = getTodayRange();
+
+  const { date: dateParam } = await searchParams;
+  const todayDateStr = getTodayDateString();
+  const viewDateStr = dateParam ?? todayDateStr;
+  const isToday = viewDateStr === todayDateStr;
+
+  // "todayStart"/"todayEnd" here mean the VIEWED day, not necessarily
+  // the actual calendar today -- kept the same variable names used
+  // throughout the rest of this file to avoid a much larger rename,
+  // since every nutrition-related query below already read them
+  // correctly regardless of which specific day they represent.
+  const { start: todayStart, end: todayEnd } = getDateRange(viewDateStr);
   const { start: weekStart } = getLastNDaysRange(7);
 
   const [
@@ -140,8 +151,10 @@ export default async function DashboardPage() {
         )}
       </header>
 
-      <NewAchievementBanner achievements={newlyUnlocked} />
-      <GettingStartedCard tips={engagement.tips} />
+      {isToday && <NewAchievementBanner achievements={newlyUnlocked} />}
+      {isToday && <GettingStartedCard tips={engagement.tips} />}
+
+      <DateNavigator viewDateStr={viewDateStr} />
 
       {/* Single stacked column below lg; a real two-column desktop layout
           from lg up so a wide monitor shows more at once instead of the
@@ -152,15 +165,6 @@ export default async function DashboardPage() {
             target={Math.round(targets.calories)}
             consumed={Math.round(todayIntake.calories)}
             burned={earnedCalories}
-          />
-          <MacroRingsCard
-            targets={targets}
-            consumed={{
-              proteinG: Math.round(todayIntake.proteinG),
-              carbsG: Math.round(todayIntake.carbsG),
-              fatG: Math.round(todayIntake.fatG),
-              fibreG: Math.round(todayIntake.fibreG),
-            }}
           />
         </div>
 
@@ -178,7 +182,7 @@ export default async function DashboardPage() {
             targetMl={profile.dailyWaterGoalMl ?? targets.waterMl}
             onAdd={logWaterAction}
           />
-          <FastingTimerCard activeFast={activeFast} recentFasts={recentFasts} />
+          {isToday && <FastingTimerCard activeFast={activeFast} recentFasts={recentFasts} />}
           <WeightTrendCard
             points={weightPoints}
             goalWeightKg={profile.targetWeightKg ?? undefined}

@@ -24,3 +24,15 @@ export function getYesterdayRange(): { start: Date; end: Date } {
   yesterday.setDate(yesterday.getDate() - 1);
   return { start: startOfDay(yesterday), end: endOfDay(yesterday) };
 }
+
+/** Range for an arbitrary date, given as "yyyy-MM-dd" -- used by the Dashboard's date navigator. */
+export function getDateRange(dateStr: string): { start: Date; end: Date } {
+  const date = new Date(`${dateStr}T00:00:00`);
+  return { start: startOfDay(date), end: endOfDay(date) };
+}
+
+/** Today's date as "yyyy-MM-dd", for comparing against a navigated date. */
+export function getTodayDateString(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
