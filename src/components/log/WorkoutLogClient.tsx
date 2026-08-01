@@ -2,11 +2,12 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Dumbbell, Heart, X } from "lucide-react";
+import { ChevronLeft, Dumbbell, Heart, Search, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { getMuscleGroupColorClasses } from "@/lib/muscleGroupVisuals";
 import {
   addWorkoutSetAction,
   createCustomExerciseAction,
@@ -74,6 +75,7 @@ export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogC
   const [query, setQuery] = useState("");
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroupValue | "all">("all");
   const [selectedExercise, setSelectedExercise] = useState<ExerciseOption | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const [reps, setReps] = useState("10");
   const [weight, setWeight] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -236,134 +238,202 @@ export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogC
       )}
 
       <Card>
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search exercises…"
-          className="mb-3"
-        />
-        <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => setMuscleGroup(f.value)}
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Exercise</p>
+        {selectedExercise ? (
+          <button
+            type="button"
+            onClick={() => setShowPicker(true)}
+            className="control focus-ring touch-target flex w-full items-center gap-3 rounded-control bg-surface-raised px-3 py-2.5 text-left"
+          >
+            <div
               className={cn(
-                "control focus-ring touch-target shrink-0 px-3 py-1.5 text-sm font-medium",
-                muscleGroup === f.value
-                  ? "bg-brand text-brand-foreground"
-                  : "bg-surface-raised text-text-secondary hover:bg-border-strong"
+                "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
+                getMuscleGroupColorClasses(selectedExercise.muscleGroup)
               )}
             >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          {filtered.slice(0, 8).map((exercise) => (
-            <button
-              key={exercise.id}
-              type="button"
-              onClick={() => {
-                setSelectedExercise(exercise);
-                setError(null);
-              }}
-              className={cn(
-                "control focus-ring touch-target flex items-center justify-between rounded-control px-3 py-2.5 text-left text-sm",
-                selectedExercise?.id === exercise.id
-                  ? "bg-brand/15 text-brand"
-                  : "bg-surface-raised text-text-primary hover:bg-border-strong"
+              {selectedExercise.muscleGroup === "CARDIO" ? (
+                <Heart className="h-5 w-5" />
+              ) : (
+                <Dumbbell className="h-5 w-5" />
               )}
-            >
-              <span className="flex items-center gap-2">
-                {exercise.muscleGroup === "CARDIO" ? (
-                  <Heart className="h-4 w-4 text-text-tertiary" />
-                ) : (
-                  <Dumbbell className="h-4 w-4 text-text-tertiary" />
-                )}
-                {exercise.name}
-              </span>
-              <span className="text-xs text-text-tertiary">{MUSCLE_GROUP_LABELS[exercise.muscleGroup]}</span>
-            </button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            setShowAddExercise((v) => !v);
-            setAddExerciseError(null);
-          }}
-          className="control focus-ring touch-target mt-2 px-3 py-1.5 text-xs font-medium text-accent-info hover:underline"
-        >
-          Can&apos;t find it? Add a custom exercise
-        </button>
-
-        {showAddExercise && (
-          <div className="mt-2 flex flex-col gap-2 rounded-control bg-surface-raised p-3">
-            <Input
-              value={newExerciseName}
-              onChange={(e) => setNewExerciseName(e.target.value)}
-              placeholder="Exercise name"
-            />
-            <select
-              value={newExerciseMuscleGroup}
-              onChange={(e) => setNewExerciseMuscleGroup(e.target.value as MuscleGroupValue)}
-              className="control focus-ring rounded-control border border-border bg-surface px-3 py-2 text-sm text-text-primary"
-            >
-              {(Object.keys(MUSCLE_GROUP_LABELS) as MuscleGroupValue[]).map((mg) => (
-                <option key={mg} value={mg}>
-                  {MUSCLE_GROUP_LABELS[mg]}
-                </option>
-              ))}
-            </select>
-            <Input
-              value={newExerciseEquipment}
-              onChange={(e) => setNewExerciseEquipment(e.target.value)}
-              placeholder="Equipment (optional, e.g. Dumbbell)"
-            />
-            {addExerciseError && <p className="text-xs text-accent-danger">{addExerciseError}</p>}
-            <Button type="button" size="sm" onClick={handleAddCustomExercise} disabled={isAddingExercise}>
-              {isAddingExercise ? "Adding…" : "Add exercise"}
-            </Button>
-          </div>
-        )}
-
-        {selectedExercise && (
-          <div className="mt-3 rounded-control bg-surface-raised p-3">
-            <p className="mb-2 text-sm font-semibold text-text-primary">{selectedExercise.name}</p>
-            <div className="flex items-end gap-3">
-              <div>
-                <label className="mb-1 block text-xs text-text-secondary">Reps</label>
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                  className="w-20"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs text-text-secondary">Weight (kg)</label>
-                <Input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.5"
-                  placeholder="Bodyweight"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  className="w-28"
-                />
-              </div>
-              <Button type="button" onClick={handleAddSet} disabled={isSaving} className="flex-1">
-                {isSaving ? "Adding…" : "Add set"}
-              </Button>
             </div>
-            {error && <p className="mt-2 text-xs text-accent-danger">{error}</p>}
-          </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-text-primary">{selectedExercise.name}</p>
+              <p className="text-xs text-text-tertiary">
+                {MUSCLE_GROUP_LABELS[selectedExercise.muscleGroup]}
+              </p>
+            </div>
+            <span className="shrink-0 text-xs font-medium text-accent-info">Change</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowPicker(true)}
+            className="control focus-ring touch-target flex w-full items-center gap-2.5 rounded-control border border-border bg-surface-raised px-4 py-3 text-left text-text-tertiary"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="text-sm">Search exercises…</span>
+          </button>
         )}
       </Card>
+
+      {showPicker && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-base">
+          <div className="flex items-center gap-2 border-b border-border p-3">
+            <button
+              type="button"
+              onClick={() => setShowPicker(false)}
+              aria-label="Close exercise picker"
+              className="touch-target focus-ring control flex shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+              <input
+                type="search"
+                inputMode="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search exercises…"
+                autoComplete="off"
+                className="control focus-ring w-full rounded-control border border-border bg-surface-raised py-2.5 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-tertiary"
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-3">
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.value}
+                  type="button"
+                  onClick={() => setMuscleGroup(f.value)}
+                  className={cn(
+                    "control focus-ring touch-target shrink-0 whitespace-nowrap px-3 py-1.5 text-sm font-medium",
+                    muscleGroup === f.value
+                      ? "bg-brand text-brand-foreground"
+                      : "bg-surface-raised text-text-secondary hover:bg-border-strong"
+                  )}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            <ul className="flex flex-col gap-1">
+              {filtered.map((exercise) => (
+                <li key={exercise.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedExercise(exercise);
+                      setError(null);
+                      setShowPicker(false);
+                    }}
+                    className="control focus-ring flex w-full items-center gap-3 rounded-control px-2 py-2.5 text-left transition-colors hover:bg-surface-raised"
+                  >
+                    <div
+                      className={cn(
+                        "flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full",
+                        getMuscleGroupColorClasses(exercise.muscleGroup)
+                      )}
+                    >
+                      {exercise.muscleGroup === "CARDIO" ? (
+                        <Heart className="h-6 w-6" />
+                      ) : (
+                        <Dumbbell className="h-6 w-6" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-base font-semibold text-text-primary">{exercise.name}</p>
+                      <p className="truncate text-sm text-text-tertiary">
+                        {MUSCLE_GROUP_LABELS[exercise.muscleGroup]}
+                        {exercise.equipment ? ` · ${exercise.equipment}` : ""}
+                      </p>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowAddExercise((v) => !v);
+                setAddExerciseError(null);
+              }}
+              className="control focus-ring touch-target mt-2 px-3 py-1.5 text-xs font-medium text-accent-info hover:underline"
+            >
+              Can&apos;t find it? Add a custom exercise
+            </button>
+
+            {showAddExercise && (
+              <div className="mt-2 flex flex-col gap-2 rounded-control bg-surface-raised p-3">
+                <Input
+                  value={newExerciseName}
+                  onChange={(e) => setNewExerciseName(e.target.value)}
+                  placeholder="Exercise name"
+                />
+                <select
+                  value={newExerciseMuscleGroup}
+                  onChange={(e) => setNewExerciseMuscleGroup(e.target.value as MuscleGroupValue)}
+                  className="control focus-ring rounded-control border border-border bg-surface px-3 py-2 text-sm text-text-primary"
+                >
+                  {(Object.keys(MUSCLE_GROUP_LABELS) as MuscleGroupValue[]).map((mg) => (
+                    <option key={mg} value={mg}>
+                      {MUSCLE_GROUP_LABELS[mg]}
+                    </option>
+                  ))}
+                </select>
+                <Input
+                  value={newExerciseEquipment}
+                  onChange={(e) => setNewExerciseEquipment(e.target.value)}
+                  placeholder="Equipment (optional, e.g. Dumbbell)"
+                />
+                {addExerciseError && <p className="text-xs text-accent-danger">{addExerciseError}</p>}
+                <Button type="button" size="sm" onClick={handleAddCustomExercise} disabled={isAddingExercise}>
+                  {isAddingExercise ? "Adding…" : "Add exercise"}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {selectedExercise && (
+        <Card className="mt-4">
+          <p className="mb-2 text-sm font-semibold text-text-primary">{selectedExercise.name}</p>
+          <div className="flex items-end gap-3">
+            <div>
+              <label className="mb-1 block text-xs text-text-secondary">Reps</label>
+              <Input
+                type="number"
+                inputMode="numeric"
+                value={reps}
+                onChange={(e) => setReps(e.target.value)}
+                className="w-20"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-text-secondary">Weight (kg)</label>
+              <Input
+                type="number"
+                inputMode="decimal"
+                step="0.5"
+                placeholder="Bodyweight"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="w-28"
+              />
+            </div>
+            <Button type="button" onClick={handleAddSet} disabled={isSaving} className="flex-1">
+              {isSaving ? "Adding…" : "Add set"}
+            </Button>
+          </div>
+          {error && <p className="mt-2 text-xs text-accent-danger">{error}</p>}
+        </Card>
+      )}
 
       <Card className="mt-4">
         <div className="flex items-center justify-between">
