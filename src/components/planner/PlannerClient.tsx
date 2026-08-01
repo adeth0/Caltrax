@@ -3,6 +3,7 @@
 import { addDays, format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -158,16 +159,18 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
           <button
             type="button"
             onClick={() => goToWeek("prev")}
-            className="touch-target focus-ring control px-3 text-sm text-text-secondary hover:text-text-primary"
+            className="control focus-ring touch-target flex items-center gap-1 px-3 text-sm text-text-secondary hover:text-text-primary"
           >
-            ← Prev week
+            <ChevronLeft className="h-4 w-4" />
+            Prev week
           </button>
           <button
             type="button"
             onClick={() => goToWeek("next")}
-            className="touch-target focus-ring control px-3 text-sm text-text-secondary hover:text-text-primary"
+            className="control focus-ring touch-target flex items-center gap-1 px-3 text-sm text-text-secondary hover:text-text-primary"
           >
-            Next week →
+            Next week
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
