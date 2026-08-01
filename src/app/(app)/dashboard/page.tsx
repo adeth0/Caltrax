@@ -169,6 +169,9 @@ export default async function DashboardPage() {
             proteinG={Math.round(todayIntake.proteinG)}
             carbsG={Math.round(todayIntake.carbsG)}
             fatG={Math.round(todayIntake.fatG)}
+            proteinTargetG={targets.proteinG}
+            carbsTargetG={targets.carbsG}
+            fatTargetG={targets.fatG}
           />
           <HydrationCard
             consumedMl={waterMl}

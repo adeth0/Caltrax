@@ -4,12 +4,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
+
+function BrandHeader() {
+  return (
+    <div className="mb-8 flex flex-col items-center gap-3">
+      <Image src="/icons/icon-192.png" alt="" width={64} height={64} className="rounded-2xl shadow-lg" />
+      <span className="font-display text-2xl font-bold text-text-primary">Caltrax</span>
+    </div>
+  );
+}
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
@@ -56,7 +66,8 @@ export default function SignupPage() {
 
   if (submitted) {
     return (
-      <main className="flex min-h-screen items-center justify-center p-4">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-base p-4">
+        <BrandHeader />
         <Card className="w-full max-w-sm text-center">
           <h1 className="font-display text-xl font-bold text-text-primary">Check your email</h1>
           <p className="mt-2 text-sm text-text-secondary">
@@ -68,34 +79,38 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-base p-4">
+      <BrandHeader />
       <Card className="w-full max-w-sm">
         {accountDeleted && (
           <p className="border-accent-success/30 bg-accent-success/10 mb-4 rounded-control border p-3 text-sm text-accent-success">
             Your account and all its data have been permanently deleted.
           </p>
         )}
-        <h1 className="font-display text-2xl font-bold text-text-primary">Create your account</h1>
+        <h1 className="font-display text-xl font-bold text-text-primary">Create your account</h1>
         <p className="mt-1 text-sm text-text-secondary">Start tracking with Caltrax.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col gap-4" noValidate>
           <div>
-            <Input type="email" placeholder="Email" autoComplete="email" {...register("email")} />
+            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Email</label>
+            <Input type="email" placeholder="you@example.com" autoComplete="email" {...register("email")} />
             {errors.email && <p className="mt-1 text-xs text-accent-danger">{errors.email.message}</p>}
           </div>
           <div>
+            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Password</label>
             <Input
               type="password"
-              placeholder="Password"
+              placeholder="••••••••"
               autoComplete="new-password"
               {...register("password")}
             />
             {errors.password && <p className="mt-1 text-xs text-accent-danger">{errors.password.message}</p>}
           </div>
           <div>
+            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Confirm password</label>
             <Input
               type="password"
-              placeholder="Confirm password"
+              placeholder="••••••••"
               autoComplete="new-password"
               {...register("confirmPassword")}
             />
@@ -113,7 +128,7 @@ export default function SignupPage() {
 
         <p className="mt-6 text-center text-sm text-text-secondary">
           Already have an account?{" "}
-          <Link href="/login" className="text-accent-info hover:underline">
+          <Link href="/login" className="font-medium text-accent-info hover:underline">
             Sign in
           </Link>
         </p>

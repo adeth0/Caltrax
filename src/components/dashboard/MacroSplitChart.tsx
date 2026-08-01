@@ -1,83 +1,74 @@
 "use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { Card } from "@/components/ui/Card";
 
 interface MacroSplitChartProps {
   proteinG: number;
   carbsG: number;
   fatG: number;
+  proteinTargetG: number;
+  carbsTargetG: number;
+  fatTargetG: number;
 }
 
-// Standard Atwater factors -- kcal per gram.
-const KCAL_PER_G_PROTEIN = 4;
-const KCAL_PER_G_CARBS = 4;
-const KCAL_PER_G_FAT = 9;
+interface MacroRowData {
+  name: string;
+  consumed: number;
+  target: number;
+  colorVar: string;
+}
 
-export function MacroSplitChart({ proteinG, carbsG, fatG }: MacroSplitChartProps) {
-  const proteinKcal = proteinG * KCAL_PER_G_PROTEIN;
-  const carbsKcal = carbsG * KCAL_PER_G_CARBS;
-  const fatKcal = fatG * KCAL_PER_G_FAT;
-  const totalKcal = proteinKcal + carbsKcal + fatKcal;
+function MacroRow({ name, consumed, target, colorVar }: MacroRowData) {
+  const pct = target > 0 ? Math.min(100, Math.round((consumed / target) * 100)) : 0;
+  return (
+    <div>
+      <div className="mb-1 flex items-baseline justify-between text-sm">
+        <span className="font-medium text-text-primary">{name}</span>
+        <span className="text-text-tertiary">
+          <span className="font-semibold tabular-nums text-text-primary">{Math.round(consumed)}</span>
+          {" / "}
+          {Math.round(target)}g
+        </span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-surface-raised">
+        <div
+          className="h-full rounded-full transition-[width] duration-500 ease-out"
+          style={{ width: `${pct}%`, background: colorVar }}
+        />
+      </div>
+    </div>
+  );
+}
 
-  const data = [
-    { name: "Protein", value: proteinKcal, colorVar: "var(--macro-protein)" },
-    { name: "Carbs", value: carbsKcal, colorVar: "var(--macro-carbs)" },
-    { name: "Fat", value: fatKcal, colorVar: "var(--macro-fat)" },
-  ];
-
-  const hasData = totalKcal > 0;
-
+/**
+ * Macro progress shown as horizontal bars against each target -- the
+ * "Nutrition" view style most nutrition-tracking apps use, replacing
+ * the previous donut-chart split (which only showed the proportion
+ * eaten so far, not progress toward an actual target -- genuinely
+ * different information, and the target-progress framing is more
+ * directly useful day to day).
+ */
+export function MacroSplitChart({
+  proteinG,
+  carbsG,
+  fatG,
+  proteinTargetG,
+  carbsTargetG,
+  fatTargetG,
+}: MacroSplitChartProps) {
   return (
     <Card>
-      <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Calorie split</p>
-      <div className="label-rule" />
-      <div className="label-rule-thin" />
-      {hasData ? (
-        <div className="flex items-center gap-4">
-          <div className="relative h-32 w-32 shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={data}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius="68%"
-                  outerRadius="100%"
-                  startAngle={90}
-                  endAngle={-270}
-                  stroke="none"
-                >
-                  {data.map((entry) => (
-                    <Cell key={entry.name} fill={entry.colorVar} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-lg font-bold tabular-nums text-text-primary">
-                {Math.round(totalKcal)}
-              </span>
-              <span className="text-[10px] text-text-tertiary">kcal</span>
-            </div>
-          </div>
-          <div className="flex flex-1 flex-col gap-2">
-            {data.map((entry) => (
-              <div key={entry.name} className="flex items-center justify-between gap-2 text-sm">
-                <span className="flex items-center gap-2 text-text-secondary">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: entry.colorVar }} />
-                  {entry.name}
-                </span>
-                <span className="font-semibold tabular-nums text-text-primary">
-                  {totalKcal > 0 ? Math.round((entry.value / totalKcal) * 100) : 0}%
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <p className="text-sm text-text-tertiary">Log a meal to see today&apos;s calorie split.</p>
-      )}
+      <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Macros</p>
+      <div className="mt-3 flex flex-col gap-3">
+        <MacroRow
+          name="Protein"
+          consumed={proteinG}
+          target={proteinTargetG}
+          colorVar="var(--macro-protein)"
+        />
+        <MacroRow name="Carbs" consumed={carbsG} target={carbsTargetG} colorVar="var(--macro-carbs)" />
+        <MacroRow name="Fat" consumed={fatG} target={fatTargetG} colorVar="var(--macro-fat)" />
+      </div>
     </Card>
   );
 }
