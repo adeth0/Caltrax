@@ -129,4 +129,21 @@ export const RECIPE_IMAGE_MAP: Record<string, string> = {
   "Greek-Style Moussaka": "protein-plate",
   "Energy Bars": "snack-simple",
   "Greek Yoghurt Berry Parfait": "smoothie-bowl",
+
+  // Round 6
+  "Bagel with Peanut Butter and Banana": "snack-simple",
+  "Breakfast Rice Pudding": "oats-bowl",
+  "Eggs Benedict-Style": "eggs-plate",
+  Kedgeree: "rice-bowl",
+  "Thai Green Curry with Chicken": "curry-bowl",
+  "Red Lentil Dal": "curry-bowl",
+  "Bibimbap-Style Rice Bowl": "rice-bowl",
+  "Vietnamese-Style Pho": "soup-bowl",
+  "Beef Enchiladas": "burrito-wrap",
+  "Butter Chicken": "curry-bowl",
+  "Vegetable Tagine": "curry-bowl",
+  "Jerk-Style Chicken": "protein-plate",
+  "Beef and Broccoli Stir-Fry": "stir-fry",
+  "Protein Shake": "smoothie-bowl",
+  "Cottage Cheese with Pineapple": "snack-simple",
 };

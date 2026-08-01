@@ -2529,4 +2529,343 @@ export const CURATED_RECIPES: RecipeSeedDef[] = [
       },
     ],
   },
+
+  // --- Round 6: more breakfast ---
+  {
+    name: "Bagel with Peanut Butter and Banana",
+    description: "A filling, no-cook breakfast that travels well.",
+    category: "BREAKFAST",
+    servings: 1,
+    prepMinutes: 3,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "whole-wheat-bread", grams: 90, displayLabel: "1 wholewheat bagel" },
+      { foodSlug: "peanut-butter", grams: 30, displayLabel: "2 tbsp peanut butter" },
+      { foodSlug: "banana-raw", grams: 100, displayLabel: "1 banana, sliced" },
+    ],
+    steps: [
+      { content: "Toast the bagel if you like, then spread with peanut butter." },
+      { content: "Top with sliced banana." },
+    ],
+  },
+  {
+    name: "Breakfast Rice Pudding",
+    description: "A comforting, protein-forward twist on rice pudding, built for breakfast.",
+    category: "BREAKFAST",
+    servings: 1,
+    prepMinutes: 5,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "white-rice-cooked", grams: 150, displayLabel: "3/4 cup cooked rice" },
+      { foodSlug: "milk-semi-skimmed", grams: 200, displayLabel: "200ml milk" },
+      { foodSlug: "cinnamon", grams: 1, displayLabel: "a pinch of cinnamon" },
+      { foodSlug: "honey", grams: 15, displayLabel: "1 tbsp honey" },
+      { foodSlug: "blueberries-raw", grams: 60, displayLabel: "1/3 cup blueberries" },
+    ],
+    steps: [
+      { content: "Simmer the rice with the milk and cinnamon until thick and creamy.", durationSeconds: 600 },
+      { content: "Stir in the honey and top with blueberries before serving." },
+    ],
+  },
+
+  // --- Round 6: more brunch ---
+  {
+    name: "Eggs Benedict-Style",
+    description: "A lighter take on the brunch classic, poached eggs and all.",
+    category: "BRUNCH",
+    servings: 1,
+    prepMinutes: 8,
+    cookMinutes: 8,
+    ingredients: [
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 large eggs" },
+      { foodSlug: "whole-wheat-bread", grams: 60, displayLabel: "2 slices bread, toasted" },
+      { foodSlug: "bacon", grams: 40, displayLabel: "2 rashers bacon" },
+      {
+        foodSlug: "greek-yogurt-plain-nonfat",
+        grams: 40,
+        displayLabel: "2 tbsp Greek yoghurt, for a lighter hollandaise-style sauce",
+      },
+      { foodSlug: "lemon-raw", grams: 10, displayLabel: "a squeeze of lemon juice" },
+    ],
+    steps: [
+      { content: "Grill or fry the bacon until crisp." },
+      { content: "Poach the eggs in gently simmering water until the whites are set.", durationSeconds: 240 },
+      { content: "Mix the yoghurt with lemon juice for a light sauce." },
+      { content: "Layer the toast, bacon and poached eggs, and finish with the yoghurt sauce." },
+    ],
+  },
+  {
+    name: "Kedgeree",
+    description: "A gently spiced rice and smoked fish dish, traditionally eaten at brunch.",
+    category: "BRUNCH",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 20,
+    ingredients: [
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice" },
+      { foodSlug: "smoked-salmon", grams: 150, displayLabel: "150g smoked fish, flaked" },
+      { foodSlug: "egg-whole-raw", grams: 100, displayLabel: "2 eggs, hard-boiled and halved" },
+      { foodSlug: "onion-raw", grams: 60, displayLabel: "1/2 onion, diced" },
+      { foodSlug: "butter", grams: 15, displayLabel: "1 tbsp butter" },
+    ],
+    steps: [
+      { content: "Sauté the onion in the butter until softened.", durationSeconds: 300 },
+      { content: "Stir in the rice and warm through, then fold in the flaked fish.", durationSeconds: 240 },
+      { content: "Top with the halved hard-boiled eggs to serve." },
+    ],
+  },
+
+  // --- Round 6: more lunch ---
+  {
+    name: "Thai Green Curry with Chicken",
+    description: "A fragrant, coconut-based curry that comes together quickly.",
+    category: "LUNCH",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 20,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 350, displayLabel: "350g chicken breast, sliced" },
+      { foodSlug: "coconut-milk", grams: 250, displayLabel: "1 cup coconut milk" },
+      { foodSlug: "curry-sauce", grams: 60, displayLabel: "1/4 cup green curry paste" },
+      { foodSlug: "bell-pepper-red-raw", grams: 100, displayLabel: "1 red pepper, sliced" },
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice, to serve" },
+    ],
+    steps: [
+      { content: "Fry the curry paste briefly in a hot pan until fragrant.", durationSeconds: 60 },
+      {
+        content: "Add the chicken and cook until sealed, then pour in the coconut milk.",
+        durationSeconds: 300,
+      },
+      { content: "Add the pepper and simmer until the chicken is cooked through.", durationSeconds: 600 },
+      { content: "Serve over the rice." },
+    ],
+  },
+  {
+    name: "Red Lentil Dal",
+    description: "A warming, protein-rich, plant-based curry.",
+    category: "LUNCH",
+    servings: 3,
+    prepMinutes: 10,
+    cookMinutes: 25,
+    ingredients: [
+      { foodSlug: "red-lentils-cooked", grams: 450, displayLabel: "2 1/4 cups red lentils" },
+      { foodSlug: "onion-raw", grams: 100, displayLabel: "1 onion, diced" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "ginger-raw", grams: 6, displayLabel: "a small piece of ginger, minced" },
+      { foodSlug: "tomato-raw", grams: 150, displayLabel: "1 1/2 tomatoes, chopped" },
+      { foodSlug: "coconut-milk", grams: 100, displayLabel: "1/2 cup coconut milk" },
+    ],
+    steps: [
+      { content: "Sauté the onion, garlic and ginger until softened.", durationSeconds: 300 },
+      { content: "Add the tomatoes and cook down slightly.", durationSeconds: 300 },
+      { content: "Stir in the lentils and coconut milk, and simmer until thickened.", durationSeconds: 900 },
+    ],
+  },
+  {
+    name: "Bibimbap-Style Rice Bowl",
+    description: "A colourful Korean-inspired bowl with vegetables and a fried egg.",
+    category: "LUNCH",
+    servings: 1,
+    prepMinutes: 15,
+    cookMinutes: 15,
+    ingredients: [
+      { foodSlug: "white-rice-cooked", grams: 250, displayLabel: "1 1/4 cups cooked rice" },
+      { foodSlug: "beef-steak-raw", grams: 120, displayLabel: "120g lean beef steak, sliced thin" },
+      { foodSlug: "spinach-raw", grams: 60, displayLabel: "a large handful of spinach, wilted" },
+      { foodSlug: "carrot-raw", grams: 60, displayLabel: "1 small carrot, julienned" },
+      { foodSlug: "egg-whole-raw", grams: 50, displayLabel: "1 egg, fried" },
+      { foodSlug: "soy-sauce", grams: 15, displayLabel: "1 tbsp soy sauce" },
+    ],
+    steps: [
+      { content: "Quickly stir-fry the beef until browned.", durationSeconds: 240 },
+      { content: "Wilt the spinach and lightly sauté the carrot separately." },
+      { content: "Fry the egg to your liking." },
+      { content: "Arrange the rice topped with the beef, vegetables and egg, and drizzle with soy sauce." },
+    ],
+  },
+
+  // --- Round 6: more tea/dinner ---
+  {
+    name: "Vietnamese-Style Pho",
+    description: "A fragrant noodle soup, lighter than it looks.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 25,
+    ingredients: [
+      { foodSlug: "beef-steak-raw", grams: 200, displayLabel: "200g lean beef steak, sliced thin" },
+      { foodSlug: "rice-noodles-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice noodles" },
+      { foodSlug: "ginger-raw", grams: 10, displayLabel: "a piece of ginger, sliced" },
+      { foodSlug: "onion-raw", grams: 80, displayLabel: "1/2 onion, sliced" },
+      { foodSlug: "soy-sauce", grams: 20, displayLabel: "4 tsp soy sauce" },
+      { foodSlug: "lime-raw", grams: 15, displayLabel: "1 lime, to serve" },
+    ],
+    steps: [
+      { content: "Simmer stock with the ginger and onion to build a fragrant broth.", durationSeconds: 900 },
+      { content: "Strain the broth, then add the soy sauce." },
+      {
+        content:
+          "Divide the noodles between bowls, pour over the hot broth, and top with the raw sliced beef -- it will cook in the heat of the broth.",
+      },
+      { content: "Serve with lime wedges." },
+    ],
+  },
+  {
+    name: "Beef Enchiladas",
+    description: "A baked, cheesy Mexican-inspired dinner.",
+    category: "TEA",
+    servings: 3,
+    prepMinutes: 15,
+    cookMinutes: 25,
+    ingredients: [
+      { foodSlug: "beef-mince-5pct-raw", grams: 400, displayLabel: "400g lean beef mince" },
+      { foodSlug: "onion-raw", grams: 80, displayLabel: "1/2 onion, diced" },
+      { foodSlug: "corn-tortilla", grams: 180, displayLabel: "6 small corn tortillas" },
+      { foodSlug: "tomato-raw", grams: 200, displayLabel: "2 tomatoes, blended for the sauce" },
+      { foodSlug: "cheddar-cheese", grams: 80, displayLabel: "a generous handful of grated cheddar" },
+    ],
+    steps: [
+      { content: "Preheat the oven to 190°C (375°F)." },
+      { content: "Brown the beef mince with the onion.", durationSeconds: 480 },
+      { content: "Fill each tortilla with the beef mixture and roll, placing seam-down in a baking dish." },
+      {
+        content: "Pour over the blended tomato, top with cheese, and bake until bubbling.",
+        durationSeconds: 1200,
+      },
+    ],
+  },
+  {
+    name: "Butter Chicken",
+    description: "A rich, mildly spiced curry -- a well-loved classic.",
+    category: "TEA",
+    servings: 3,
+    prepMinutes: 15,
+    cookMinutes: 25,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 450, displayLabel: "450g chicken breast, cubed" },
+      {
+        foodSlug: "greek-yogurt-plain-nonfat",
+        grams: 100,
+        displayLabel: "1/2 cup Greek yoghurt, for marinating",
+      },
+      { foodSlug: "tomato-raw", grams: 300, displayLabel: "3 tomatoes, blended" },
+      { foodSlug: "butter", grams: 20, displayLabel: "4 tsp butter" },
+      { foodSlug: "coconut-milk", grams: 150, displayLabel: "1/2 cup coconut milk" },
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice, to serve" },
+    ],
+    steps: [
+      { content: "Marinate the chicken in the yoghurt for at least 20 minutes.", durationSeconds: 1200 },
+      { content: "Cook the chicken in the butter until browned.", durationSeconds: 480 },
+      {
+        content: "Add the blended tomato and coconut milk, and simmer until thickened.",
+        durationSeconds: 900,
+      },
+      { content: "Serve over the rice." },
+    ],
+  },
+  {
+    name: "Vegetable Tagine",
+    description: "A warmly spiced, slow-simmered North African-style stew.",
+    category: "TEA",
+    servings: 3,
+    prepMinutes: 15,
+    cookMinutes: 35,
+    ingredients: [
+      { foodSlug: "chickpeas-cooked", grams: 300, displayLabel: "1 1/2 cups chickpeas" },
+      { foodSlug: "sweet-potato-raw", grams: 300, displayLabel: "2 medium sweet potatoes, cubed" },
+      { foodSlug: "onion-raw", grams: 100, displayLabel: "1 onion, diced" },
+      { foodSlug: "tomato-raw", grams: 300, displayLabel: "3 tomatoes, chopped" },
+      { foodSlug: "dates-dried", grams: 40, displayLabel: "3 dates, chopped" },
+      { foodSlug: "cinnamon", grams: 2, displayLabel: "1/2 tsp cinnamon" },
+      { foodSlug: "couscous-cooked", grams: 300, displayLabel: "1 1/2 cups couscous, to serve" },
+    ],
+    steps: [
+      {
+        content: "Sauté the onion until softened, then add the cinnamon and cook briefly.",
+        durationSeconds: 300,
+      },
+      {
+        content:
+          "Add the sweet potato, tomatoes, chickpeas and dates, and simmer until the sweet potato is tender.",
+        durationSeconds: 1500,
+      },
+      { content: "Serve over the couscous." },
+    ],
+  },
+  {
+    name: "Jerk-Style Chicken",
+    description: "Bold, warmly spiced grilled chicken.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 15,
+    cookMinutes: 20,
+    ingredients: [
+      { foodSlug: "chicken-breast-raw-skinless", grams: 350, displayLabel: "2 chicken breasts" },
+      { foodSlug: "lime-raw", grams: 30, displayLabel: "1 lime, juiced" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "ginger-raw", grams: 6, displayLabel: "a small piece of ginger, minced" },
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice, to serve" },
+    ],
+    steps: [
+      {
+        content:
+          "Marinate the chicken in the lime juice, garlic and ginger with a generous amount of black pepper and chilli, if you like, for at least 20 minutes.",
+        durationSeconds: 1200,
+      },
+      { content: "Grill or pan-fry until cooked through and slightly charred.", durationSeconds: 720 },
+      { content: "Serve with the rice." },
+    ],
+  },
+  {
+    name: "Beef and Broccoli Stir-Fry",
+    description: "A fast, high-protein midweek dinner.",
+    category: "TEA",
+    servings: 2,
+    prepMinutes: 10,
+    cookMinutes: 12,
+    ingredients: [
+      { foodSlug: "beef-steak-raw", grams: 300, displayLabel: "300g lean beef steak, sliced thin" },
+      { foodSlug: "broccoli-raw", grams: 200, displayLabel: "1 head broccoli, cut into florets" },
+      { foodSlug: "garlic-raw", grams: 6, displayLabel: "2 cloves garlic, minced" },
+      { foodSlug: "soy-sauce", grams: 30, displayLabel: "2 tbsp soy sauce" },
+      { foodSlug: "white-rice-cooked", grams: 300, displayLabel: "1 1/2 cups cooked rice, to serve" },
+    ],
+    steps: [
+      { content: "Stir-fry the beef in a hot pan or wok until browned.", durationSeconds: 240 },
+      {
+        content: "Add the garlic and broccoli, and stir-fry until the broccoli is just tender.",
+        durationSeconds: 300,
+      },
+      { content: "Stir in the soy sauce and serve over the rice." },
+    ],
+  },
+
+  // --- Round 6: more snacks ---
+  {
+    name: "Protein Shake",
+    description: "A quick, portable way to top up protein intake.",
+    category: "SNACK",
+    servings: 1,
+    prepMinutes: 3,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "protein-powder-whey", grams: 30, displayLabel: "1 scoop whey protein powder" },
+      { foodSlug: "milk-semi-skimmed", grams: 250, displayLabel: "250ml semi-skimmed milk" },
+      { foodSlug: "banana-raw", grams: 100, displayLabel: "1 banana" },
+    ],
+    steps: [{ content: "Blend the protein powder, milk and banana until smooth." }],
+  },
+  {
+    name: "Cottage Cheese with Pineapple",
+    description: "A simple, high-protein, naturally sweet snack.",
+    category: "SNACK",
+    servings: 1,
+    prepMinutes: 3,
+    cookMinutes: 0,
+    ingredients: [
+      { foodSlug: "cottage-cheese-low-fat", grams: 150, displayLabel: "3/4 cup cottage cheese" },
+      { foodSlug: "pineapple-raw", grams: 100, displayLabel: "1 cup pineapple chunks" },
+    ],
+    steps: [{ content: "Spoon the cottage cheese into a bowl and top with pineapple chunks." }],
+  },
 ];
