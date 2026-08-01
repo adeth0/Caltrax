@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   addWorkoutSetAction,
+  createCustomExerciseAction,
   deleteRoutineAction,
   deleteWorkoutSetAction,
   saveRoutineFromTodayAction,
@@ -78,20 +79,27 @@ export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogC
   const [error, setError] = useState<string | null>(null);
   const [isSaving, startSaving] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  const [showAddExercise, setShowAddExercise] = useState(false);
+  const [newExerciseName, setNewExerciseName] = useState("");
+  const [newExerciseMuscleGroup, setNewExerciseMuscleGroup] = useState<MuscleGroupValue>("FULL_BODY");
+  const [newExerciseEquipment, setNewExerciseEquipment] = useState("");
+  const [addExerciseError, setAddExerciseError] = useState<string | null>(null);
+  const [isAddingExercise, startAddingExercise] = useTransition();
+  const [customExercises, setCustomExercises] = useState<ExerciseOption[]>([]);
   const [routineName, setRoutineName] = useState("");
   const [isSavingRoutine, startSavingRoutine] = useTransition();
   const [routineError, setRoutineError] = useState<string | null>(null);
   const [showSaveRoutine, setShowSaveRoutine] = useState(false);
 
   const filtered = useMemo(() => {
-    let list = exercises;
+    let list = [...exercises, ...customExercises];
     if (muscleGroup !== "all") list = list.filter((e) => e.muscleGroup === muscleGroup);
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((e) => e.name.toLowerCase().includes(q));
     }
     return list;
-  }, [exercises, query, muscleGroup]);
+  }, [exercises, customExercises, query, muscleGroup]);
 
   const groupedSets = useMemo(() => {
     const map = new Map<string, TodayWorkoutSetRow[]>();
@@ -155,6 +163,30 @@ export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogC
     startSavingRoutine(async () => {
       await deleteRoutineAction(routineId);
       router.refresh();
+    });
+  }
+
+  function handleAddCustomExercise() {
+    if (!newExerciseName.trim()) {
+      setAddExerciseError("Enter a name for this exercise");
+      return;
+    }
+    setAddExerciseError(null);
+    startAddingExercise(async () => {
+      try {
+        const created = await createCustomExerciseAction(
+          newExerciseName,
+          newExerciseMuscleGroup,
+          newExerciseEquipment || null
+        );
+        setCustomExercises((prev) => [...prev, created]);
+        setSelectedExercise(created);
+        setNewExerciseName("");
+        setNewExerciseEquipment("");
+        setShowAddExercise(false);
+      } catch (err) {
+        setAddExerciseError(err instanceof Error ? err.message : "Couldn't add that exercise — try again.");
+      }
     });
   }
 
@@ -256,6 +288,47 @@ export function WorkoutLogClient({ exercises, todaySets, routines }: WorkoutLogC
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowAddExercise((v) => !v);
+            setAddExerciseError(null);
+          }}
+          className="control focus-ring touch-target mt-2 px-3 py-1.5 text-xs font-medium text-accent-info hover:underline"
+        >
+          Can&apos;t find it? Add a custom exercise
+        </button>
+
+        {showAddExercise && (
+          <div className="mt-2 flex flex-col gap-2 rounded-control bg-surface-raised p-3">
+            <Input
+              value={newExerciseName}
+              onChange={(e) => setNewExerciseName(e.target.value)}
+              placeholder="Exercise name"
+            />
+            <select
+              value={newExerciseMuscleGroup}
+              onChange={(e) => setNewExerciseMuscleGroup(e.target.value as MuscleGroupValue)}
+              className="control focus-ring rounded-control border border-border bg-surface px-3 py-2 text-sm text-text-primary"
+            >
+              {(Object.keys(MUSCLE_GROUP_LABELS) as MuscleGroupValue[]).map((mg) => (
+                <option key={mg} value={mg}>
+                  {MUSCLE_GROUP_LABELS[mg]}
+                </option>
+              ))}
+            </select>
+            <Input
+              value={newExerciseEquipment}
+              onChange={(e) => setNewExerciseEquipment(e.target.value)}
+              placeholder="Equipment (optional, e.g. Dumbbell)"
+            />
+            {addExerciseError && <p className="text-xs text-accent-danger">{addExerciseError}</p>}
+            <Button type="button" size="sm" onClick={handleAddCustomExercise} disabled={isAddingExercise}>
+              {isAddingExercise ? "Adding…" : "Add exercise"}
+            </Button>
+          </div>
+        )}
 
         {selectedExercise && (
           <div className="mt-3 rounded-control bg-surface-raised p-3">

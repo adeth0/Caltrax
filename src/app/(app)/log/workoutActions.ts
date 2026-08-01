@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { MuscleGroupValue } from "@/components/log/WorkoutLogClient";
 
 async function requireUserId(): Promise<string> {
   const supabase = await createSupabaseServerClient();
@@ -105,4 +106,34 @@ export async function deleteRoutineAction(routineId: string) {
   const userId = await requireUserId();
   await db.workoutRoutine.deleteMany({ where: { id: routineId, userId } });
   revalidatePath("/log");
+}
+
+/**
+ * Creates a private, user-owned exercise -- for the case where the
+ * curated library of 47 exercises doesn't cover something specific
+ * someone actually does. Same null-means-shared / set-means-private
+ * pattern already used for user-created recipes, applied here. The new
+ * exercise appears in this user's own exercise picker immediately,
+ * indistinguishable in the UI from a curated one except by ownership.
+ */
+export async function createCustomExerciseAction(
+  name: string,
+  muscleGroup: MuscleGroupValue,
+  equipment: string | null
+): Promise<{ id: string; name: string; muscleGroup: MuscleGroupValue; equipment: string | null }> {
+  const userId = await requireUserId();
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Enter a name for this exercise");
+
+  const exercise = await db.exercise.create({
+    data: { userId, name: trimmedName, muscleGroup, equipment: equipment?.trim() || null },
+  });
+
+  revalidatePath("/log");
+  return {
+    id: exercise.id,
+    name: exercise.name,
+    muscleGroup: exercise.muscleGroup as MuscleGroupValue,
+    equipment: exercise.equipment,
+  };
 }

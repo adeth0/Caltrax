@@ -77,7 +77,10 @@ async function renderLogPage() {
     : [[], [], [], [], null];
 
   const [exercises, todaysWorkout, routines] = await Promise.all([
-    db.exercise.findMany({ orderBy: { name: "asc" } }),
+    db.exercise.findMany({
+      where: user ? { OR: [{ userId: null }, { userId: user.id }] } : { userId: null },
+      orderBy: { name: "asc" },
+    }),
     user
       ? db.workout.findFirst({
           where: { userId: user.id, loggedAt: { gte: start, lte: end } },
