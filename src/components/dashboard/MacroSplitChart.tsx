@@ -1,5 +1,6 @@
 "use client";
 
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { Card } from "@/components/ui/Card";
 
 interface MacroSplitChartProps {
@@ -11,42 +12,31 @@ interface MacroSplitChartProps {
   fatTargetG: number;
 }
 
-interface MacroRowData {
-  name: string;
-  consumed: number;
-  target: number;
-  colorVar: string;
-}
+const COLORS = {
+  carbs: "var(--macro-carbs)",
+  fat: "var(--macro-protein)",
+  protein: "var(--macro-fat)",
+};
 
-function MacroRow({ name, consumed, target, colorVar }: MacroRowData) {
-  const pct = target > 0 ? Math.min(100, Math.round((consumed / target) * 100)) : 0;
-  return (
-    <div>
-      <div className="mb-1 flex items-baseline justify-between text-sm">
-        <span className="font-medium text-text-primary">{name}</span>
-        <span className="text-text-tertiary">
-          <span className="font-semibold tabular-nums text-text-primary">{Math.round(consumed)}</span>
-          {" / "}
-          {Math.round(target)}g
-        </span>
-      </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-surface-raised">
-        <div
-          className="h-full rounded-full transition-[width] duration-500 ease-out"
-          style={{ width: `${pct}%`, background: colorVar }}
-        />
-      </div>
-    </div>
-  );
+/** % of total calories each macro represents -- protein/carbs = 4 kcal/g, fat = 9 kcal/g. */
+function macroPercents(proteinG: number, carbsG: number, fatG: number) {
+  const carbsCal = carbsG * 4;
+  const proteinCal = proteinG * 4;
+  const fatCal = fatG * 9;
+  const total = carbsCal + proteinCal + fatCal;
+  if (total <= 0) return { carbs: 0, protein: 0, fat: 0 };
+  return {
+    carbs: Math.round((carbsCal / total) * 100),
+    protein: Math.round((proteinCal / total) * 100),
+    fat: Math.round((fatCal / total) * 100),
+  };
 }
 
 /**
- * Macro progress shown as horizontal bars against each target -- the
- * "Nutrition" view style most nutrition-tracking apps use, replacing
- * the previous donut-chart split (which only showed the proportion
- * eaten so far, not progress toward an actual target -- genuinely
- * different information, and the target-progress framing is more
- * directly useful day to day).
+ * Macro breakdown as a pie chart with a Total/Goal comparison list --
+ * matching the classic "Nutrition" tab layout directly, a specific
+ * style request referencing exact screenshots, replacing this
+ * component's previous horizontal-progress-bar version.
  */
 export function MacroSplitChart({
   proteinG,
@@ -56,18 +46,68 @@ export function MacroSplitChart({
   carbsTargetG,
   fatTargetG,
 }: MacroSplitChartProps) {
+  const actual = macroPercents(proteinG, carbsG, fatG);
+  const goal = macroPercents(proteinTargetG, carbsTargetG, fatTargetG);
+  const hasData = proteinG + carbsG + fatG > 0;
+
+  const chartData = [
+    { name: "Carbohydrates", value: hasData ? actual.carbs : 1, color: COLORS.carbs },
+    { name: "Fat", value: hasData ? actual.fat : 0, color: COLORS.fat },
+    { name: "Protein", value: hasData ? actual.protein : 0, color: COLORS.protein },
+  ];
+
   return (
     <Card>
-      <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Macros</p>
-      <div className="mt-3 flex flex-col gap-3">
-        <MacroRow
-          name="Protein"
-          consumed={proteinG}
-          target={proteinTargetG}
-          colorVar="var(--macro-protein)"
-        />
-        <MacroRow name="Carbs" consumed={carbsG} target={carbsTargetG} colorVar="var(--macro-carbs)" />
-        <MacroRow name="Fat" consumed={fatG} target={fatTargetG} colorVar="var(--macro-fat)" />
+      <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Calorie breakdown</p>
+
+      <div className="mt-3 flex items-center gap-4">
+        <div className="relative h-32 w-32 shrink-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={chartData} dataKey="value" innerRadius={0} outerRadius="100%" stroke="none">
+                {chartData.map((entry) => (
+                  <Cell key={entry.name} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          {hasData && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <span className="bg-base/70 rounded px-1.5 py-0.5 text-sm font-bold text-text-primary">
+                {actual.carbs}%
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1">
+          <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 gap-y-1.5 text-xs">
+            <span className="text-text-tertiary">&nbsp;</span>
+            <span className="text-right font-semibold text-text-tertiary">Total</span>
+            <span className="text-right font-semibold text-text-tertiary">Goal</span>
+
+            <span className="flex items-center gap-1.5 text-text-primary">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: COLORS.carbs }} />
+              Carbohydrates
+            </span>
+            <span className="text-right tabular-nums text-text-primary">{actual.carbs}%</span>
+            <span className="text-right tabular-nums text-text-tertiary">{goal.carbs}%</span>
+
+            <span className="flex items-center gap-1.5 text-text-primary">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: COLORS.fat }} />
+              Fat
+            </span>
+            <span className="text-right tabular-nums text-text-primary">{actual.fat}%</span>
+            <span className="text-right tabular-nums text-text-tertiary">{goal.fat}%</span>
+
+            <span className="flex items-center gap-1.5 text-text-primary">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: COLORS.protein }} />
+              Protein
+            </span>
+            <span className="text-right tabular-nums text-text-primary">{actual.protein}%</span>
+            <span className="text-right tabular-nums text-text-tertiary">{goal.protein}%</span>
+          </div>
+        </div>
       </div>
     </Card>
   );
