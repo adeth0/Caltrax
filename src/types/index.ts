@@ -84,6 +84,8 @@ export interface FoodItem {
   sourceId: string;
   name: string;
   brand?: string;
+  /** e.g. "meat", "vegetable", "fruit", "grain", "dairy", "nuts", "pantry" -- drives the icon shown in search results. Only reliably populated for locally-seeded foods, not Open Food Facts results. */
+  category?: string;
   barcode?: string;
   servingSizeG?: number;
   servingSizeLabel?: string;
