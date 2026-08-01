@@ -57,7 +57,7 @@ export function ProgressTabs(props: ProgressTabsProps) {
             className={cn(
               "control focus-ring touch-target shrink-0 whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors",
               tab === t.value
-                ? "bg-accent-info/20 text-accent-info"
+                ? "bg-brand text-brand-foreground"
                 : "text-text-tertiary hover:text-text-secondary"
             )}
           >

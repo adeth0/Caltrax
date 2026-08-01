@@ -44,7 +44,7 @@ export function PillSelect({ name, value, onChange, options, columns = 1 }: Pill
             className={cn(
               "control focus-ring touch-target flex flex-col items-start gap-0.5 border px-4 py-2.5 text-left text-sm transition-colors",
               isActive
-                ? "border-accent-info/50 bg-accent-info/15 text-text-primary"
+                ? "border-brand/60 bg-brand/15 text-text-primary"
                 : "border-border bg-surface-raised text-text-secondary hover:bg-border-strong"
             )}
           >

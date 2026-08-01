@@ -44,7 +44,7 @@ export function ReportsClient() {
               className={cn(
                 "control focus-ring touch-target flex-1 px-3 py-2 text-sm font-medium transition-colors",
                 period === opt.value
-                  ? "bg-accent-info/20 text-accent-info"
+                  ? "bg-brand text-brand-foreground"
                   : "text-text-tertiary hover:text-text-secondary"
               )}
             >

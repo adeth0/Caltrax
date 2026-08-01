@@ -167,7 +167,7 @@ export function RecipesClient({ recipes }: RecipesClientProps) {
                     className={cn(
                       "control focus-ring touch-target shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-colors",
                       mealType === opt.value
-                        ? "bg-accent-info/20 text-accent-info"
+                        ? "bg-brand text-brand-foreground"
                         : "bg-surface-raised text-text-secondary hover:bg-border-strong"
                     )}
                   >

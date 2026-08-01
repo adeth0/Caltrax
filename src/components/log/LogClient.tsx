@@ -424,7 +424,7 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
               className={cn(
                 "control focus-ring touch-target shrink-0 whitespace-nowrap px-4 py-2 text-sm font-medium transition-colors",
                 mealType === tab.value
-                  ? "bg-accent-info/20 text-accent-info"
+                  ? "bg-brand text-brand-foreground"
                   : "bg-surface-raised text-text-secondary hover:bg-border-strong"
               )}
             >

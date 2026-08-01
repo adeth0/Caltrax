@@ -41,7 +41,7 @@ export function InsightsCard() {
               className={cn(
                 "touch-target control px-3 py-1 text-xs font-medium transition-colors",
                 period === p
-                  ? "bg-accent-info/20 text-accent-info"
+                  ? "bg-brand text-brand-foreground"
                   : "text-text-tertiary hover:text-text-secondary"
               )}
             >
