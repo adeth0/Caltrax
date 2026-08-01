@@ -189,6 +189,7 @@ export async function searchLocalFoods(query: string, take = 10): Promise<FoodIt
     sourceId: row.sourceId,
     name: row.name,
     brand: row.brand ?? undefined,
+    category: row.category ?? undefined,
     barcode: row.barcode ?? undefined,
     servingSizeG: row.servingSizeG ?? undefined,
     servingSizeLabel: row.servingSizeLabel ?? undefined,
