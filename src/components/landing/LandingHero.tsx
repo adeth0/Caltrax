@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Camera, ScanLine, Sparkles, Watch } from "lucide-react";
+import { BarChart3, Camera, ChefHat, Dumbbell, Pill, Ruler, ScanLine, Timer, Watch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/Card";
 import { LandingWordmark } from "./LandingWordmark";
@@ -19,15 +19,46 @@ const FEATURES = [
     description: "Log packaged food in seconds — point your camera, confirm, done.",
   },
   {
+    icon: ChefHat,
+    title: "Recipe library",
+    description: "121+ curated recipes plus your own, saved to custom collections.",
+  },
+  {
+    icon: Dumbbell,
+    title: "Workout tracking",
+    description: "Log sets, reps and weight, save routines, and watch your strength history.",
+  },
+  {
+    icon: Ruler,
+    title: "Progress, fully tracked",
+    description: "Weight, body measurements, and progress photos, all in one place.",
+  },
+  {
+    icon: Timer,
+    title: "Fasting timer",
+    description: "A live, visual timer for intermittent fasting, right on your dashboard.",
+  },
+  {
+    icon: Pill,
+    title: "Supplements",
+    description: "A searchable database with suggestions based on your actual goals.",
+  },
+  {
     icon: Watch,
     title: "Wearable sync",
     description: "Connect Fitbit, Withings, Oura or Whoop for automatic activity and weigh-ins.",
   },
   {
-    icon: Sparkles,
+    icon: BarChart3,
     title: "Real insight",
     description: "Weekly and monthly reports that explain what's working, not just raw numbers.",
   },
+];
+
+const STATS = [
+  { value: "121+", label: "Recipes" },
+  { value: "105+", label: "Articles" },
+  { value: "47+", label: "Exercises" },
 ];
 
 function fadeUp(delay: number) {
@@ -60,7 +91,16 @@ export function LandingHero() {
         </Button>
       </motion.div>
 
-      <motion.div {...fadeUp(0.45)} className="mt-20 grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2">
+      <motion.div {...fadeUp(0.4)} className="mt-10 flex gap-8 sm:gap-12">
+        {STATS.map((stat) => (
+          <div key={stat.label} className="text-center">
+            <p className="font-display text-2xl font-black text-brand">{stat.value}</p>
+            <p className="text-xs text-text-tertiary">{stat.label}</p>
+          </div>
+        ))}
+      </motion.div>
+
+      <motion.div {...fadeUp(0.5)} className="mt-16 grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-3">
         {FEATURES.map((feature) => (
           <Card key={feature.title}>
             <feature.icon className="h-5 w-5 text-brand" />
