@@ -88,7 +88,10 @@ export function FoodSearchBox({ onSelect, searchAction, placeholder }: FoodSearc
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex flex-col bg-base">
-          <div className="flex items-center gap-2 border-b border-border p-3">
+          <div
+            className="flex items-center gap-2 border-b border-border p-3"
+            style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
+          >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
