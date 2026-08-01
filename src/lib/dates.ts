@@ -18,3 +18,9 @@ export function getLastNDaysRange(days: number): { start: Date; end: Date } {
   start.setDate(start.getDate() - (days - 1));
   return { start, end: endOfDay(now) };
 }
+
+export function getYesterdayRange(): { start: Date; end: Date } {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return { start: startOfDay(yesterday), end: endOfDay(yesterday) };
+}

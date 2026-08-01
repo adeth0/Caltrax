@@ -14,6 +14,7 @@ import { BarcodeScannerModal } from "@/components/scan/BarcodeScannerModal";
 import { MealPhotoCapture } from "@/components/log/MealPhotoCapture";
 import {
   addFavouriteByFoodIdAction,
+  copyYesterdayAction,
   deleteMealEntryAction,
   logCachedFoodAction,
   logCustomFoodAction,
@@ -118,6 +119,8 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
   const [templateError, setTemplateError] = useState<string | null>(null);
   const [isSavingTemplate, startSavingTemplate] = useTransition();
   const [isLoggingTemplate, startLoggingTemplate] = useTransition();
+  const [isCopyingYesterday, startCopyingYesterday] = useTransition();
+  const [copyYesterdayError, setCopyYesterdayError] = useState<string | null>(null);
   const [customFood, setCustomFood] = useState({
     name: "",
     calories: "",
@@ -290,6 +293,22 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
     startLoggingTemplate(async () => {
       await deleteMealTemplateAction(templateId);
       router.refresh();
+    });
+  }
+
+  function handleCopyYesterday() {
+    setCopyYesterdayError(null);
+    startCopyingYesterday(async () => {
+      try {
+        const { copiedCount } = await copyYesterdayAction();
+        if (copiedCount === 0) {
+          setCopyYesterdayError("Nothing was logged yesterday to copy.");
+          return;
+        }
+        router.refresh();
+      } catch {
+        setCopyYesterdayError("Couldn't copy yesterday's meals — try again.");
+      }
     });
   }
 
@@ -719,7 +738,22 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
       <Card>
         <p className="mb-3 text-sm font-medium text-text-primary">Today&apos;s log</p>
         {todayEntries.length === 0 ? (
-          <p className="text-sm text-text-tertiary">Nothing logged yet today — search above to add a meal.</p>
+          <div>
+            <p className="text-sm text-text-tertiary">
+              Nothing logged yet today — search above to add a meal.
+            </p>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleCopyYesterday}
+              disabled={isCopyingYesterday}
+              className="mt-2"
+            >
+              {isCopyingYesterday ? "Copying…" : "Copy yesterday's meals"}
+            </Button>
+            {copyYesterdayError && <p className="mt-1.5 text-xs text-accent-danger">{copyYesterdayError}</p>}
+          </div>
         ) : (
           <div className="flex flex-col gap-4">
             {grouped
