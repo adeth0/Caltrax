@@ -121,6 +121,7 @@ model Profile {
   mealTemplates        MealTemplate[]
   recipeCollections    RecipeCollection[]
   dayNotes             DayNote[]
+  customExercises      Exercise[]
   supplementLogs       SupplementLog[]
 
   @@map("profiles")
@@ -642,16 +643,22 @@ enum MuscleGroup {
 /// Curated exercise library -- global reference data, not tied to any
 /// one user, same pattern as CURATED recipes and Supplement.
 model Exercise {
-  id          String        @id @default(cuid())
+  id          String            @id @default(cuid())
+  /// Null for curated exercises -- shared, visible to everyone. Set for
+  /// a user's own custom exercise -- private to that user, same
+  /// null-means-shared pattern already used on Recipe.
+  userId      String?
+  user        Profile?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   muscleGroup MuscleGroup
   /// e.g. "Barbell", "Dumbbell", "Bodyweight", "Machine", "Cable" -- free text, purely descriptive.
   equipment   String?
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime          @default(now())
   sets        WorkoutSet[]
   routineUses RoutineExercise[]
 
   @@index([muscleGroup])
+  @@index([userId])
   @@map("exercises")
 }
 
