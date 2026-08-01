@@ -7,6 +7,7 @@ import { FoodSearchTab } from "@/components/food/FoodSearchTab";
 import type { RecipeSummary } from "@/components/recipes/RecipesClient";
 import { FindMealsClient, type CuratedRecipeSummary } from "@/components/recipes/FindMealsClient";
 import { MyRecipesClient } from "@/components/recipes/MyRecipesClient";
+import { RestaurantSearchTab } from "./RestaurantSearchTab";
 import type { RecipeCollectionSummary } from "@/components/recipes/RecipeCollectionsSection";
 import {
   SupplementsClient,
@@ -26,7 +27,7 @@ interface FoodsTabsProps {
   todaySupplementLogs: LoggedSupplement[];
 }
 
-type TabValue = "search" | "meals" | "community" | "supplements" | "recipes";
+type TabValue = "search" | "meals" | "community" | "supplements" | "recipes" | "restaurants";
 
 export function FoodsTabs({
   recipes,
@@ -47,6 +48,7 @@ export function FoodsTabs({
     { value: "community", label: "User recipes" },
     { value: "supplements", label: "Supplements" },
     { value: "recipes", label: `My recipes${myRecipesCount > 0 ? ` (${myRecipesCount})` : ""}` },
+    { value: "restaurants", label: "Restaurants" },
   ];
 
   return (
@@ -99,6 +101,11 @@ export function FoodsTabs({
       {tab === "recipes" && (
         <DiagnosticErrorBoundary label="recipes">
           <MyRecipesClient savedRecipes={savedRecipes} createdRecipes={recipes} collections={collections} />
+        </DiagnosticErrorBoundary>
+      )}
+      {tab === "restaurants" && (
+        <DiagnosticErrorBoundary label="restaurants">
+          <RestaurantSearchTab />
         </DiagnosticErrorBoundary>
       )}
     </div>
