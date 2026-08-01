@@ -758,50 +758,58 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
           <div className="flex flex-col gap-4">
             {grouped
               .filter((g) => g.entries.length > 0)
-              .map((g) => (
-                <div key={g.value}>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-tertiary">
-                    {g.label}
-                  </p>
-                  <ul className="flex flex-col gap-2">
-                    {g.entries.map((entry) => (
-                      <li
-                        key={entry.id}
-                        className="flex items-center justify-between gap-3 rounded-control bg-surface-raised px-3 py-2"
-                      >
-                        <div className="flex min-w-0 items-center gap-3">
-                          {entry.imageUrl ? (
-                            <Image
-                              src={entry.imageUrl}
-                              alt=""
-                              width={36}
-                              height={36}
-                              className="h-9 w-9 shrink-0 rounded-lg object-cover"
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="h-9 w-9 shrink-0 rounded-lg bg-border" aria-hidden />
-                          )}
-                          <div className="min-w-0">
-                            <p className="truncate text-sm text-text-primary">{entry.foodName}</p>
-                            <p className="text-xs text-text-tertiary">
-                              {Math.round(entry.servingGrams)}g · {Math.round(entry.calories)} kcal
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          disabled={isDeleting}
-                          onClick={() => handleRequestDelete(entry)}
-                          className="touch-target focus-ring shrink-0 rounded-control px-2 text-xs text-text-tertiary hover:text-accent-danger"
+              .map((g) => {
+                const groupCalories = g.entries.reduce((sum, e) => sum + e.calories, 0);
+                return (
+                  <div key={g.value}>
+                    <div className="mb-2 flex items-baseline justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
+                        {g.label}
+                      </p>
+                      <p className="text-xs font-semibold text-text-secondary">
+                        {Math.round(groupCalories)} cal
+                      </p>
+                    </div>
+                    <ul className="flex flex-col gap-2">
+                      {g.entries.map((entry) => (
+                        <li
+                          key={entry.id}
+                          className="flex items-center justify-between gap-3 rounded-control bg-surface-raised px-3 py-2"
                         >
-                          Remove
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                          <div className="flex min-w-0 items-center gap-3">
+                            {entry.imageUrl ? (
+                              <Image
+                                src={entry.imageUrl}
+                                alt=""
+                                width={36}
+                                height={36}
+                                className="h-9 w-9 shrink-0 rounded-lg object-cover"
+                                unoptimized
+                              />
+                            ) : (
+                              <div className="h-9 w-9 shrink-0 rounded-lg bg-border" aria-hidden />
+                            )}
+                            <div className="min-w-0">
+                              <p className="truncate text-sm text-text-primary">{entry.foodName}</p>
+                              <p className="text-xs text-text-tertiary">
+                                {Math.round(entry.servingGrams)}g · {Math.round(entry.calories)} kcal
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            disabled={isDeleting}
+                            onClick={() => handleRequestDelete(entry)}
+                            className="touch-target focus-ring shrink-0 rounded-control px-2 text-xs text-text-tertiary hover:text-accent-danger"
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
           </div>
         )}
       </Card>
