@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { addDays, endOfDay, format, startOfWeek } from "date-fns";
 import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
 import { DateNavigator } from "@/components/dashboard/DateNavigator";
@@ -47,6 +47,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   // correctly regardless of which specific day they represent.
   const { start: todayStart, end: todayEnd } = getDateRange(viewDateStr);
   const { start: weekStart } = getLastNDaysRange(7);
+  const stripWeekStart = startOfWeek(new Date(`${viewDateStr}T00:00:00`), { weekStartsOn: 1 });
+  const stripWeekEnd = endOfDay(addDays(stripWeekStart, 6));
 
   const [
     mealEntries,
@@ -58,6 +60,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     todaysWorkoutSetCount,
     openFast,
     recentCompletedFasts,
+    weekMealEntries,
   ] = await Promise.all([
     db.mealEntry.findMany({
       where: { userId: user.id, loggedAt: { gte: todayStart, lte: todayEnd } },
@@ -80,7 +83,17 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       orderBy: { startedAt: "desc" },
       take: 5,
     }),
+    db.mealEntry.findMany({
+      where: { userId: user.id, loggedAt: { gte: stripWeekStart, lte: stripWeekEnd } },
+      select: { loggedAt: true },
+    }),
   ]);
+
+  const loggedDateStrs = [
+    ...new Set(
+      weekMealEntries.map((e: (typeof weekMealEntries)[number]): string => format(e.loggedAt, "yyyy-MM-dd"))
+    ),
+  ] as string[];
 
   const todayIntake = mealEntries.reduce(
     (acc, e: (typeof mealEntries)[number]) => {
@@ -154,7 +167,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       {isToday && <NewAchievementBanner achievements={newlyUnlocked} />}
       {isToday && <GettingStartedCard tips={engagement.tips} />}
 
-      <DateNavigator viewDateStr={viewDateStr} />
+      <DateNavigator viewDateStr={viewDateStr} loggedDateStrs={loggedDateStrs} />
 
       {/* Single stacked column below lg; a real two-column desktop layout
           from lg up so a wide monitor shows more at once instead of the
