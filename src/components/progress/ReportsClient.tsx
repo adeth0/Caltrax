@@ -1,5 +1,6 @@
 "use client";
 
+import { Beef, Droplet, Droplets, Flame, Scale, Wheat } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card } from "@/components/ui/Card";
@@ -64,23 +65,27 @@ export function ReportsClient() {
 
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <Stat
+                icon={Flame}
                 label="Avg calories"
                 value={`${report.avgCalories}`}
                 sub={`of ${report.targetCalories}`}
               />
               <Stat
+                icon={Beef}
                 label="Avg protein"
                 value={`${report.avgProteinG}g`}
                 sub={`of ${report.targetProteinG}g`}
               />
-              <Stat label="Avg carbs" value={`${report.avgCarbsG}g`} sub="" />
-              <Stat label="Avg fat" value={`${report.avgFatG}g`} sub="" />
+              <Stat icon={Wheat} label="Avg carbs" value={`${report.avgCarbsG}g`} sub="" />
+              <Stat icon={Droplet} label="Avg fat" value={`${report.avgFatG}g`} sub="" />
               <Stat
+                icon={Droplets}
                 label="Avg water"
                 value={`${(report.avgWaterMl / 1000).toFixed(1)}L`}
                 sub={`of ${(report.targetWaterMl / 1000).toFixed(1)}L`}
               />
               <Stat
+                icon={Scale}
                 label="Weight change"
                 value={
                   report.weightChangeKg !== null
@@ -141,12 +146,25 @@ export function ReportsClient() {
   );
 }
 
-function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
+function Stat({
+  icon: Icon,
+  label,
+  value,
+  sub,
+}: {
+  icon: typeof Flame;
+  label: string;
+  value: string;
+  sub: string;
+}) {
   return (
-    <div>
-      <p className="text-xs text-text-tertiary">{label}</p>
-      <p className="text-base font-semibold text-text-primary">{value}</p>
-      {sub && <p className="text-[10px] text-text-tertiary">{sub}</p>}
+    <div className="flex items-start gap-2">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+      <div>
+        <p className="text-xs text-text-tertiary">{label}</p>
+        <p className="text-base font-semibold text-text-primary">{value}</p>
+        {sub && <p className="text-[10px] text-text-tertiary">{sub}</p>}
+      </div>
     </div>
   );
 }
