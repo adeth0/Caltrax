@@ -11,7 +11,8 @@ import { DiagnosticErrorBoundary } from "@/components/ErrorBoundary";
 import type { ExerciseOption, RoutineOption, TodayWorkoutSetRow } from "@/components/log/WorkoutLogClient";
 import { db } from "@/lib/db";
 import { getTodayRange } from "@/lib/dates";
-import { MEAL_FROM_PRISMA } from "@/lib/enumMap";
+import { MEAL_FROM_PRISMA, profileToGoalInput } from "@/lib/enumMap";
+import { calculateGoals } from "@/lib/goalEngine";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function LogPage() {
@@ -46,7 +47,7 @@ async function renderLogPage() {
 
   const { start, end } = getTodayRange();
 
-  const [entries, favourites, recentEntries, mealTemplates, dayNote] = user
+  const [entries, favourites, recentEntries, mealTemplates, dayNote, profile] = user
     ? await Promise.all([
         db.mealEntry.findMany({
           where: { userId: user.id, loggedAt: { gte: start, lte: end } },
@@ -73,8 +74,21 @@ async function renderLogPage() {
         db.dayNote.findUnique({
           where: { userId_date: { userId: user.id, date: startOfDay(new Date()) } },
         }),
+        db.profile.findUnique({ where: { id: user.id } }),
       ])
-    : [[], [], [], [], null];
+    : [[], [], [], [], null, null];
+
+  const dailyTargets = profile
+    ? (() => {
+        const { targets } = calculateGoals(profileToGoalInput(profile));
+        return {
+          calories: Math.round(targets.calories),
+          proteinG: targets.proteinG,
+          carbsG: targets.carbsG,
+          fatG: targets.fatG,
+        };
+      })()
+    : null;
 
   const [exercises, todaysWorkout, routines] = await Promise.all([
     db.exercise.findMany({
@@ -203,6 +217,7 @@ async function renderLogPage() {
               favouriteFoods={favouriteFoods}
               recentFoods={recentFoods}
               mealTemplates={mealTemplateOptions}
+              dailyTargets={dailyTargets}
             />
           }
           exercises={exerciseOptions}

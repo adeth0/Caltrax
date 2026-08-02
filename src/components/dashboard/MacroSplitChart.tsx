@@ -14,8 +14,8 @@ interface MacroSplitChartProps {
 
 const COLORS = {
   carbs: "var(--macro-carbs)",
-  fat: "var(--macro-protein)",
-  protein: "var(--macro-fat)",
+  fat: "var(--macro-fat)",
+  protein: "var(--macro-protein)",
 };
 
 /** % of total calories each macro represents -- protein/carbs = 4 kcal/g, fat = 9 kcal/g. */

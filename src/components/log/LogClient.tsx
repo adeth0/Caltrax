@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { FoodSearchBox, type QuickPickFood } from "@/components/food/FoodSearchBox";
 import { BarcodeScannerModal } from "@/components/scan/BarcodeScannerModal";
 import { MealPhotoCapture } from "@/components/log/MealPhotoCapture";
+import { FoodMacroRing } from "@/components/log/FoodMacroRing";
 import {
   addFavouriteByFoodIdAction,
   copyYesterdayAction,
@@ -82,9 +83,16 @@ interface LogClientProps {
   favouriteFoods: QuickAddFood[];
   recentFoods: QuickAddFood[];
   mealTemplates: MealTemplateOption[];
+  dailyTargets: { calories: number; proteinG: number; carbsG: number; fatG: number } | null;
 }
 
-export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTemplates }: LogClientProps) {
+export function LogClient({
+  todayEntries,
+  favouriteFoods,
+  recentFoods,
+  mealTemplates,
+  dailyTargets,
+}: LogClientProps) {
   const router = useRouter();
   const [mealType, setMealType] = useState<MealType>(() => defaultMealForHour(new Date().getHours()));
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
@@ -390,6 +398,53 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
   function handleSelectQuickPickFromSearch(foodId: string) {
     const food = quickPickFoods.find((f) => f.foodId === foodId);
     if (food) handleSelectQuick(food);
+  }
+
+  // Computed once per render for the review card below -- kept out of
+  // the JSX itself since it's a genuine handful of related numbers
+  // (this serving's macros, this food's own carb/fat/protein split for
+  // the ring, and what fraction of the day's targets this serving
+  // represents), not a single simple expression.
+  let reviewValues: {
+    servingCalories: number;
+    servingProteinG: number;
+    servingCarbsG: number;
+    servingFatG: number;
+    carbsPct: number;
+    fatPct: number;
+    proteinPct: number;
+    goalPcts: { calories: number; carbs: number; fat: number; protein: number } | null;
+  } | null = null;
+
+  if (selectedFood) {
+    const scale = Number(grams || 0) / 100;
+    const servingCalories = Math.round(selectedFood.caloriesPer100g * scale);
+    const servingProteinG = Math.round(selectedFood.proteinPer100g * scale);
+    const servingCarbsG = Math.round(selectedFood.carbsPer100g * scale);
+    const servingFatG = Math.round(selectedFood.fatPer100g * scale);
+
+    const carbsCal = servingCarbsG * 4;
+    const proteinCal = servingProteinG * 4;
+    const fatCal = servingFatG * 9;
+    const macroCalTotal = carbsCal + proteinCal + fatCal;
+
+    reviewValues = {
+      servingCalories,
+      servingProteinG,
+      servingCarbsG,
+      servingFatG,
+      carbsPct: macroCalTotal > 0 ? Math.round((carbsCal / macroCalTotal) * 100) : 0,
+      fatPct: macroCalTotal > 0 ? Math.round((fatCal / macroCalTotal) * 100) : 0,
+      proteinPct: macroCalTotal > 0 ? Math.round((proteinCal / macroCalTotal) * 100) : 0,
+      goalPcts: dailyTargets
+        ? {
+            calories: Math.round((servingCalories / dailyTargets.calories) * 100),
+            carbs: Math.round((servingCarbsG / dailyTargets.carbsG) * 100),
+            fat: Math.round((servingFatG / dailyTargets.fatG) * 100),
+            protein: Math.round((servingProteinG / dailyTargets.proteinG) * 100),
+          }
+        : null,
+    };
   }
 
   return (
@@ -709,10 +764,59 @@ export function LogClient({ todayEntries, favouriteFoods, recentFoods, mealTempl
               />
               <span className="text-sm text-text-tertiary">grams</span>
             </div>
-            <p className="text-xs text-text-tertiary">
-              ≈ {Math.round((selectedFood.caloriesPer100g * Number(grams || 0)) / 100)} kcal ·{" "}
-              {Math.round((selectedFood.proteinPer100g * Number(grams || 0)) / 100)}g protein
-            </p>
+            {reviewValues && (
+              <div className="flex items-center gap-4">
+                <FoodMacroRing
+                  carbsPct={reviewValues.carbsPct}
+                  fatPct={reviewValues.fatPct}
+                  proteinPct={reviewValues.proteinPct}
+                  calories={reviewValues.servingCalories}
+                />
+                <div className="flex flex-1 justify-around text-center text-xs">
+                  <div>
+                    <p className="font-semibold text-[var(--macro-carbs)]">{reviewValues.carbsPct}%</p>
+                    <p className="text-text-tertiary">Carbs</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--macro-fat)]">{reviewValues.fatPct}%</p>
+                    <p className="text-text-tertiary">Fat</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--macro-protein)]">{reviewValues.proteinPct}%</p>
+                    <p className="text-text-tertiary">Protein</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {reviewValues?.goalPcts && (
+              <div>
+                <p className="mb-1.5 text-xs font-semibold text-text-secondary">
+                  Percent of Your Daily Goals
+                </p>
+                <div className="grid grid-cols-4 gap-2 text-center text-[11px]">
+                  {(
+                    [
+                      ["Calories", reviewValues.goalPcts.calories, "var(--brand)"],
+                      ["Carbs", reviewValues.goalPcts.carbs, "var(--macro-carbs)"],
+                      ["Fat", reviewValues.goalPcts.fat, "var(--macro-fat)"],
+                      ["Protein", reviewValues.goalPcts.protein, "var(--macro-protein)"],
+                    ] as const
+                  ).map(([label, pct, color]) => (
+                    <div key={label}>
+                      <p className="text-text-tertiary">{label}</p>
+                      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-surface-raised">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${Math.min(100, pct)}%`, background: color }}
+                        />
+                      </div>
+                      <p className="mt-0.5 font-medium text-text-primary">{pct}%</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {error && <p className="text-xs text-accent-danger">{error}</p>}
             <Button type="button" onClick={handleAdd} disabled={isSaving} className="w-full">
               {isSaving ? "Adding…" : `Add to ${mealType}`}
