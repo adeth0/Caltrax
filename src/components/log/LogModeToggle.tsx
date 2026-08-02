@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   WorkoutLogClient,
@@ -18,7 +19,10 @@ interface LogModeToggleProps {
 }
 
 export function LogModeToggle({ mealSlot, exercises, todaySets, routines }: LogModeToggleProps) {
-  const [mode, setMode] = useState<"meal" | "workout">("meal");
+  const searchParams = useSearchParams();
+  const [mode, setMode] = useState<"meal" | "workout">(
+    searchParams.get("mode") === "workout" ? "workout" : "meal"
+  );
 
   return (
     <div>
