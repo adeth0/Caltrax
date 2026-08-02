@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Camera, Star } from "lucide-react";
+import { ChevronRight, ScanLine, Star } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -538,17 +538,22 @@ export function LogClient({
           />
         </div>
 
+        <button
+          type="button"
+          onClick={() => setScannerOpen(true)}
+          disabled={isLookingUp}
+          className="control focus-ring touch-target bg-brand/12 mt-3 flex w-full items-center gap-3 rounded-control px-4 py-3 text-left disabled:opacity-60"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand text-brand-foreground">
+            <ScanLine className="h-4 w-4" />
+          </span>
+          <span className="flex-1 text-sm font-semibold text-text-primary">
+            {isLookingUp ? "Looking up…" : "Log it faster with Barcode Scan"}
+          </span>
+          <ChevronRight className="h-4 w-4 shrink-0 text-text-tertiary" />
+        </button>
+
         <div className="mt-3 flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => setScannerOpen(true)}
-            disabled={isLookingUp}
-          >
-            <Camera className="h-4 w-4" />
-            {isLookingUp ? "Looking up…" : "Scan barcode"}
-          </Button>
           <button
             type="button"
             onClick={() => {
