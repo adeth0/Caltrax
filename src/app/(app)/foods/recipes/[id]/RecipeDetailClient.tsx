@@ -13,6 +13,7 @@ import { logRecipeAction, rateRecipeAction, toggleSaveRecipeAction } from "@/app
 import { addRecipeToShoppingListAction } from "@/app/(app)/shopping-list/actions";
 import { toggleRecipeInCollectionAction } from "@/app/(app)/foods/collectionActions";
 import { CATEGORY_META, type MealCategoryValue } from "@/components/recipes/recipeCategoryMeta";
+import { FoodMacroRing } from "@/components/log/FoodMacroRing";
 import type { MealType } from "@/types";
 
 // A recipe's meal-time category isn't the same set of values as the
@@ -197,6 +198,14 @@ export function RecipeDetailClient({
     void fn();
   }
 
+  const carbsCal = recipe.carbsPerServing * 4;
+  const proteinCal = recipe.proteinPerServing * 4;
+  const fatCal = recipe.fatPerServing * 9;
+  const macroCalTotal = carbsCal + proteinCal + fatCal;
+  const carbsPct = macroCalTotal > 0 ? Math.round((carbsCal / macroCalTotal) * 100) : 0;
+  const fatPct = macroCalTotal > 0 ? Math.round((fatCal / macroCalTotal) * 100) : 0;
+  const proteinPct = macroCalTotal > 0 ? Math.round((proteinCal / macroCalTotal) * 100) : 0;
+
   return (
     <main className="mx-auto max-w-2xl p-4 pb-24 sm:p-6">
       <BackButton className="mb-3" />
@@ -284,21 +293,27 @@ export function RecipeDetailClient({
 
       <Card className="mt-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Per serving</p>
-        <div className="label-rule" />
-        <div className="label-rule-thin" />
-        <p className="font-display text-3xl font-black tabular-nums text-text-primary">
-          {recipe.caloriesPerServing} <span className="text-sm font-medium text-text-secondary">kcal</span>
-        </p>
-        <div className="mt-2 flex gap-4 text-sm text-text-secondary">
-          <span>
-            Protein <b className="font-semibold text-text-primary">{recipe.proteinPerServing}g</b>
-          </span>
-          <span>
-            Carbs <b className="font-semibold text-text-primary">{recipe.carbsPerServing}g</b>
-          </span>
-          <span>
-            Fat <b className="font-semibold text-text-primary">{recipe.fatPerServing}g</b>
-          </span>
+        <div className="mt-3 flex items-center gap-4">
+          <FoodMacroRing
+            carbsPct={carbsPct}
+            fatPct={fatPct}
+            proteinPct={proteinPct}
+            calories={recipe.caloriesPerServing}
+          />
+          <div className="flex flex-1 justify-around text-center text-sm">
+            <div>
+              <p className="font-semibold text-[var(--macro-carbs)]">{recipe.carbsPerServing}g</p>
+              <p className="text-xs text-text-tertiary">Carbs</p>
+            </div>
+            <div>
+              <p className="font-semibold text-[var(--macro-fat)]">{recipe.fatPerServing}g</p>
+              <p className="text-xs text-text-tertiary">Fat</p>
+            </div>
+            <div>
+              <p className="font-semibold text-[var(--macro-protein)]">{recipe.proteinPerServing}g</p>
+              <p className="text-xs text-text-tertiary">Protein</p>
+            </div>
+          </div>
         </div>
       </Card>
 
