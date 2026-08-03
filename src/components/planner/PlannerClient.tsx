@@ -3,7 +3,7 @@
 import { addDays, format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import { FoodSearchBox } from "@/components/food/FoodSearchBox";
 import { searchFoodsAction } from "@/app/(app)/log/actions";
+import { addWeekToShoppingListAction } from "@/app/(app)/shopping-list/actions";
 import {
   addPlannedFoodAction,
   addPlannedRecipeAction,
@@ -60,6 +61,8 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
   const [isSaving, startSaving] = useTransition();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [isBusy, startBusy] = useTransition();
+  const [isGeneratingList, startGeneratingList] = useTransition();
+  const [shoppingListMessage, setShoppingListMessage] = useState<string | null>(null);
   const [pendingRemove, setPendingRemove] = useState<PlannedMealRow | null>(null);
 
   function openAdd(mealType: MealType) {
@@ -149,6 +152,20 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
     router.push(`/planner?start=${format(newStart, "yyyy-MM-dd")}`);
   }
 
+  function handleAddWeekToShoppingList() {
+    setShoppingListMessage(null);
+    startGeneratingList(async () => {
+      const { recipeCount, itemCount } = await addWeekToShoppingListAction(days[0]!);
+      setShoppingListMessage(
+        recipeCount === 0
+          ? "No recipes planned this week yet — plan a few, then generate your list."
+          : `Added ${itemCount} ingredient${itemCount === 1 ? "" : "s"} from ${recipeCount} recipe${
+              recipeCount === 1 ? "" : "s"
+            } to your shopping list.`
+      );
+    });
+  }
+
   const todayStr = format(new Date(), "yyyy-MM-dd");
   const dayMeals = plannedMeals.filter((m) => m.date === selectedDate);
 
@@ -173,6 +190,18 @@ export function PlannerClient({ days, plannedMeals, recipes }: PlannerClientProp
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={handleAddWeekToShoppingList}
+          disabled={isGeneratingList}
+          className="control focus-ring touch-target mb-2 flex items-center gap-1.5 text-xs font-medium text-accent-info hover:underline"
+        >
+          <ShoppingCart className="h-3.5 w-3.5" />
+          {isGeneratingList ? "Adding…" : "Add this week's recipes to shopping list"}
+        </button>
+        {shoppingListMessage && <p className="mb-2 text-xs text-text-tertiary">{shoppingListMessage}</p>}
+
         <div className="flex gap-2 overflow-x-auto pb-1">
           {days.map((day) => {
             const date = parseISO(day);

@@ -13,6 +13,27 @@ async function requireUserId(): Promise<string> {
   return user.id;
 }
 
+async function addRecipeIngredientsToList(userId: string, recipeId: string): Promise<number> {
+  const recipe = await db.recipe.findFirst({
+    where: {
+      id: recipeId,
+      OR: [{ userId }, { source: "CURATED" }, { source: "USER", isPublished: true }],
+    },
+    include: { items: { include: { food: true } } },
+  });
+  if (!recipe) return 0;
+
+  await db.shoppingListItem.createMany({
+    data: recipe.items.map((item: (typeof recipe.items)[number]) => ({
+      userId,
+      label: item.displayLabel ?? `${item.food.name}, ${Math.round(item.grams)}g`,
+      recipeName: recipe.name,
+    })),
+  });
+
+  return recipe.items.length;
+}
+
 /**
  * Appends a recipe's ingredients to the shopping list -- doesn't attempt
  * to merge quantities with anything already on the list (ingredient
@@ -24,26 +45,47 @@ async function requireUserId(): Promise<string> {
  */
 export async function addRecipeToShoppingListAction(recipeId: string) {
   const userId = await requireUserId();
-
-  const recipe = await db.recipe.findFirst({
-    where: {
-      id: recipeId,
-      OR: [{ userId }, { source: "CURATED" }, { source: "USER", isPublished: true }],
-    },
-    include: { items: { include: { food: true } } },
-  });
-  if (!recipe) throw new Error("Recipe not found");
-
-  await db.shoppingListItem.createMany({
-    data: recipe.items.map((item: (typeof recipe.items)[number]) => ({
-      userId,
-      label: item.displayLabel ?? `${item.food.name}, ${Math.round(item.grams)}g`,
-      recipeName: recipe.name,
-    })),
-  });
+  const addedCount = await addRecipeIngredientsToList(userId, recipeId);
+  if (addedCount === 0) throw new Error("Recipe not found");
 
   revalidatePath("/shopping-list");
-  return { addedCount: recipe.items.length };
+  return { addedCount };
+}
+
+/**
+ * Bulk version for the Meal Planner: adds ingredients for every
+ * distinct recipe planned across a given 7-day week in one action,
+ * rather than requiring a separate tap per planned meal. Plain-food
+ * planned meals (no recipeId) are skipped -- a single food has nothing
+ * resembling "ingredients" to shop for; the food itself is the item.
+ * Recipes planned more than once in the week are only processed once
+ * (their ingredients would just duplicate on the list otherwise).
+ */
+export async function addWeekToShoppingListAction(weekStartDateStr: string): Promise<{
+  recipeCount: number;
+  itemCount: number;
+}> {
+  const userId = await requireUserId();
+  const weekStart = new Date(`${weekStartDateStr}T00:00:00Z`);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekEnd.getUTCDate() + 7);
+
+  const plannedMeals = await db.plannedMeal.findMany({
+    where: { userId, date: { gte: weekStart, lt: weekEnd }, recipeId: { not: null } },
+    select: { recipeId: true },
+  });
+
+  const uniqueRecipeIds = [
+    ...new Set(plannedMeals.map((m: (typeof plannedMeals)[number]) => m.recipeId as string)),
+  ] as string[];
+
+  let itemCount = 0;
+  for (const recipeId of uniqueRecipeIds) {
+    itemCount += await addRecipeIngredientsToList(userId, recipeId);
+  }
+
+  revalidatePath("/shopping-list");
+  return { recipeCount: uniqueRecipeIds.length, itemCount };
 }
 
 export async function addManualShoppingItemAction(label: string) {
