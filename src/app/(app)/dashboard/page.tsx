@@ -1,4 +1,5 @@
 import { addDays, endOfDay, format, startOfWeek } from "date-fns";
+import { Flame } from "lucide-react";
 import { redirect } from "next/navigation";
 import { CaloriesRemainingCard } from "@/components/dashboard/CaloriesRemainingCard";
 import { DateNavigator } from "@/components/dashboard/DateNavigator";
@@ -158,7 +159,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
         {engagement.currentStreak >= 2 && (
           <div className="flex items-center gap-1.5 rounded-full bg-surface-raised px-3 py-1.5 text-sm font-semibold text-text-primary">
-            <span aria-hidden>🔥</span>
+            <Flame className="h-4 w-4 text-brand" />
             {engagement.currentStreak} day streak
           </div>
         )}
